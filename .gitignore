@@ -29,3 +29,6 @@ dist-ssr
 .env.production.local
 .env.local
 **/.env
+
+.vscode
+.husky
