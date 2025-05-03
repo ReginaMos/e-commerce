@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <router-view />
+  <v-text-field label="Main input"></v-text-field>
 </template>
 
 <style scoped></style>

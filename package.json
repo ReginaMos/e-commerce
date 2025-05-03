@@ -16,7 +16,8 @@
     "@pinia/testing": "^1.0.1",
     "pinia": "^3.0.2",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vuetify": "^3.8.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
@@ -26,6 +27,7 @@
     "@vitest/ui": "^3.1.2",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
@@ -33,10 +35,15 @@
     "globals": "^16.0.0",
     "husky": "^8.0.0",
     "jsdom": "^26.1.0",
+    "postcss": "^8.5.3",
     "prettier": "^3.5.3",
+    "sass": "^1.87.0",
+    "sass-loader": "^16.0.5",
+    "tailwindcss": "^4.1.5",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.31.1",
     "vite": "^6.3.3",
+    "vite-plugin-vuetify": "^2.1.1",
     "vitest": "^3.1.2",
     "vue-tsc": "^2.2.8"
   }

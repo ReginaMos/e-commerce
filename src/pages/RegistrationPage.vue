@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <router-view />
+  <h2>Registartion Page</h2>
 </template>
 
 <style scoped></style>
