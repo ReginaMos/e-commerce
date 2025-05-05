@@ -1,97 +1,57 @@
-<script lang="ts">
-import { defineComponent, ref, reactive, computed } from 'vue';
+<script setup lang="ts">
+import { ref, reactive, computed } from 'vue';
 import { z } from 'zod';
-
-const registrationSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, { message: 'Username must be at least 1 characters long' })
-    .regex(/^[a-zA-Z]*$/, { message: 'Username must contain only letters' }),
-  lastName: z
-    .string()
-    .min(1, { message: 'Username must be at least 1 characters long' })
-    .regex(/^[a-zA-Z]*$/, { message: 'Username must contain only letters' }),
-  email: z.string().email({ message: 'Invalid email address' }),
-  password: z
-    .string()
-    .min(8, { message: 'Password must be at least 8 characters long' })
-    .regex(/[a-z]/, {
-      message: 'Password must contain at least one lowercase letter',
-    })
-    .regex(/[A-Z]/, {
-      message: 'Password must contain at least one uppercase letter',
-    })
-    .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
-  dateOfBirth: z.date().refine(
-    (date) => {
-      return date <= thirteenYearsAgo;
-    },
-    {
-      message: 'Must be at least 13 years old',
-    }
-  ),
-});
-
-const today = new Date();
-const thirteenYearsAgo = new Date(
-  today.getFullYear() - 13,
-  today.getMonth(),
-  today.getDate()
-);
+import { countyList } from '../utils/country-list';
+import {
+  registrationSchema,
+  thirteenYearsAgo,
+} from '../utils/registration-schema';
 
 type FormData = z.infer<typeof registrationSchema>;
 
-export default defineComponent({
-  setup() {
-    const formData = reactive<FormData>({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      dateOfBirth: thirteenYearsAgo,
-    });
-
-    const form = ref(false);
-    const menu = ref(false);
-
-    const getFieldRules = (fieldName: keyof FormData) => {
-      return computed(() => [
-        (v: string) => {
-          const result = registrationSchema.shape[fieldName].safeParse(v);
-          return result.success ? true : result.error.issues[0].message;
-        },
-      ]);
-    };
-
-    const formattedDate = computed(() => {
-      return new Intl.DateTimeFormat().format(formData.dateOfBirth);
-    });
-
-    const register = async () => {
-      const result = registrationSchema.safeParse(formData);
-
-      if (result.success) {
-        console.log('Registration data:', formData);
-      }
-    };
-
-    return {
-      menu,
-      form,
-      register,
-      formData,
-      formattedDate,
-      getFieldRules,
-    };
-  },
+const formData = reactive<FormData>({
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  dateOfBirth: thirteenYearsAgo,
+  street: '',
+  city: '',
+  postalCode: '',
+  country: '',
 });
+
+const form = ref(false);
+const menu = ref(false);
+const countries = ref(countyList);
+
+const getFieldRules = (fieldName: keyof FormData) => {
+  return computed(() => [
+    (v: string) => {
+      const result = registrationSchema.shape[fieldName].safeParse(v);
+      return result.success ? true : result.error.issues[0].message;
+    },
+  ]);
+};
+
+const formattedDate = computed(() => {
+  return new Intl.DateTimeFormat().format(formData.dateOfBirth);
+});
+
+const register = async () => {
+  const result = registrationSchema.safeParse(formData);
+
+  if (result.success) {
+    console.log('Registration data:', formData);
+  }
+};
 </script>
 
 <template>
   <v-container>
     <v-row justify="center">
       <v-card width="380">
-        <v-card-title class="headline">Sign Up Form</v-card-title>
+        <v-card-title>Sign Up Form</v-card-title>
         <v-card-text>
           <v-form v-model="form" @submit.prevent="register">
             <v-text-field
@@ -141,7 +101,7 @@ export default defineComponent({
                   :value="formattedDate"
                   label="Date of Birth"
                   prepend-icon="mdi-calendar"
-                  readonly
+                  variant="underlined"
                   v-bind="props"
                   :rules="getFieldRules('dateOfBirth').value"
                   required
@@ -152,7 +112,39 @@ export default defineComponent({
                 @input="menu = false"
               ></v-date-picker>
             </v-menu>
+            <v-card-title class="text-start">Billing Address</v-card-title>
+            <v-text-field
+              v-model="formData.street"
+              :rules="getFieldRules('street').value"
+              label="Street"
+              variant="underlined"
+              required
+            ></v-text-field>
 
+            <v-text-field
+              v-model="formData.city"
+              :rules="getFieldRules('city').value"
+              label="City"
+              variant="underlined"
+              required
+            ></v-text-field>
+
+            <v-text-field
+              v-model="formData.postalCode"
+              :rules="getFieldRules('postalCode').value"
+              label="Postal Code"
+              variant="underlined"
+              required
+            ></v-text-field>
+
+            <v-autocomplete
+              v-model="formData.country"
+              :items="countries"
+              label="Country"
+              variant="underlined"
+              :rules="getFieldRules('country').value"
+              required
+            ></v-autocomplete>
             <v-btn color="primary" type="submit" :disabled="!form">
               Sign up
             </v-btn>
