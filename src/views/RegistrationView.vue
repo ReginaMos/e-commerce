@@ -2,10 +2,7 @@
 import { ref, reactive, computed } from 'vue';
 import { z } from 'zod';
 import { countyList } from '../utils/country-list';
-import {
-  registrationSchema,
-  thirteenYearsAgo,
-} from '../utils/registration-schema';
+import { registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
 
 type FormData = z.infer<typeof registrationSchema>;
 
@@ -107,10 +104,7 @@ const register = async () => {
                   required
                 ></v-text-field>
               </template>
-              <v-date-picker
-                v-model="formData.dateOfBirth"
-                @input="menu = false"
-              ></v-date-picker>
+              <v-date-picker v-model="formData.dateOfBirth" @input="menu = false"></v-date-picker>
             </v-menu>
             <v-card-title class="text-start">Billing Address</v-card-title>
             <v-text-field
@@ -145,9 +139,7 @@ const register = async () => {
               :rules="getFieldRules('country').value"
               required
             ></v-autocomplete>
-            <v-btn color="primary" type="submit" :disabled="!form">
-              Sign up
-            </v-btn>
+            <v-btn color="primary" type="submit" :disabled="!form"> Sign up </v-btn>
           </v-form>
         </v-card-text>
       </v-card>
