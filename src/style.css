@@ -28,17 +28,15 @@ html {
 body {
   margin: 0;
   height: 100%;
- 
+
   /* place-items: center; */
   min-width: 320px;
   min-height: 100%;
- 
 }
 
 header {
-  top: 48px!important;
+  top: 48px !important;
 }
-
 
 h1 {
   font-size: 3.2em;
@@ -78,7 +76,7 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
- 
+
   button {
     background-color: #f9f9f9;
   }

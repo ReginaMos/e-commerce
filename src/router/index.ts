@@ -40,12 +40,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'signup',
         component: RegistrationPage,
       },
-       {
+      {
         path: 'likes',
         name: 'likes',
         component: LikesPage,
       },
-        {
+      {
         path: 'cart',
         name: 'cart',
         component: CartPage,
