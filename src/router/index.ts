@@ -4,6 +4,7 @@ import type { RouteRecordRaw } from 'vue-router';
 import MainPage from '../pages/MainPage.vue';
 import LoginPage from '../pages/LoginPage.vue';
 import RegistrationPage from '../pages/RegistrationPage.vue';
+import NotFoundPage from '../pages/NotFoundPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'register',
     component: RegistrationPage,
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: NotFoundPage
+  }
 ];
 
 const router = createRouter({
