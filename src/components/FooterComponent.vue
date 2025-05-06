@@ -1,7 +1,16 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h2>Footer Component</h2>
+  <v-footer class="footer">
+    <h2>Footer Component</h2>
+  </v-footer>
+  
 </template>
 
-<style scoped></style>
+<style scoped>
+  .v-footer {
+    height: 440px!important;
+    background-color: black!important;
+    color: white;
+  }
+</style>

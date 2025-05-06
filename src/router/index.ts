@@ -7,6 +7,8 @@ import RegistrationPage from '../pages/RegistrationPage.vue';
 import AboutPage from '../pages/AboutPage.vue';
 import ContactsPage from '../pages/ContactsPage.vue';
 import LayoutComponent from '../components/LayoutComponent.vue';
+import LikesPage from '../pages/LikesPage.vue';
+import CartPage from '../pages/CartPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,6 +39,16 @@ const routes: Array<RouteRecordRaw> = [
         path: 'signup',
         name: 'signup',
         component: RegistrationPage,
+      },
+       {
+        path: 'likes',
+        name: 'likes',
+        component: LikesPage,
+      },
+        {
+        path: 'cart',
+        name: 'cart',
+        component: CartPage,
       },
     ],
   },

@@ -1,6 +1,6 @@
 <template>
   <li>
-    <RouterLink :to="link" class="hover:underline" active-class="text-red-500 font-bold">
+    <RouterLink :to="link" class="">
       {{ title }}
     </RouterLink>
   </li>
