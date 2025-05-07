@@ -17,38 +17,37 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   <v-app-bar :elevation="0" class="header">
     <v-app-bar-nav-icon class="hidden-lg-and-up"></v-app-bar-nav-icon>
     <v-app-bar-title class="header-logo">
-      <RouterLink :to=MenuLinks.HOME.LINK class=""> Vue Magic Time </RouterLink>
+      <RouterLink :to="MenuLinks.HOME.LINK" class=""> Vue Magic Time </RouterLink>
     </v-app-bar-title>
     <div class="menu-wrapper-desktop">
-       <v-navigation-drawer class="hidden-md-and-down" min-width="278">
-      <ul class="list">
-      <MenuItem
-      v-for="item in MenuLinks"
-      :key="item.LINK"
-      :title="item.NAME"
-      :link="item.LINK"
-    ></MenuItem>
-      </ul>
-    </v-navigation-drawer>
+      <v-navigation-drawer class="hidden-md-and-down" min-width="278">
+        <ul class="list">
+          <MenuItem v-for="item in MenuLinks" :key="item.LINK" :title="item.NAME" :link="item.LINK"></MenuItem>
+        </ul>
+      </v-navigation-drawer>
     </div>
-   
+
     <div class="input-wrapper">
-      <v-text-field label="What are you looking for?" append-icon="mdi mdi-magnify" class="search-input hidden-sm-and-down"></v-text-field>
+      <v-text-field
+        label="What are you looking for?"
+        append-icon="mdi mdi-magnify"
+        class="search-input hidden-sm-and-down"
+      ></v-text-field>
     </div>
-    
+
     <div class="icon-wrapper">
       <v-btn class="icon-button">
-        <RouterLink :to=Links.LIKES.LINK class="">
+        <RouterLink :to="Links.LIKES.LINK" class="">
           <v-icon icon="mdi mdi-heart-outline"></v-icon>
         </RouterLink>
       </v-btn>
       <v-btn class="icon-button">
-        <RouterLink :to=Links.CART.LINK class="">
+        <RouterLink :to="Links.CART.LINK" class="">
           <v-icon icon="mdi mdi-cart-outline"></v-icon>
         </RouterLink>
       </v-btn>
       <v-btn class="icon-button">
-        <RouterLink :to=Links.USER.LINK>
+        <RouterLink :to="Links.USER.LINK">
           <v-icon>mdi-account-outline</v-icon>
         </RouterLink>
       </v-btn>
@@ -66,7 +65,7 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   display: flex;
   height: 94px !important;
   flex-direction: row;
-  align-items: flex-end!important;
+  align-items: flex-end !important;
   border-bottom: 1px solid black;
   width: 100%;
 }
@@ -81,7 +80,7 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   padding: 0;
   min-width: 150px;
   max-width: 150px !important;
-  margin-inline-start: 0px!important;
+  margin-inline-start: 0px !important;
   margin-right: auto;
 }
 
@@ -92,9 +91,8 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   min-width: 150px;
 }
 .header-logo:hover a {
-  color: #DB4444;
-  text-decoration: none!important;
-
+  color: #db4444;
+  text-decoration: none !important;
 }
 .v-toolbar-title__placeholder {
   overflow: visible;
@@ -103,18 +101,18 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   min-width: 150px !important;
 }
 .menu-wrapper-desktop {
- width: 367px;
- margin-right: 130px;
+  width: 367px;
+  margin-right: 130px;
 }
 .menu-wrapper-desktop .v-navigation-drawer {
   position: static !important;
   height: 24px !important;
-  border-right-width: 0!important;
-  width: 367px!important;
+  border-right-width: 0 !important;
+  width: 367px !important;
 }
 
 .menu-wrapper-desktop .v-navigation-drawer__content {
-  min-width: 367px!important;
+  min-width: 367px !important;
 }
 
 .v-navigation-drawer__content::-webkit-scrollbar-track {
@@ -155,12 +153,12 @@ li {
 .v-btn.icon-button:hover {
   color: white;
   border-radius: 50%;
-  background-color: #DB4444;
+  background-color: #db4444;
   transition: background-color 0.28s ease-in-out;
 }
- .v-btn.icon-button:hover > .v-btn__overlay {
+.v-btn.icon-button:hover > .v-btn__overlay {
   opacity: 0;
- }
+}
 .search-input {
   position: relative;
   background-color: #f5f5f5;

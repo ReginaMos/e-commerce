@@ -1,10 +1,6 @@
 <template>
   <li>
-    <RouterLink
-      :to="link"
-      class="menu-link"
-      exact-active-class="active"
-    >
+    <RouterLink :to="link" class="menu-link" exact-active-class="active">
       {{ title }}
     </RouterLink>
   </li>

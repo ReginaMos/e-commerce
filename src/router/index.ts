@@ -71,13 +71,13 @@ const routes: Array<RouteRecordRaw> = [
         name: Links.PRODUCT.NAME,
         component: ProductPage,
       },
-     
+
       {
         path: '/:pathMatch(.*)*',
         name: Links.NOTFOUND.NAME,
-        component: NotFoundComponent
-      }
-    ]
+        component: NotFoundComponent,
+      },
+    ],
   },
 ];
 
