@@ -3,6 +3,9 @@ import { ref, reactive, computed, type ComputedRef } from 'vue';
 import { z, type AnyZodObject } from 'zod';
 import { countyList } from '../utils/country-list';
 import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
+import { createCustomer } from '../services/create-customer';
+import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
+import { formatDateISO8601 } from '../utils/format-date';
 
 type FormData = z.infer<typeof registrationSchema>;
 type AddressData = z.infer<typeof addressSchema>;
@@ -41,7 +44,7 @@ const getFieldRulesForm = (fieldName: keyof FormData) => getFieldRules(fieldName
 const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
 
 const formattedDate = computed(() => {
-  return new Intl.DateTimeFormat().format(formData.dateOfBirth);
+  return new Intl.DateTimeFormat().format(new Date(formData.dateOfBirth));
 });
 
 const register = async () => {
@@ -49,8 +52,13 @@ const register = async () => {
   const resultAddress = addressSchema.safeParse(addressData);
 
   if (resultForm.success && resultAddress.success) {
-    console.log('Registration data:', formData);
-    console.log('Address data:', addressData);
+    const customer: MyCustomerDraft = {
+      ...formData,
+      dateOfBirth: formatDateISO8601(formData.dateOfBirth),
+      addresses: [addressData],
+    };
+    console.log(customer);
+    await createCustomer(customer);
   }
 };
 </script>
@@ -65,7 +73,7 @@ const register = async () => {
             <v-text-field
               v-model="formData.firstName"
               :rules="getFieldRulesForm('firstName').value"
-              label="Username"
+              label="Fist Name"
               variant="underlined"
               required
             ></v-text-field>
@@ -73,7 +81,7 @@ const register = async () => {
             <v-text-field
               v-model="formData.lastName"
               :rules="getFieldRulesForm('lastName').value"
-              label="Username"
+              label="Last Name"
               variant="underlined"
               required
             ></v-text-field>
@@ -145,6 +153,8 @@ const register = async () => {
             <v-autocomplete
               v-model="addressData.country"
               :items="countries"
+              item-title="name"
+              item-value="code"
               label="Country"
               variant="underlined"
               :rules="getFieldRulesAddress('country').value"
