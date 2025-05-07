@@ -9,48 +9,75 @@ import ContactsPage from '../pages/ContactsPage.vue';
 import LayoutComponent from '../components/LayoutComponent.vue';
 import LikesPage from '../pages/LikesPage.vue';
 import CartPage from '../pages/CartPage.vue';
+import UserPage from '../pages/UserPage.vue';
+import ProductPage from '../pages/ProductPage.vue';
+import CatalogPage from '../pages/CatalogPage.vue';
+import NotFoundComponent from '../pages/NotFoundComponent.vue';
+
+import { Links } from '../constants/routersLinks';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: Links.HOME.LINK,
     component: LayoutComponent,
     children: [
       {
         path: '',
-        name: 'home',
+        name: Links.HOME.NAME,
         component: MainPage,
       },
       {
-        path: 'contacts',
-        name: 'contacts',
+        path: Links.CONTACT.LINK,
+        name: Links.CONTACT.NAME,
         component: ContactsPage,
       },
       {
-        path: 'about',
-        name: 'about',
+        path: Links.ABOUT.LINK,
+        name: Links.ABOUT.NAME,
         component: AboutPage,
       },
       {
-        path: 'login',
-        name: 'login',
+        path: Links.LOGIN.LINK,
+        name: Links.LOGIN.NAME,
         component: LoginPage,
       },
       {
-        path: 'signup',
-        name: 'signup',
+        path: Links.SIGNUP.LINK,
+        name: Links.SIGNUP.NAME,
         component: RegistrationPage,
       },
       {
-        path: 'likes',
-        name: 'likes',
+        path: Links.LIKES.LINK,
+        name: Links.LIKES.NAME,
         component: LikesPage,
       },
       {
-        path: 'cart',
-        name: 'cart',
+        path: Links.CART.LINK,
+        name: Links.CART.NAME,
         component: CartPage,
       },
-    ],
+      {
+        path: Links.USER.LINK,
+        name: Links.USER.NAME,
+        component: UserPage,
+      },
+      {
+        path: Links.CATALOG.LINK,
+        name: Links.CATALOG.NAME,
+        component: CatalogPage,
+      },
+      {
+        path: `Links.PRODUCT.LINK/${1}`,
+        name: Links.PRODUCT.NAME,
+        component: ProductPage,
+      },
+     
+      {
+        path: '/:pathMatch(.*)*',
+        name: Links.NOTFOUND.NAME,
+        component: NotFoundComponent
+      }
+    ]
   },
 ];
 

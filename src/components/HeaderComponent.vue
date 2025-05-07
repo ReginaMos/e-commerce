@@ -1,46 +1,55 @@
 <script setup>
 import MenuItem from './MenuItem.vue';
-import { ref } from 'vue';
+// import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { Links, MenuLinks } from '../constants/routersLinks.ts';
 
-const menuList = [
-  { title: 'Home', link: '/' },
-  { title: 'Contacts', link: '/contacts' },
-  { title: 'About', link: '/about' },
-  { title: 'Sign Up', link: '/signup' },
-];
-let width = ref(false);
-function onResize() {
-  return (width.value = document.documentElement.clientWidth > 948);
-}
-
-document.addEventListener('resize', () => {
-  onResize();
-});
+// let width = ref(false);
+// function onResize() {
+//   return (width.value = document.documentElement.clientWidth > 948);
+// }
+// document.addEventListener('resize', () => {
+//   onResize();
+// });
 </script>
 
 <template>
   <v-app-bar :elevation="0" class="header">
-    <v-app-bar-nav-icon v-resize="onResize"></v-app-bar-nav-icon>
-    <v-app-bar-title class="header-logo-wrapper">
-      <RouterLink :to="'/'" class=""> Vue Magic Time </RouterLink>
+    <v-app-bar-nav-icon class="hidden-lg-and-up"></v-app-bar-nav-icon>
+    <v-app-bar-title class="header-logo">
+      <RouterLink :to=MenuLinks.HOME.LINK class=""> Vue Magic Time </RouterLink>
     </v-app-bar-title>
-    <v-navigation-drawer width="308" v-if="onResize" clipped-rigth app permanent>
+    <div class="menu-wrapper-desktop">
+       <v-navigation-drawer class="hidden-md-and-down" min-width="278">
       <ul class="list">
-        <MenuItem v-for="item in menuList" :key="item.title" :title="item.title" :link="item.link" />
+      <MenuItem
+      v-for="item in MenuLinks"
+      :key="item.LINK"
+      :title="item.NAME"
+      :link="item.LINK"
+    ></MenuItem>
       </ul>
     </v-navigation-drawer>
-    <v-text-field label="What are you looking for?" v-if="onResize" append-icon="mdi mdi-magnify" class="search-input">
-    </v-text-field>
-    <div class="" v-if="onResize">
+    </div>
+   
+    <div class="input-wrapper">
+      <v-text-field label="What are you looking for?" append-icon="mdi mdi-magnify" class="search-input hidden-sm-and-down"></v-text-field>
+    </div>
+    
+    <div class="icon-wrapper">
       <v-btn class="icon-button">
-        <RouterLink :to="'/likes'" class="">
+        <RouterLink :to=Links.LIKES.LINK class="">
           <v-icon icon="mdi mdi-heart-outline"></v-icon>
         </RouterLink>
       </v-btn>
       <v-btn class="icon-button">
-        <RouterLink :to="'/cart'" class="">
+        <RouterLink :to=Links.CART.LINK class="">
           <v-icon icon="mdi mdi-cart-outline"></v-icon>
+        </RouterLink>
+      </v-btn>
+      <v-btn class="icon-button">
+        <RouterLink :to=Links.USER.LINK>
+          <v-icon>mdi-account-outline</v-icon>
         </RouterLink>
       </v-btn>
     </div>
@@ -57,26 +66,57 @@ document.addEventListener('resize', () => {
   display: flex;
   height: 94px !important;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end!important;
   border-bottom: 1px solid black;
   width: 100%;
 }
-.header-logo-wrapper {
-  min-width: 50px !important;
+.header .v-btn--icon.v-btn--density-default {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-inline-start: 0px;
+  margin-right: 48px;
+}
+.header-logo {
+  padding: 0;
+  min-width: 150px;
+  max-width: 150px !important;
+  margin-inline-start: 0px!important;
+  margin-right: auto;
+}
+
+.v-toolbar__content > .header.logo.v-toolbar-title {
+  margin-inline-start: 0;
+}
+.header-logo .v-toolbar-title__placeholder {
+  min-width: 150px;
+}
+.header-logo:hover a {
+  color: #DB4444;
+  text-decoration: none!important;
+
 }
 .v-toolbar-title__placeholder {
   overflow: visible;
   text-overflow: inherit;
   white-space: nowrap;
-  min-width: 50px !important;
+  min-width: 150px !important;
 }
-.v-navigation-drawer {
+.menu-wrapper-desktop {
+ width: 367px;
+ margin-right: 130px;
+}
+.menu-wrapper-desktop .v-navigation-drawer {
   position: static !important;
-  margin-left: auto;
-  width: 400px !important;
-  overflow: hidden;
   height: 24px !important;
+  border-right-width: 0!important;
+  width: 367px!important;
 }
+
+.menu-wrapper-desktop .v-navigation-drawer__content {
+  min-width: 367px!important;
+}
+
 .v-navigation-drawer__content::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px #5d5d5d;
   background-color: #5d5d5d;
@@ -88,12 +128,13 @@ document.addEventListener('resize', () => {
   -webkit-box-shadow: inset 0 0 6px #424242;
   background-color: #424242;
 }
-
 .list {
   display: flex;
-  width: 308px !important;
+  justify-content: space-between;
+  line-height: 24px;
+  letter-spacing: 0;
+  font-size: 16px;
   gap: 48px;
-  height: 24px !important;
 }
 li {
   list-style: none;
@@ -101,20 +142,31 @@ li {
 .active {
   text-decoration: underline;
 }
+.icon-wrapper {
+  display: flex;
+  gap: 16px;
+}
 .v-btn.icon-button {
-  width: 32px;
-  height: 32px;
-  color: inherit !important;
+  min-width: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  padding: 0;
 }
 .v-btn.icon-button:hover {
-  color: red;
-  background-color: none !important;
+  color: white;
+  border-radius: 50%;
+  background-color: #DB4444;
+  transition: background-color 0.28s ease-in-out;
 }
+ .v-btn.icon-button:hover > .v-btn__overlay {
+  opacity: 0;
+ }
 .search-input {
   position: relative;
   background-color: #f5f5f5;
   height: 38px;
   width: 243px;
+  top: 0;
 
   margin-right: 24px;
 }
@@ -140,10 +192,6 @@ li {
   font-size: 12px;
   font-weight: 400;
   margin: 0;
-}
-.v-input {
-  height: 100%;
-  width: 50px;
 }
 
 .search-input .v-input__append {
