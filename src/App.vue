@@ -4,8 +4,8 @@ import type ToasterComponent from './components/ToasterComponent.vue';
 
 const toaster = ref<InstanceType<typeof ToasterComponent> | null>(null);
 
-const showToasterFn = (message: string, color?: string) => {
-  toaster.value?.showToaster(message, color);
+const showToasterFn = (message: string, color?: string, timeout?: number) => {
+  toaster.value?.showToaster(message, color, timeout);
 };
 
 provide('toaster', { show: showToasterFn });

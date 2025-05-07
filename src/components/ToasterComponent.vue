@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar v-model="isVisible" :timeout="timeout" :color="color" :elevation="elevation" :location="location">
+  <v-snackbar v-model="isVisible" :timeout="timeout" :color="color" multi-line location="top right">
     {{ message }}
     <template v-slot:actions>
       <v-btn color="primary" text @click="isVisible = false"> Close </v-btn>
@@ -9,31 +9,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { Anchor } from 'vuetify';
-
-defineProps({
-  timeout: {
-    type: Number,
-    default: 5000,
-  },
-  elevation: {
-    type: Number,
-    default: 6,
-  },
-  location: {
-    type: String as () => Anchor,
-    default: 'top right',
-  },
-});
 
 const isVisible = ref(false);
 const message = ref('');
 const color = ref('');
+const timeout = ref(0);
 
-const showToaster = (newMessage: string, newColor: string = '') => {
+const showToaster = (newMessage: string, newColor: string = '', newTimeout = 5) => {
   message.value = newMessage;
   color.value = newColor;
   isVisible.value = true;
+  timeout.value = newTimeout * 1000;
 };
 
 defineExpose({

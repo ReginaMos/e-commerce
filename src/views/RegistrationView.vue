@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, type ComputedRef } from 'vue';
+import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
 import { z, type AnyZodObject } from 'zod';
 import { countyList } from '../utils/country-list';
 import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
@@ -9,6 +9,8 @@ import { formatDateISO8601 } from '../utils/format-date';
 
 type FormData = z.infer<typeof registrationSchema>;
 type AddressData = z.infer<typeof addressSchema>;
+
+const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const formData = reactive<FormData>({
   firstName: '',
@@ -26,7 +28,6 @@ const addressData = reactive<AddressData>({
 
 const form = ref(false);
 const menu = ref(false);
-const countries = ref(countyList);
 
 const getFieldRules = <T extends object>(
   fieldName: keyof T,
@@ -57,8 +58,16 @@ const register = async () => {
       dateOfBirth: formatDateISO8601(formData.dateOfBirth),
       addresses: [addressData],
     };
-    console.log(customer);
-    await createCustomer(customer);
+
+    await createCustomer(customer)
+      .then(() => {
+        toaster?.show('Customer created!', 'success');
+      })
+      .catch((err) => {
+        if (err instanceof Error) {
+          toaster?.show(err.message, 'error');
+        }
+      });
   }
 };
 </script>
@@ -152,7 +161,7 @@ const register = async () => {
 
             <v-autocomplete
               v-model="addressData.country"
-              :items="countries"
+              :items="countyList"
               item-title="name"
               item-value="code"
               label="Country"
