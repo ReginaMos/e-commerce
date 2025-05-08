@@ -8,18 +8,16 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "prepare": "husky install",
-    "lint": "eslint . --ext .vue,.ts,.js --fix",
+    "lint": "eslint src --ext .ts,.js,.vue",
     "format": "prettier --write .",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-
-    "@fontsource/poppins": "^5.2.6",
-
     "@commercetools/platform-sdk": "^8.9.0",
+    "@commercetools/sdk-client-v2": "^3.0.0",
     "@commercetools/ts-client": "^3.3.0",
-
+    "@fontsource/poppins": "^5.2.6",
     "@pinia/testing": "^1.0.1",
     "pinia": "^3.0.2",
     "vue": "^3.5.13",

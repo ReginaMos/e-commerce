@@ -26,7 +26,11 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
         </ul>
       </v-navigation-drawer>
     </div>
-
+    <v-btn class="">
+      <RouterLink :to="Links.LOGIN.LINK" class="">
+        {{ Links.LOGIN.NAME }}
+      </RouterLink>
+    </v-btn>
     <div class="input-wrapper">
       <v-text-field
         label="What are you looking for?"
@@ -68,6 +72,8 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   align-items: flex-end !important;
   border-bottom: 1px solid black;
   width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 .header .v-btn--icon.v-btn--density-default {
   width: 32px;
