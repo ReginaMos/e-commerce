@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import HeaderComponent from "../components/HeaderComponent.vue";
-import FooterComponent from "../components/FooterComponent.vue";
+import { ref } from 'vue';
+import HeaderComponent from '../components/HeaderComponent.vue';
+import FooterComponent from '../components/FooterComponent.vue';
 
 defineProps<{ msg: string }>();
 
