@@ -1,16 +1,8 @@
 <script setup>
 import MenuItem from './MenuItem.vue';
-// import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { Links, MenuLinks } from '../constants/routersLinks.ts';
 
-// let width = ref(false);
-// function onResize() {
-//   return (width.value = document.documentElement.clientWidth > 948);
-// }
-// document.addEventListener('resize', () => {
-//   onResize();
-// });
 </script>
 
 <template>
@@ -26,11 +18,7 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
         </ul>
       </v-navigation-drawer>
     </div>
-    <v-btn class="">
-      <RouterLink :to="Links.LOGIN.LINK" class="">
-        {{ Links.LOGIN.NAME }}
-      </RouterLink>
-    </v-btn>
+    
     <div class="input-wrapper">
       <v-text-field
         label="What are you looking for?"

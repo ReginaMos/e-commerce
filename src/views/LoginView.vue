@@ -6,9 +6,13 @@ import { loginSchema } from '../utils/login-schema.ts';
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { loginCustomer } from '../services/login-customer.ts';
 
+import { Links } from '../constants/routersLinks.ts';
+import { useRouter } from 'vue-router';
+
 type FormData = z.infer<typeof loginSchema>;
 
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
+const router = useRouter();
 
 const formData = reactive<FormData>({
   email: '',
@@ -41,7 +45,9 @@ const login = async () => {
 
     await loginCustomer(customer)
       .then(() => {
-        toaster?.show('Customer created!', 'success');
+        router.push(Links.HOME.LINK);
+        toaster?.show('Customer is login in!', 'success');
+        
       })
       .catch((err) => {
         if (err instanceof Error) {
@@ -81,6 +87,14 @@ const login = async () => {
               required
             ></v-text-field>
             <v-btn color="primary" type="submit" :disabled="!form"> Login </v-btn>
+            <p>New user? 
+              <RouterLink
+                :to="Links.SIGNUP.LINK"
+                class="nav-login-link"
+              >
+                Create new account
+              </RouterLink>
+            </p>
           </v-form>
         </v-card-text>
       </v-card>
@@ -111,5 +125,11 @@ const login = async () => {
 }
 .login-wrapper .v-row {
   margin: 0;
+}
+.login-wrapper button {
+  margin-bottom: 50px;
+}
+.nav-login-link {
+  text-decoration: underline;
 }
 </style>
