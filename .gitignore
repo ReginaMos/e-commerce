@@ -32,4 +32,5 @@ dist-ssr
 
 .vscode
 .husky
+coverage
 package-lock*

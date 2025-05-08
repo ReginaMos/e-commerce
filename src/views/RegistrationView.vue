@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
-import { z } from 'zod';
+import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
+import { z, type AnyZodObject } from 'zod';
 import { countyList } from '../utils/country-list';
-import { registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
+import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
+import { createCustomer } from '../services/create-customer';
+import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
+import { formatDateISO8601 } from '../utils/format-date';
 
 type FormData = z.infer<typeof registrationSchema>;
+type AddressData = z.infer<typeof addressSchema>;
+
+const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const formData = reactive<FormData>({
   firstName: '',
@@ -12,34 +18,56 @@ const formData = reactive<FormData>({
   email: '',
   password: '',
   dateOfBirth: thirteenYearsAgo,
-  street: '',
+});
+const addressData = reactive<AddressData>({
   city: '',
-  postalCode: '',
   country: '',
+  postalCode: '',
+  streetName: '',
 });
 
 const form = ref(false);
 const menu = ref(false);
-const countries = ref(countyList);
 
-const getFieldRules = (fieldName: keyof FormData) => {
+const getFieldRules = <T extends object>(
+  fieldName: keyof T,
+  schema: AnyZodObject
+): ComputedRef<((v: string) => true | string)[]> => {
   return computed(() => [
     (v: string) => {
-      const result = registrationSchema.shape[fieldName].safeParse(v);
+      const result = schema.shape[fieldName].safeParse(v);
       return result.success ? true : result.error.issues[0].message;
     },
   ]);
 };
 
+const getFieldRulesForm = (fieldName: keyof FormData) => getFieldRules(fieldName, registrationSchema);
+const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
+
 const formattedDate = computed(() => {
-  return new Intl.DateTimeFormat().format(formData.dateOfBirth);
+  return new Intl.DateTimeFormat().format(new Date(formData.dateOfBirth));
 });
 
 const register = async () => {
-  const result = registrationSchema.safeParse(formData);
+  const resultForm = registrationSchema.safeParse(formData);
+  const resultAddress = addressSchema.safeParse(addressData);
 
-  if (result.success) {
-    console.log('Registration data:', formData);
+  if (resultForm.success && resultAddress.success) {
+    const customer: MyCustomerDraft = {
+      ...formData,
+      dateOfBirth: formatDateISO8601(formData.dateOfBirth),
+      addresses: [addressData],
+    };
+
+    await createCustomer(customer)
+      .then(() => {
+        toaster?.show('Customer created!', 'success');
+      })
+      .catch((err) => {
+        if (err instanceof Error) {
+          toaster?.show(err.message, 'error');
+        }
+      });
   }
 };
 </script>
@@ -53,23 +81,23 @@ const register = async () => {
           <v-form v-model="form" @submit.prevent="register">
             <v-text-field
               v-model="formData.firstName"
-              :rules="getFieldRules('firstName').value"
-              label="Username"
+              :rules="getFieldRulesForm('firstName').value"
+              label="Fist Name"
               variant="underlined"
               required
             ></v-text-field>
 
             <v-text-field
               v-model="formData.lastName"
-              :rules="getFieldRules('lastName').value"
-              label="Username"
+              :rules="getFieldRulesForm('lastName').value"
+              label="Last Name"
               variant="underlined"
               required
             ></v-text-field>
 
             <v-text-field
               v-model="formData.email"
-              :rules="getFieldRules('email').value"
+              :rules="getFieldRulesForm('email').value"
               label="Email"
               type="email"
               variant="underlined"
@@ -78,7 +106,7 @@ const register = async () => {
 
             <v-text-field
               v-model="formData.password"
-              :rules="getFieldRules('password').value"
+              :rules="getFieldRulesForm('password').value"
               label="Password"
               type="password"
               variant="underlined"
@@ -95,12 +123,12 @@ const register = async () => {
               <template v-slot:activator="{ props }">
                 <v-text-field
                   v-model="formData.dateOfBirth"
+                  :rules="getFieldRulesForm('dateOfBirth').value"
                   :value="formattedDate"
                   label="Date of Birth"
                   prepend-icon="mdi-calendar"
                   variant="underlined"
                   v-bind="props"
-                  :rules="getFieldRules('dateOfBirth').value"
                   required
                 ></v-text-field>
               </template>
@@ -108,35 +136,37 @@ const register = async () => {
             </v-menu>
             <v-card-title class="text-start">Billing Address</v-card-title>
             <v-text-field
-              v-model="formData.street"
-              :rules="getFieldRules('street').value"
+              v-model="addressData.streetName"
+              :rules="getFieldRulesAddress('streetName').value"
               label="Street"
               variant="underlined"
               required
             ></v-text-field>
 
             <v-text-field
-              v-model="formData.city"
-              :rules="getFieldRules('city').value"
+              v-model="addressData.city"
+              :rules="getFieldRulesAddress('city').value"
               label="City"
               variant="underlined"
               required
             ></v-text-field>
 
             <v-text-field
-              v-model="formData.postalCode"
-              :rules="getFieldRules('postalCode').value"
+              v-model="addressData.postalCode"
+              :rules="getFieldRulesAddress('postalCode').value"
               label="Postal Code"
               variant="underlined"
               required
             ></v-text-field>
 
             <v-autocomplete
-              v-model="formData.country"
-              :items="countries"
+              v-model="addressData.country"
+              :items="countyList"
+              item-title="name"
+              item-value="code"
               label="Country"
               variant="underlined"
-              :rules="getFieldRules('country').value"
+              :rules="getFieldRulesAddress('country').value"
               required
             ></v-autocomplete>
             <v-btn color="primary" type="submit" :disabled="!form"> Sign up </v-btn>
