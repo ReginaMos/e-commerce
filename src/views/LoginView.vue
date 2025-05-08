@@ -47,7 +47,6 @@ const login = async () => {
       .then(() => {
         router.push(Links.HOME.LINK);
         toaster?.show('Customer is login in!', 'success');
-        
       })
       .catch((err) => {
         if (err instanceof Error) {
@@ -87,13 +86,9 @@ const login = async () => {
               required
             ></v-text-field>
             <v-btn color="primary" type="submit" :disabled="!form"> Login </v-btn>
-            <p>New user? 
-              <RouterLink
-                :to="Links.SIGNUP.LINK"
-                class="nav-login-link"
-              >
-                Create new account
-              </RouterLink>
+            <p>
+              New user?
+              <RouterLink :to="Links.SIGNUP.LINK" class="nav-login-link"> Create new account </RouterLink>
             </p>
           </v-form>
         </v-card-text>

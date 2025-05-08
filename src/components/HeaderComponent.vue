@@ -2,7 +2,6 @@
 import MenuItem from './MenuItem.vue';
 import { RouterLink } from 'vue-router';
 import { Links, MenuLinks } from '../constants/routersLinks.ts';
-
 </script>
 
 <template>
@@ -18,7 +17,7 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
         </ul>
       </v-navigation-drawer>
     </div>
-    
+
     <div class="input-wrapper">
       <v-text-field
         label="What are you looking for?"

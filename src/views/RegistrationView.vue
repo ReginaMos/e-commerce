@@ -171,13 +171,9 @@ const register = async () => {
               required
             ></v-autocomplete>
             <v-btn color="primary" type="submit" :disabled="!form"> Sign up </v-btn>
-            <p>Have account? 
-              <RouterLink
-                :to="Links.LOGIN.LINK"
-                class="nav-login-link"
-              >
-                Go to Login page
-              </RouterLink>
+            <p>
+              Have account?
+              <RouterLink :to="Links.LOGIN.LINK" class="nav-login-link"> Go to Login page </RouterLink>
             </p>
           </v-form>
         </v-card-text>
