@@ -1,37 +1,52 @@
 <script setup lang="ts">
-    import { promotions } from '../utils/main';
+import { promotions } from '../constants/mainCarousel';
 </script>
 
 <template>
-    <v-carousel
-      height="400"
-      show-arrows="hover"
-      cycle
-      hide-delimiter-background
-    >
-      <v-carousel-item
-        v-for="(item, i) in promotions"
-        :key="i"
+  <v-carousel
+    height="400" 
+    show-arrows="hover" 
+    cycle
+  >
+    <v-carousel-item v-for="(item, i) in promotions" :key="i">
+      <v-sheet
+        height="100%"
+        color="#efefef"
       >
-        <v-sheet
-          height="100%"
-        >
-          <div class="d-flex fill-height justify-center align-center">
-            <div class="slide">
-                <img :src="item.img" alt="promotion-img">
-                <div class="slide__text">
-                    <h3>
-                        {{ item.heading }}
-                    </h3>
-                    <p>
-                        {{ item.text }}
-                    </p>
-                </div>
+        <div class="d-flex fill-height justify-center align-center">
+          <div class="slide">
+            <img :src="item.img" alt="promotion-img" />
+            <div class="slide__text">
+              <h2>
+                {{ item.heading }}
+              </h2>
+              <p>
+                {{ item.text }}
+              </p>
             </div>
           </div>
-        </v-sheet>
-      </v-carousel-item>
-    </v-carousel>
+        </div>
+      </v-sheet>
+    </v-carousel-item>
+  </v-carousel>
 </template>
 
-<style scoped></style>
+<style scoped lang="sass">
+  .slide 
+    display: flex
+    justify-content: space-around
+    align-items: center
+    width: 100%
+
+    img
+      width: 50% 
+
+    &__text
+      display: flex
+      flex-direction: column
+      justify-content: center
+      align-items: center
+      gap: 25px
+
+
+</style>

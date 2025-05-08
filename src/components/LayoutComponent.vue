@@ -22,6 +22,7 @@ main {
   flex: 1 1 auto;
   height: 100% !important;
   min-height: fit-content;
+  background-color: #efefef;
 }
 .advert {
   height: 48px;

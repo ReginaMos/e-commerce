@@ -12,7 +12,7 @@ import CartPage from '../pages/CartPage.vue';
 import UserPage from '../pages/UserPage.vue';
 import ProductPage from '../pages/ProductPage.vue';
 import CatalogPage from '../pages/CatalogPage.vue';
-import NotFoundComponent from '../pages/NotFoundComponent.vue';
+import NotFoundPage from '../pages/NotFoundPage.vue';
 
 import { Links } from '../constants/routersLinks';
 
@@ -75,7 +75,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/:pathMatch(.*)*',
         name: Links.NOTFOUND.NAME,
-        component: NotFoundComponent,
+        component: NotFoundPage,
       },
     ],
   },

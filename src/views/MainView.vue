@@ -1,15 +1,15 @@
 <script setup lang="ts">
-  import HeaderComponent from '../components/HeaderComponent.vue';
-  import FooterComponent from '../components/FooterComponent.vue';
-  import CarouselElement from '../elements/CarouselElement.vue';
+import CarouselElement from '../elements/CarouselElement.vue';
 </script>
 
 <template>
-  <HeaderComponent />
-
-  <CarouselElement />
-
-  <FooterComponent />
+  <div class="main-page">
+    <CarouselElement />
+  </div>
+ 
 </template>
 
-<style scoped></style>
+<style scoped lang="sass">
+  .main-page
+    padding: 30px
+</style>

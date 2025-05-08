@@ -1,7 +1,5 @@
-type LinkItem = {
-  NAME: string;
-  LINK: string;
-};
+import type { LinkItem } from '../models/models';
+
 export const Links: Record<string, LinkItem> = {
   HOME: { NAME: 'Home', LINK: '/' },
   CONTACT: { NAME: 'Contact', LINK: '/contact' },
