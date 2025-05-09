@@ -96,11 +96,11 @@ const register = async () => {
 
 <template>
   <v-container>
-    <v-row justify="center">
-      <v-card width="380">
+    <v-row justify="center" col>
+      <v-card>
         <v-card-title>Sign Up Form</v-card-title>
         <v-card-text>
-          <v-form @submit.prevent="register">
+          <v-form @submit.prevent="register" class="mb-2">
             <v-text-field
               v-model="formData.firstName"
               :rules="getFieldRulesForm('firstName').value"
@@ -225,8 +225,10 @@ const register = async () => {
               ></v-autocomplete>
               <v-checkbox v-model="defaultShipping" label="Set as default shipping"></v-checkbox>
             </template>
-            <v-btn color="primary" type="submit"> Sign up </v-btn>
+            <v-btn color="primary" type="submit" block> Sign up </v-btn>
           </v-form>
+          <span>Already have account?</span>
+          <v-btn to="/login" text="Login" variant="text"></v-btn>
         </v-card-text>
       </v-card>
     </v-row>
