@@ -3,13 +3,16 @@ import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
 import { z, type AnyZodObject } from 'zod';
 import { countyList } from '../constants/country-list';
 import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
-import { createCustomer } from '../services/create-customer';
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
+import { useRouter } from 'vue-router';
+import { Links } from '../constants/routersLinks';
+import { createCustomer } from '../services/create-customer';
 
 type FormData = z.infer<typeof registrationSchema>;
 type AddressData = z.infer<typeof addressSchema>;
 
+const router = useRouter();
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const formData = reactive<FormData>({
@@ -78,6 +81,7 @@ const register = async () => {
     await createCustomer(customer)
       .then(() => {
         toaster?.show('Customer created!', 'success');
+        router.push(Links.HOME.LINK);
       })
       .catch((err) => {
         if (err instanceof Error) {
