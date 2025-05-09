@@ -55,7 +55,7 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   </v-app-bar>
 </template>
 
-<style>
+<style scoped>
 .v-toolbar__content {
   background-color: white;
   padding-top: 40px;
