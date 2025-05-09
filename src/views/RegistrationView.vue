@@ -6,8 +6,8 @@ import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/re
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
 import { useRouter } from 'vue-router';
-import { Links } from '../constants/routersLinks';
 import { createCustomer } from '../services/create-customer';
+import { Links } from '../constants/routersLinks';
 
 type FormData = z.infer<typeof registrationSchema>;
 type AddressData = z.infer<typeof addressSchema>;
@@ -228,7 +228,7 @@ const register = async () => {
             <v-btn color="primary" type="submit" block> Sign up </v-btn>
           </v-form>
           <span>Already have account?</span>
-          <v-btn to="/login" text="Login" variant="text"></v-btn>
+          <v-btn :to="Links.LOGIN.LINK" text="Login" variant="text"></v-btn>
         </v-card-text>
       </v-card>
     </v-row>

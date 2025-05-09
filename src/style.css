@@ -14,23 +14,18 @@
 }
 
 a {
-  font-weight: 500;
   color: inherit;
   text-decoration: inherit;
-}
-a:hover {
-  text-decoration: underline;
 }
 
 html {
   height: 100%;
 }
 body {
-  margin: 0;
+  margin: 0 auto;
   height: 100%;
-
-  /* place-items: center; */
   min-width: 320px;
+  max-width: 1440px;
   min-height: 100%;
 }
 
@@ -80,4 +75,13 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.container {
+  padding-top: 60px;
+  padding-bottom: 140px;
+  padding-left: 135px;
+  padding-right: 135px;
+  max-width: 1440px;
+  width: 100%;
 }
