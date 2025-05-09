@@ -6,6 +6,7 @@ import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/re
 import { createCustomer } from '../services/create-customer';
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
+import { Links } from '../constants/routersLinks';
 
 type FormData = z.infer<typeof registrationSchema>;
 type AddressData = z.infer<typeof addressSchema>;
@@ -170,6 +171,10 @@ const register = async () => {
               required
             ></v-autocomplete>
             <v-btn color="primary" type="submit" :disabled="!form"> Sign up </v-btn>
+            <p>
+              Have account?
+              <RouterLink :to="Links.LOGIN.LINK" class="nav-login-link"> Go to Login page </RouterLink>
+            </p>
           </v-form>
         </v-card-text>
       </v-card>
@@ -177,4 +182,11 @@ const register = async () => {
   </v-container>
 </template>
 
-<style scoped></style>
+<style scoped>
+button {
+  margin-bottom: 50px;
+}
+.nav-login-link {
+  text-decoration: underline;
+}
+</style>
