@@ -2,15 +2,15 @@
 
 <template>
   <div class="input-wrapper">
-      <v-text-field
-        type="input"
-        variant="plain"
-        clearable
-        label="What are you looking for?"
-        append-icon="mdi mdi-magnify"
-        class="search-input hidden-sm-and-down"
-      ></v-text-field>
-    </div>
+    <v-text-field
+      type="input"
+      variant="plain"
+      clearable
+      label="What are you looking for?"
+      append-icon="mdi mdi-magnify"
+      class="search-input hidden-sm-and-down"
+    ></v-text-field>
+  </div>
 </template>
 
 <style scoped>

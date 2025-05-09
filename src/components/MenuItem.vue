@@ -15,7 +15,7 @@ defineProps({
 
 <style scoped>
 li {
-  list-style: none;;
+  list-style: none;
 }
 .menu-link {
   text-decoration: none;

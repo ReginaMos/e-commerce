@@ -19,7 +19,7 @@ import SearchProduct from './SearchProduct.vue';
       </v-navigation-drawer>
     </div>
 
-    <SearchProduct/>
+    <SearchProduct />
 
     <div class="icon-wrapper">
       <v-btn class="icon-button">
@@ -76,7 +76,7 @@ import SearchProduct from './SearchProduct.vue';
     text-decoration: none !important;
   }
 }
-.header  :deep(.v-toolbar-title__placeholder) {
+.header :deep(.v-toolbar-title__placeholder) {
   overflow: visible;
   text-overflow: inherit;
   white-space: nowrap;
@@ -146,5 +146,4 @@ import SearchProduct from './SearchProduct.vue';
 .header :deep(.v-input__control) {
   height: 38px;
 }
-
 </style>

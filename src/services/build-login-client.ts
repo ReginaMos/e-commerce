@@ -1,4 +1,4 @@
-import { ClientBuilder, type PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2';
+import { ClientBuilder, type PasswordAuthMiddlewareOptions } from '@commercetools/ts-client';
 
 const projectKey = import.meta.env.VITE_PROJECT_KEY;
 
@@ -14,7 +14,6 @@ const options: PasswordAuthMiddlewareOptions = {
     },
   },
   scopes: [`manage_project:${projectKey}`],
-  fetch,
 };
 
 export const client = new ClientBuilder().withPasswordFlow(options).build();
