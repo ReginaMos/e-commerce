@@ -14,6 +14,9 @@ defineProps({
 </script>
 
 <style scoped>
+li {
+  list-style: none;;
+}
 .menu-link {
   text-decoration: none;
   color: black;

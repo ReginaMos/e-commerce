@@ -14,12 +14,8 @@
 }
 
 a {
-  font-weight: 500;
   color: inherit;
   text-decoration: inherit;
-}
-a:hover {
-  text-decoration: underline;
 }
 
 html {
