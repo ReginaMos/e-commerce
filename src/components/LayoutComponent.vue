@@ -34,6 +34,6 @@ main {
   position: fixed;
   width: 100%;
   z-index: 1000;
-  /* max-width: 1440px; */
+  max-width: 1440px;
 }
 </style>

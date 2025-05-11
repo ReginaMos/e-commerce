@@ -1,16 +1,8 @@
 <script setup>
 import MenuItem from './MenuItem.vue';
-// import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { Links, MenuLinks } from '../constants/routersLinks.ts';
-
-// let width = ref(false);
-// function onResize() {
-//   return (width.value = document.documentElement.clientWidth > 948);
-// }
-// document.addEventListener('resize', () => {
-//   onResize();
-// });
+import SearchProduct from './SearchProduct.vue';
 </script>
 
 <template>
@@ -27,13 +19,7 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
       </v-navigation-drawer>
     </div>
 
-    <div class="input-wrapper">
-      <v-text-field
-        label="What are you looking for?"
-        append-icon="mdi mdi-magnify"
-        class="search-input hidden-sm-and-down"
-      ></v-text-field>
-    </div>
+    <SearchProduct />
 
     <div class="icon-wrapper">
       <v-btn class="icon-button">
@@ -55,8 +41,8 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   </v-app-bar>
 </template>
 
-<style>
-.v-toolbar__content {
+<style scoped>
+.header :deep(.v-toolbar__content) {
   background-color: white;
   padding-top: 40px;
   padding-bottom: 16px;
@@ -68,8 +54,10 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   align-items: flex-end !important;
   border-bottom: 1px solid black;
   width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
-.header .v-btn--icon.v-btn--density-default {
+.header :deep(.v-btn--icon.v-btn--density-default) {
   width: 32px;
   height: 32px;
   padding: 0;
@@ -80,21 +68,15 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   padding: 0;
   min-width: 150px;
   max-width: 150px !important;
-  margin-inline-start: 0px !important;
   margin-right: auto;
+  font-weight: bold;
+  font-size: 24px;
+  &:hover {
+    color: #db4444;
+    text-decoration: none !important;
+  }
 }
-
-.v-toolbar__content > .header.logo.v-toolbar-title {
-  margin-inline-start: 0;
-}
-.header-logo .v-toolbar-title__placeholder {
-  min-width: 150px;
-}
-.header-logo:hover a {
-  color: #db4444;
-  text-decoration: none !important;
-}
-.v-toolbar-title__placeholder {
+.header :deep(.v-toolbar-title__placeholder) {
   overflow: visible;
   text-overflow: inherit;
   white-space: nowrap;
@@ -110,19 +92,18 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   border-right-width: 0 !important;
   width: 367px !important;
 }
-
 .menu-wrapper-desktop .v-navigation-drawer__content {
   min-width: 367px !important;
 }
 
-.v-navigation-drawer__content::-webkit-scrollbar-track {
+.header :deep(.v-navigation-drawer__content::-webkit-scrollbar-track) {
   -webkit-box-shadow: inset 0 0 6px #5d5d5d;
   background-color: #5d5d5d;
 }
-.v-navigation-drawer__content::-webkit-scrollbar {
+.header :deep(.v-navigation-drawer__content::-webkit-scrollbar) {
   width: 0px;
 }
-.v-navigation-drawer__content::-webkit-scrollbar-thumb {
+.header :deep(.v-navigation-drawer__content::-webkit-scrollbar-thumb) {
   -webkit-box-shadow: inset 0 0 6px #424242;
   background-color: #424242;
 }
@@ -134,9 +115,6 @@ import { Links, MenuLinks } from '../constants/routersLinks.ts';
   font-size: 16px;
   gap: 48px;
 }
-li {
-  list-style: none;
-}
 .active {
   text-decoration: underline;
 }
@@ -144,57 +122,28 @@ li {
   display: flex;
   gap: 16px;
 }
-.v-btn.icon-button {
+.header :deep(.v-btn.icon-button) {
   min-width: 32px;
   max-width: 32px;
   max-height: 32px;
   padding: 0;
-}
-.v-btn.icon-button:hover {
-  color: white;
   border-radius: 50%;
-  background-color: #db4444;
-  transition: background-color 0.28s ease-in-out;
+  &:hover {
+    color: white;
+    background-color: #db4444;
+    transition: background-color 0.28s ease-in-out;
+  }
 }
-.v-btn.icon-button:hover > .v-btn__overlay {
-  opacity: 0;
-}
-.search-input {
-  position: relative;
+.header :deep(.search-input) {
   background-color: #f5f5f5;
   height: 38px;
   width: 243px;
-  top: 0;
-
-  margin-right: 24px;
 }
-.v-input__control {
+.header :deep(.v-input--density-default) {
+  --v-input-control-height: 38px;
+  --v-input-padding-top: 9px;
+}
+.header :deep(.v-input__control) {
   height: 38px;
-  width: 243px;
-}
-.search-input .v-field__input {
-  padding: 0;
-  margin: 0;
-  width: 243px;
-}
-.search-input .v-field__outline {
-  height: 100%;
-  width: 243px;
-  height: 38px;
-  background-color: #f5f5f5;
-}
-
-.search-input .v-label {
-  padding: 0;
-  color: #7d8184;
-  font-size: 12px;
-  font-weight: 400;
-  margin: 0;
-}
-
-.search-input .v-input__append {
-  position: absolute;
-  right: 12px;
-  top: 7px;
 }
 </style>

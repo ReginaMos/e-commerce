@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
 import { z, type AnyZodObject } from 'zod';
-import { countyList } from '../utils/country-list';
+import { countyList } from '../constants/country-list';
 import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
-import { createCustomer } from '../services/create-customer';
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
+import { useRouter } from 'vue-router';
+import { createCustomer } from '../services/create-customer';
+import { Links } from '../constants/routersLinks';
 
 type FormData = z.infer<typeof registrationSchema>;
 type AddressData = z.infer<typeof addressSchema>;
 
+const router = useRouter();
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const formData = reactive<FormData>({
@@ -19,15 +22,23 @@ const formData = reactive<FormData>({
   password: '',
   dateOfBirth: thirteenYearsAgo,
 });
-const addressData = reactive<AddressData>({
+const billingAddress = reactive<AddressData>({
+  city: '',
+  country: '',
+  postalCode: '',
+  streetName: '',
+});
+const shippingAddress = reactive<AddressData>({
   city: '',
   country: '',
   postalCode: '',
   streetName: '',
 });
 
-const form = ref(false);
 const menu = ref(false);
+const sameAddress = ref(true);
+const defaultBilling = ref(false);
+const defaultShipping = ref(false);
 
 const getFieldRules = <T extends object>(
   fieldName: keyof T,
@@ -45,46 +56,56 @@ const getFieldRulesForm = (fieldName: keyof FormData) => getFieldRules(fieldName
 const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
 
 const formattedDate = computed(() => {
-  return new Intl.DateTimeFormat().format(new Date(formData.dateOfBirth));
+  return formData.dateOfBirth ? new Intl.DateTimeFormat().format(new Date(formData.dateOfBirth)) : '';
 });
 
 const register = async () => {
-  const resultForm = registrationSchema.safeParse(formData);
-  const resultAddress = addressSchema.safeParse(addressData);
+  const resultForm = registrationSchema.safeParse(formData).success;
+  const resultBilling = addressSchema.safeParse(billingAddress).success;
+  const dateOfBirth = formData.dateOfBirth && formatDateISO8601(formData.dateOfBirth);
+  const resultShipping = sameAddress.value ? true : addressSchema.safeParse(shippingAddress).success;
+  const addresses = [billingAddress];
+  if (!sameAddress.value) addresses.push(shippingAddress);
 
-  if (resultForm.success && resultAddress.success) {
+  const defaultShippingAddress = sameAddress.value && defaultBilling.value ? 0 : defaultShipping.value ? 1 : undefined;
+
+  if (resultForm && resultBilling && resultShipping) {
     const customer: MyCustomerDraft = {
       ...formData,
-      dateOfBirth: formatDateISO8601(formData.dateOfBirth),
-      addresses: [addressData],
+      dateOfBirth,
+      addresses,
+      defaultBillingAddress: defaultBilling.value ? 0 : undefined,
+      defaultShippingAddress,
     };
 
     await createCustomer(customer)
       .then(() => {
         toaster?.show('Customer created!', 'success');
+        router.push(Links.HOME.LINK);
       })
       .catch((err) => {
         if (err instanceof Error) {
           toaster?.show(err.message, 'error');
         }
       });
+  } else {
+    toaster?.show('Fill in required fields!', 'error');
   }
 };
 </script>
 
 <template>
   <v-container>
-    <v-row justify="center">
-      <v-card width="380">
+    <v-row justify="center" col>
+      <v-card>
         <v-card-title>Sign Up Form</v-card-title>
         <v-card-text>
-          <v-form v-model="form" @submit.prevent="register">
+          <v-form @submit.prevent="register" class="mb-2">
             <v-text-field
               v-model="formData.firstName"
               :rules="getFieldRulesForm('firstName').value"
               label="Fist Name"
               variant="underlined"
-              required
             ></v-text-field>
 
             <v-text-field
@@ -92,7 +113,6 @@ const register = async () => {
               :rules="getFieldRulesForm('lastName').value"
               label="Last Name"
               variant="underlined"
-              required
             ></v-text-field>
 
             <v-text-field
@@ -129,38 +149,35 @@ const register = async () => {
                   prepend-icon="mdi-calendar"
                   variant="underlined"
                   v-bind="props"
-                  required
                 ></v-text-field>
               </template>
               <v-date-picker v-model="formData.dateOfBirth" @input="menu = false"></v-date-picker>
             </v-menu>
+            <v-checkbox v-model="sameAddress" label="Same address for billing and shipping"></v-checkbox>
             <v-card-title class="text-start">Billing Address</v-card-title>
             <v-text-field
-              v-model="addressData.streetName"
+              v-model="billingAddress.streetName"
               :rules="getFieldRulesAddress('streetName').value"
               label="Street"
               variant="underlined"
-              required
             ></v-text-field>
 
             <v-text-field
-              v-model="addressData.city"
+              v-model="billingAddress.city"
               :rules="getFieldRulesAddress('city').value"
               label="City"
               variant="underlined"
-              required
             ></v-text-field>
 
             <v-text-field
-              v-model="addressData.postalCode"
+              v-model="billingAddress.postalCode"
               :rules="getFieldRulesAddress('postalCode').value"
               label="Postal Code"
               variant="underlined"
-              required
             ></v-text-field>
 
             <v-autocomplete
-              v-model="addressData.country"
+              v-model="billingAddress.country"
               :items="countyList"
               item-title="name"
               item-value="code"
@@ -169,8 +186,49 @@ const register = async () => {
               :rules="getFieldRulesAddress('country').value"
               required
             ></v-autocomplete>
-            <v-btn color="primary" type="submit" :disabled="!form"> Sign up </v-btn>
+            <v-checkbox
+              v-model="defaultBilling"
+              :label="sameAddress ? 'Set as default shipping and billing address' : 'Set as default billing address'"
+            ></v-checkbox>
+            <template v-if="!sameAddress">
+              <v-card-title class="text-start">Shipping Address</v-card-title>
+              <v-text-field
+                v-model="shippingAddress.streetName"
+                :rules="getFieldRulesAddress('streetName').value"
+                label="Street"
+                variant="underlined"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="shippingAddress.city"
+                :rules="getFieldRulesAddress('city').value"
+                label="City"
+                variant="underlined"
+              ></v-text-field>
+
+              <v-text-field
+                v-model="shippingAddress.postalCode"
+                :rules="getFieldRulesAddress('postalCode').value"
+                label="Postal Code"
+                variant="underlined"
+              ></v-text-field>
+
+              <v-autocomplete
+                v-model="shippingAddress.country"
+                :items="countyList"
+                item-title="name"
+                item-value="code"
+                label="Country"
+                variant="underlined"
+                :rules="getFieldRulesAddress('country').value"
+                required
+              ></v-autocomplete>
+              <v-checkbox v-model="defaultShipping" label="Set as default shipping"></v-checkbox>
+            </template>
+            <v-btn color="primary" type="submit" block> Sign up </v-btn>
           </v-form>
+          <span>Already have account?</span>
+          <v-btn :to="Links.LOGIN.LINK" text="Login" variant="text"></v-btn>
         </v-card-text>
       </v-card>
     </v-row>
