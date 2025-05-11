@@ -8,3 +8,9 @@ export type LinkItem = {
   NAME: string;
   LINK: string;
 };
+
+export interface Advantage {
+  heading: string;
+  text: string;
+  icon: string;
+}

@@ -1,4 +1,4 @@
-import type { PromotionModel } from '../models/models';
+import type { Advantage, PromotionModel } from '../models/models';
 
 export const promotions: PromotionModel[] = [
   {
@@ -15,5 +15,23 @@ export const promotions: PromotionModel[] = [
     heading: 'A Gift with Every Purchase!',
     text: 'Spend over 300$ and get a free fashion accessory.',
     img: 'https://st3.depositphotos.com/9527076/12948/i/950/depositphotos_129487750-stock-photo-top-view-of-beach-summer.jpg',
+  },
+];
+
+export const advantages: Advantage[] = [
+  {
+    heading: 'Cool Styles, All Year Round',
+    text: 'We’ve got fresh looks for every season and every vibe.',
+    icon: 'mdi-weather-partly-cloudy',
+  },
+  {
+    heading: 'Quality You Can Count On',
+    text: 'Comfy, durable clothes that feel as good as they look.',
+    icon: 'mdi-alert-circle-check',
+  },
+  {
+    heading: 'No Drama Shopping',
+    text: 'Easy orders, fast shipping, and simple returns.',
+    icon: 'mdi-truck-delivery',
   },
 ];
