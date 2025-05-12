@@ -14,3 +14,12 @@ export interface Advantage {
   text: string;
   icon: string;
 }
+
+export interface ProductInfo {
+  id: string;
+  name: string;
+  imageUrl: string;
+  price: number;
+  discountedPrice?: number;
+  currency: string;
+}

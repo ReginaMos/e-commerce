@@ -3,6 +3,7 @@ import AdvantagesComponent from '../components/AdvantagesComponent.vue';
 import CategoriesComponent from '../components/CategoriesComponent.vue';
 import CarouselElement from '../elements/CarouselElement.vue';
 import MainHeading from '../elements/MainHeading.vue';
+import ProductsComponent from '../components/ProductsComponent.vue';
 </script>
 
 <template>
@@ -19,6 +20,11 @@ import MainHeading from '../elements/MainHeading.vue';
     <v-row class="mb-4">
       <MainHeading title="Categories" />
       <CategoriesComponent />
+    </v-row>
+
+    <v-row class="mb-4">
+      <MainHeading title="Our products" />
+      <ProductsComponent count="4"/>
     </v-row>
 
   </v-container>
