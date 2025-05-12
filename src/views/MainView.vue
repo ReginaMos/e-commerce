@@ -1,37 +1,30 @@
 <script setup lang="ts">
 import AdvantagesComponent from '../components/AdvantagesComponent.vue';
+import CategoriesComponent from '../components/CategoriesComponent.vue';
 import CarouselElement from '../elements/CarouselElement.vue';
+import MainHeading from '../elements/MainHeading.vue';
 </script>
 
 <template>
-  <div class="main-page">
-    <CarouselElement />
+  <v-container class="main-page">
+    <v-row class="mb-4">
+      <CarouselElement />
+    </v-row>
 
-    <div class="main-part">
-      <v-container class="d-flex align-center">
-        <div class="box"></div>
-        <h2 class="main-part__title">Why Us?</h2>
-      </v-container>
-
+    <v-row class="mb-4">
+      <MainHeading title="Why us?" />
       <AdvantagesComponent />
-    </div>
-  </div>
+    </v-row>
+
+    <v-row class="mb-4">
+      <MainHeading title="Categories" />
+      <CategoriesComponent />
+    </v-row>
+
+  </v-container>
 </template>
 
 <style scoped lang="sass">
 .main-page
   padding: 30px
-
-.main-part
-  padding: 50px 0
-
-  &__title
-    color: #db4444
-    text-transform: uppercase
-
-  .box
-    width: 10px
-    height: 20px
-    background-color: #db4444
-    margin-right: 15px
 </style>

@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import HeaderComponent from '../components/HeaderComponent.vue';
-import FooterComponent from '../components/FooterComponent.vue';
 </script>
 
 <template>
-  <HeaderComponent />
-
   <div class="not-found">
     <div class="text-part">
       <h1>404 Not Found</h1>
@@ -16,10 +12,7 @@ import FooterComponent from '../components/FooterComponent.vue';
       <v-btn class="btn"> Back to home page </v-btn>
     </RouterLink>
   </div>
-
-  <FooterComponent />
 </template>
-4
 
 <style scoped>
 .not-found {
