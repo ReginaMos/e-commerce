@@ -24,9 +24,8 @@ import ProductsComponent from '../components/ProductsComponent.vue';
 
     <v-row class="mb-4">
       <MainHeading title="Our products" />
-      <ProductsComponent count="4"/>
+      <ProductsComponent count="4" />
     </v-row>
-
   </v-container>
 </template>
 

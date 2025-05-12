@@ -1,14 +1,14 @@
-<script>
+<script setup>
 defineProps({
-  title: String
+  title: String,
 });
 </script>
 
 <template>
-    <v-container class="d-flex align-center">
-        <div class="box"></div>
-        <h2 class="title">{{ title }}</h2>
-    </v-container>
+  <v-container class="d-flex align-center">
+    <div class="box"></div>
+    <h2 class="title">{{ title }}</h2>
+  </v-container>
 </template>
 
 <style scoped lang="sass">
