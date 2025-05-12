@@ -12,14 +12,13 @@ function addToFavor(): void {
 
 function addToCart(): void {
   console.log('Add to Cart');
-  
 }
 </script>
 
 <template>
   <v-col class="product">
     <div class="img-container">
-      <img :src="item.imageUrl" alt="product-img" class="product-img"/>
+      <img :src="item.imageUrl" alt="product-img" class="product-img" />
       <div class="icons-part">
         <v-icon @click="addToFavor()" size="30"> {{ favorIcon }}</v-icon>
         <v-icon icon="mdi mdi-eye-outline" size="30"></v-icon>
@@ -31,9 +30,7 @@ function addToCart(): void {
     <h3 class="heading">
       {{ item.name }}
     </h3>
-    <div class="price">
-      <span>Price:</span> {{ item.price }} {{ item.currency }}
-    </div>
+    <div class="price"><span>Price:</span> {{ item.price }} {{ item.currency }}</div>
   </v-col>
 </template>
 

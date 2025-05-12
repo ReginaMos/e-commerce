@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { getProducts } from '../services/catalog';
 import type { ProductInfo } from '../models/models';
-import { ref, onMounted  } from 'vue';
+import { ref, onMounted } from 'vue';
 import ProductItem from '../elements/ProductItem.vue';
 
 const products = ref<ProductInfo[]>([]);
 
-onMounted(async () => { 
+onMounted(async () => {
   products.value = await getProducts(4);
 });
-
 </script>
 
 <template>

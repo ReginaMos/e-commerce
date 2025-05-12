@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted  } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { Category } from '@commercetools/platform-sdk';
 import CategoryElement from '../elements/CategoryElement.vue';
 import { getCategories } from '../services/categories';
 
 const categories = ref<Category[]>([]);
 
-onMounted(async () => { 
+onMounted(async () => {
   categories.value = await getCategories();
 });
-
 </script>
 
 <template>
