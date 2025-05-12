@@ -106,12 +106,14 @@ const register = async () => {
               :rules="getFieldRulesForm('firstName').value"
               label="Fist Name"
               variant="underlined"
+              name="firstName"
             ></v-text-field>
 
             <v-text-field
               v-model="formData.lastName"
               :rules="getFieldRulesForm('lastName').value"
               label="Last Name"
+              name="lastName"
               variant="underlined"
             ></v-text-field>
 
@@ -120,6 +122,7 @@ const register = async () => {
               :rules="getFieldRulesForm('email').value"
               label="Email"
               type="email"
+              name="email"
               variant="underlined"
               required
             ></v-text-field>
@@ -129,6 +132,7 @@ const register = async () => {
               :rules="getFieldRulesForm('password').value"
               label="Password"
               type="password"
+              name="password"
               variant="underlined"
               required
             ></v-text-field>
@@ -148,6 +152,7 @@ const register = async () => {
                   label="Date of Birth"
                   prepend-icon="mdi-calendar"
                   variant="underlined"
+                  name="dateOfBirth"
                   v-bind="props"
                 ></v-text-field>
               </template>
@@ -160,12 +165,14 @@ const register = async () => {
               :rules="getFieldRulesAddress('streetName').value"
               label="Street"
               variant="underlined"
+              name="billingStreetName"
             ></v-text-field>
 
             <v-text-field
               v-model="billingAddress.city"
               :rules="getFieldRulesAddress('city').value"
               label="City"
+              name="billingCity"
               variant="underlined"
             ></v-text-field>
 
@@ -173,6 +180,7 @@ const register = async () => {
               v-model="billingAddress.postalCode"
               :rules="getFieldRulesAddress('postalCode').value"
               label="Postal Code"
+              name="billingPostalCode"
               variant="underlined"
             ></v-text-field>
 
@@ -182,6 +190,7 @@ const register = async () => {
               item-title="name"
               item-value="code"
               label="Country"
+              name="billingCountry"
               variant="underlined"
               :rules="getFieldRulesAddress('country').value"
               required
@@ -196,6 +205,7 @@ const register = async () => {
                 v-model="shippingAddress.streetName"
                 :rules="getFieldRulesAddress('streetName').value"
                 label="Street"
+                name="shippingStreet"
                 variant="underlined"
               ></v-text-field>
 
@@ -203,6 +213,7 @@ const register = async () => {
                 v-model="shippingAddress.city"
                 :rules="getFieldRulesAddress('city').value"
                 label="City"
+                name="shippingCity"
                 variant="underlined"
               ></v-text-field>
 
@@ -210,6 +221,7 @@ const register = async () => {
                 v-model="shippingAddress.postalCode"
                 :rules="getFieldRulesAddress('postalCode').value"
                 label="Postal Code"
+                name="shippingPostalCode"
                 variant="underlined"
               ></v-text-field>
 
@@ -219,6 +231,7 @@ const register = async () => {
                 item-title="name"
                 item-value="code"
                 label="Country"
+                name="shippingCountry"
                 variant="underlined"
                 :rules="getFieldRulesAddress('country').value"
                 required
