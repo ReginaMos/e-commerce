@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
-import { z, type AnyZodObject } from 'zod';
+import { type AnyZodObject } from 'zod';
 import { countyList } from '../constants/country-list';
-import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/registration-schema';
+import {
+  addressSchema,
+  registrationSchema,
+  thirteenYearsAgo,
+  type AddressData,
+  type FormData,
+} from '../utils/registration-schema';
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
 import { useRouter } from 'vue-router';
 import { createCustomer } from '../services/create-customer';
 import { Links } from '../constants/routersLinks';
-
-type FormData = z.infer<typeof registrationSchema>;
-type AddressData = z.infer<typeof addressSchema>;
 
 const router = useRouter();
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
@@ -156,7 +159,7 @@ const register = async () => {
                   v-bind="props"
                 ></v-text-field>
               </template>
-              <v-date-picker v-model="formData.dateOfBirth" @input="menu = false"></v-date-picker>
+              <v-date-picker v-model="formData.dateOfBirth" name="dateOfBirth" @input="menu = false"></v-date-picker>
             </v-menu>
             <v-checkbox v-model="sameAddress" label="Same address for billing and shipping"></v-checkbox>
             <v-card-title class="text-start">Billing Address</v-card-title>
