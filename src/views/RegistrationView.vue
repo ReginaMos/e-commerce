@@ -100,7 +100,7 @@ const register = async () => {
       <v-card>
         <v-card-title>Sign Up Form</v-card-title>
         <v-card-text>
-          <v-form @submit.prevent="register" class="mb-2">
+          <v-form @submit.prevent="register" class="mb-2" name="registrationForm">
             <v-text-field
               v-model="formData.firstName"
               :rules="getFieldRulesForm('firstName').value"

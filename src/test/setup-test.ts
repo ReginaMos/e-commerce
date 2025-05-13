@@ -4,6 +4,7 @@ import * as directives from 'vuetify/directives';
 import { mount, type MountingOptions, type VueWrapper } from '@vue/test-utils';
 import type { ComponentPublicInstance } from 'vue';
 import type { Component } from 'vue';
+import router from '../router';
 
 const vuetify = createVuetify({
   components,
@@ -12,13 +13,17 @@ const vuetify = createVuetify({
 
 export function mountWithVuetify(
   component: Component,
-  options: MountingOptions<unknown> = {}
+  options: MountingOptions<Component> = {}
 ): VueWrapper<ComponentPublicInstance> {
+  const { global = {}, ...rest } = options;
+  const plugins = [...(global.plugins || [])];
+  plugins.push(vuetify, router);
+
   return mount(component, {
+    ...rest,
     global: {
-      plugins: [vuetify],
-      ...(options.global || {}),
+      ...global,
+      plugins,
     },
-    ...options,
   });
 }
