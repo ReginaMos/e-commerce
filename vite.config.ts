@@ -13,5 +13,8 @@ export default defineConfig({
         inline: ['vuetify'],
       },
     },
+    coverage: {
+      reporter: 'text',
+    },
   },
 });
