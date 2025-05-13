@@ -25,7 +25,11 @@ describe('RegistrationView', () => {
     });
   });
 
-  it('renders all form fields', () => {
+  it('renders registration form', () => {
+    expect(wrapper.find('form[name="registrationForm"]').exists()).toBe(true);
+  });
+
+  it('renders all required form fields', () => {
     expect(wrapper.text()).toContain('Sign Up Form');
     expect(wrapper.find('input[name="firstName"]').exists()).toBe(true);
     expect(wrapper.find('input[name="lastName"]').exists()).toBe(true);
@@ -39,8 +43,19 @@ describe('RegistrationView', () => {
     expect(wrapper.text()).toContain('Already have account?');
   });
 
+  it('toggles shipping address form when same address is changed', async () => {
+    const checkbox = wrapper.find('input[type="checkbox"]');
+
+    expect(wrapper.find('[name="shippingStreet"]').exists()).toBe(false);
+
+    await checkbox.setValue(false);
+    expect(wrapper.find('[name="shippingStreet"]').exists()).toBe(true);
+  });
+
   it('shows validation errors for empty required fields', async () => {
     await wrapper.find('form').trigger('submit.prevent');
-    expect(wrapper.text()).toContain('Username must be at least 1 characters long');
+
+    expect(wrapper.emitted()).toHaveProperty('submit');
+    expect(mockToaster.show).toHaveBeenCalledWith('Fill in required fields!', 'error');
   });
 });
