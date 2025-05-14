@@ -6,7 +6,7 @@ import { addressSchema, registrationSchema, thirteenYearsAgo } from '../utils/re
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
 import { useRouter } from 'vue-router';
-import { createCustomer } from '../services/create-customer';
+import { createCustomer } from '../services/customer-service';
 import { Links } from '../constants/routersLinks';
 
 type FormData = z.infer<typeof registrationSchema>;

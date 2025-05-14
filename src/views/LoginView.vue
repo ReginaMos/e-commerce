@@ -4,7 +4,7 @@ import { z, type AnyZodObject } from 'zod';
 import { loginSchema } from '../utils/login-schema.ts';
 
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
-import { loginCustomer } from '../services/login-customer.ts';
+import { loginCustomer } from '../services/customer-service.ts';
 
 import { Links } from '../constants/routersLinks.ts';
 import { useRouter } from 'vue-router';
@@ -59,9 +59,9 @@ const login = async () => {
 </script>
 
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row>
-      <v-col>
+      <v-col md="7">
         <v-img min-width="340" src="/images/loginImg.png" alt="login"></v-img>
       </v-col>
       <v-col align-self="center" lg="4">
