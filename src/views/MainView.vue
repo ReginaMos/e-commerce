@@ -31,5 +31,22 @@ import ProductsComponent from '../components/ProductsComponent.vue';
 
 <style scoped lang="sass">
 .main-page
-  padding: 30px
+  padding-left: 20px
+  padding-right: 20px
+  min-width: 320px
+  max-width: 376px
+  @media screen and (min-width: 376.98px)
+    padding-left: 40px
+    padding-right: 40px
+    min-width: 376px
+    max-width: 1024px
+  @media screen and (min-width: 1024px)
+    min-width: 1024px
+    max-width:1440px
+    padding-left: 80px
+    padding-right: 80px
+  @media screen and (min-width: 1440px)
+    width: 1440px
+    padding-left: 135px
+    padding-right: 135px
 </style>
