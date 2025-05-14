@@ -43,7 +43,7 @@ const isAuth = true;
         <RouterLink :to="Links.USER.LINK">
           <v-icon>mdi-account-outline</v-icon>
         </RouterLink>
-      </v-btn >
+      </v-btn>
       <v-btn v-if="isAuth ? true : false" class="logout-button"> Logout </v-btn>
     </div>
   </v-app-bar>
@@ -61,7 +61,7 @@ const isAuth = true;
   padding-right: 20px;
   display: flex;
   flex-direction: row;
-  align-items:center;
+  align-items: center;
   border-bottom: 1px solid black;
   width: 100%;
   max-width: 1440px;
@@ -120,7 +120,7 @@ const isAuth = true;
   margin-inline-start: 0;
 }
 .menu-wrapper-desktop {
-  width: 367px!important;
+  width: 367px !important;
   margin-right: 40px;
 }
 .header :deep(.menu-wrapper-desktop .v-navigation-drawer) {
@@ -158,7 +158,7 @@ const isAuth = true;
 }
 .icon-wrapper {
   display: flex;
- 
+
   gap: 16px;
 }
 .header :deep(.v-btn.icon-button) {

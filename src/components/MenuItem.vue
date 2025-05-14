@@ -26,7 +26,6 @@ li {
   &:hover {
     text-decoration: underline;
   }
- 
 }
 
 .menu-link.active {
