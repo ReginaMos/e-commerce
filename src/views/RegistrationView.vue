@@ -95,10 +95,11 @@ const register = async () => {
 </script>
 
 <template>
-  <v-container>
-    <v-row justify="center" col>
+  <v-container class="mt-10">
+    <v-row justify="center">
       <v-card>
-        <v-card-title>Sign Up Form</v-card-title>
+        <v-card-title>Create an account</v-card-title>
+        <v-card-subtitle>Enter your details below</v-card-subtitle>
         <v-card-text>
           <v-form @submit.prevent="register" class="mb-2">
             <v-text-field

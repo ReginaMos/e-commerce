@@ -20,6 +20,7 @@ const formData = reactive<FormData>({
 });
 
 const form = ref(false);
+const visible = ref(false);
 
 const getFieldRules = <T extends object>(
   fieldName: keyof T,
@@ -58,73 +59,45 @@ const login = async () => {
 </script>
 
 <template>
-  <v-container class="container login-wrapper">
+  <v-container>
     <v-row>
-      <v-img class="login-img" width="805" height="781" src="/images/loginImg.png" alt="login" cover></v-img>
-    </v-row>
-    <v-row justify="center">
-      <v-card width="371" height="326">
-        <v-card-title>Login to Vue Magic Time</v-card-title>
-        <v-card-text>
-          <p>Enter your details below</p>
-          <v-form v-model="form" @submit.prevent="login">
-            <v-text-field
-              v-model="formData.email"
-              :rules="getFieldRulesForm('email').value"
-              label="Email"
-              type="email"
-              variant="underlined"
-              required
-            ></v-text-field>
+      <v-col>
+        <v-img min-width="340" src="/images/loginImg.png" alt="login"></v-img>
+      </v-col>
+      <v-col align-self="center" lg="4">
+        <v-card>
+          <v-card-title>Login to Vue Magic Time</v-card-title>
+          <v-card-subtitle>Enter your details below</v-card-subtitle>
+          <v-card-text>
+            <v-form v-model="form" @submit.prevent="login" class="mb-2">
+              <v-text-field
+                v-model="formData.email"
+                :rules="getFieldRulesForm('email').value"
+                label="Email"
+                type="email"
+                variant="underlined"
+                required
+              ></v-text-field>
 
-            <v-text-field
-              v-model="formData.password"
-              :rules="getFieldRulesForm('password').value"
-              label="Password"
-              type="password"
-              variant="underlined"
-              required
-            ></v-text-field>
-            <v-btn color="primary" type="submit" :disabled="!form"> Login </v-btn>
-            <p>
-              New user?
-              <RouterLink :to="Links.SIGNUP.LINK" class="nav-login-link"> Create new account </RouterLink>
-            </p>
-          </v-form>
-        </v-card-text>
-      </v-card>
+              <v-text-field
+                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                :type="visible ? 'text' : 'password'"
+                :rules="getFieldRulesForm('password').value"
+                v-model="formData.password"
+                label="Password"
+                variant="underlined"
+                @click:append-inner="visible = !visible"
+                required
+              ></v-text-field>
+              <v-btn color="primary" type="submit" :disabled="!form" block> Login </v-btn>
+            </v-form>
+            <span>New user?</span>
+            <v-btn :to="Links.SIGNUP.LINK" text="Signup" variant="text"></v-btn>
+          </v-card-text>
+        </v-card>
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
-<style scoped>
-.login-wrapper {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  max-width: 1440px;
-  height: 981px;
-  background-color: white;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 129px;
-}
-.login-wrapper .login-img {
-  padding: 0;
-  margin: 0;
-  display: block;
-
-  width: 805px;
-  height: 781px;
-}
-.login-wrapper .v-row {
-  margin: 0;
-}
-.login-wrapper button {
-  margin-bottom: 50px;
-}
-.nav-login-link {
-  text-decoration: underline;
-}
-</style>
+<style scoped></style>
