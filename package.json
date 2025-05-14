@@ -11,7 +11,8 @@
     "lint": "eslint src --ext .ts,.js,.vue",
     "format": "prettier --write .",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "deploy": "npm run build && gh-pages -d dist -e release-sprint-2"
   },
   "dependencies": {
     "@commercetools/platform-sdk": "^8.9.0",
@@ -39,6 +40,7 @@
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-vue": "^10.0.0",
+    "gh-pages": "^6.3.0",
     "globals": "^16.0.0",
     "husky": "^8.0.0",
     "jsdom": "^26.1.0",
