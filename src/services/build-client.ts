@@ -1,7 +1,22 @@
-import { ClientBuilder, type AuthMiddlewareOptions, type HttpMiddlewareOptions } from '@commercetools/ts-client';
+import {
+  ClientBuilder,
+  type AuthMiddlewareOptions,
+  type HttpMiddlewareOptions,
+  type TokenCache,
+} from '@commercetools/ts-client';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 
 export const projectKey = import.meta.env.VITE_PROJECT_KEY;
+
+const tokenCache: TokenCache = {
+  get: () => {
+    const token = localStorage.getItem('vmt-anonymous-token');
+    return token ? JSON.parse(token) : undefined;
+  },
+  set: (cache) => {
+    localStorage.setItem('vmt-anonymous-token', JSON.stringify(cache));
+  },
+};
 
 const authMiddlewareOptions: AuthMiddlewareOptions = {
   host: import.meta.env.VITE_AUTH_URL,
@@ -12,6 +27,7 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
   },
   scopes: [import.meta.env.VITE_SCOPES],
   httpClient: fetch,
+  tokenCache,
 };
 
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
