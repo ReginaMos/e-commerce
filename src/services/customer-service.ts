@@ -1,8 +1,7 @@
 import { apiRoot, buildCustomerClient } from './build-client';
 import type { MyCustomerDraft, MyCustomerSignin } from '@commercetools/platform-sdk';
 import { clearToken } from './token-cache';
-
-const USER_KEY = 'vmt-user';
+import { USER_KEY } from '../constants/local-storage';
 
 export async function loginCustomer(credentials: MyCustomerSignin) {
   const result = await buildCustomerClient({ password: credentials.password, username: credentials.email })

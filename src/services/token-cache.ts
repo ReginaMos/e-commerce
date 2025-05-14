@@ -1,6 +1,5 @@
 import type { TokenCache } from '@commercetools/ts-client/dist/declarations/src/types/types';
-
-const TOKEN_KEY = 'vmt-token';
+import { TOKEN_KEY } from '../constants/local-storage';
 
 export const tokenCache: TokenCache = {
   get: () => {
