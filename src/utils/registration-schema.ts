@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+export type FormData = z.infer<typeof registrationSchema>;
+export type AddressData = z.infer<typeof addressSchema>;
+
 const today = new Date();
 export const thirteenYearsAgo = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
 
