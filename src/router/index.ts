@@ -15,6 +15,7 @@ import CatalogPage from '../pages/CatalogPage.vue';
 import NotFoundPage from '../pages/NotFoundPage.vue';
 
 import { Links } from '../constants/routersLinks';
+import { USER_KEY } from '../constants/local-storage';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -87,6 +88,14 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 };
   },
+});
+
+router.beforeEach(async (to) => {
+  const isAuthenticated = localStorage.getItem(USER_KEY);
+
+  if (isAuthenticated && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {
+    return { name: Links.HOME.NAME };
+  }
 });
 
 export default router;

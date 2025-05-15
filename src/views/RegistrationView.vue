@@ -12,7 +12,7 @@ import {
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
 import { useRouter } from 'vue-router';
-import { createCustomer } from '../services/create-customer';
+import { createCustomer } from '../services/customer-service';
 import { Links } from '../constants/routersLinks';
 
 const router = useRouter();
@@ -98,10 +98,11 @@ const register = async () => {
 </script>
 
 <template>
-  <v-container>
-    <v-row justify="center" col>
+  <v-container class="mt-10">
+    <v-row justify="center">
       <v-card>
-        <v-card-title>Sign Up Form</v-card-title>
+        <v-card-title>Create an account</v-card-title>
+        <v-card-subtitle>Enter your details below</v-card-subtitle>
         <v-card-text>
           <v-form @submit.prevent="register" class="mb-2" name="registrationForm">
             <v-text-field
