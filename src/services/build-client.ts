@@ -70,4 +70,9 @@ export function buildCustomerClient(user: UserAuthOptions) {
   return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
 }
 
+export function resetClient() {
+  clearToken();
+  client = buildAnonymousClient();
+}
+
 export const apiRoot = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });

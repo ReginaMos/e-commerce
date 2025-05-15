@@ -1,6 +1,5 @@
-import { apiRoot, buildCustomerClient } from './build-client';
+import { apiRoot, buildCustomerClient, resetClient } from './build-client';
 import type { MyCustomerDraft, MyCustomerSignin } from '@commercetools/platform-sdk';
-import { clearToken } from './token-cache';
 import { USER_KEY } from '../constants/local-storage';
 
 export async function loginCustomer(credentials: MyCustomerSignin) {
@@ -21,7 +20,7 @@ export async function loginCustomer(credentials: MyCustomerSignin) {
 
 export function logoutCustomer() {
   localStorage.removeItemItem(USER_KEY);
-  clearToken();
+  resetClient();
 }
 
 export async function createCustomer(customer: MyCustomerDraft) {
