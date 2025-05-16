@@ -1,5 +1,4 @@
 <script setup>
-
 import { useAuth } from '../services/customer-service';
 defineProps({
   title: String,

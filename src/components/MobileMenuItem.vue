@@ -6,7 +6,6 @@ defineProps({
   link: String,
 });
 const { isAuth } = useAuth();
-
 </script>
 <template>
   <v-list-item :value="link" link class="activeMenu" v-if="isAuth ? link !== '/signup' : link">

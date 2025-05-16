@@ -24,8 +24,8 @@ watch(group, () => {
       <v-item-group v-model="group" active-class="activeMenu">
         <MobileMenuItem v-for="item in MobileMenuLinks" :key="item.LINK" :title="item.NAME" :link="item.LINK" />
         <v-btn v-if="isAuth" variant="plain" class="mobile-menu-logaut" @click="logoutCustomer"
-        ><span v-if="smAndUp">Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
-      >
+          ><span v-if="smAndUp">Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
+        >
       </v-item-group>
     </v-list>
   </v-navigation-drawer>
@@ -190,7 +190,7 @@ watch(group, () => {
   }
 }
 .icon-button.v-btn.v-btn--active.v-btn__overlay {
-  background-color: transparent!important;
+  background-color: transparent !important;
 }
 .header :deep(.v-input--density-default) {
   --v-input-control-height: 38px;
@@ -216,7 +216,7 @@ watch(group, () => {
 }
 .mobile-menu-logaut.v-btn {
   width: 100%;
-  
+
   padding-left: 28px;
   height: 48px;
   justify-content: start;
@@ -227,7 +227,7 @@ watch(group, () => {
   opacity: 1;
   &:hover {
     background-color: var(--red-secondary);
-    color: var(--white-text)
+    color: var(--white-text);
   }
 }
 </style>

@@ -5,9 +5,15 @@ import { type VueWrapper } from '@vue/test-utils';
 import { type ComponentPublicInstance } from 'vue';
 import { mountWithVuetify } from './test-utils';
 import router from '../router';
-import { createCustomer } from '../services/customer-service';
 
-vi.mock('../services/customer-service');
+vi.mock('../services/customer-service', () => ({
+  useAuth: () => ({
+    createCustomer: vi.fn(),
+  }),
+}));
+
+import { useAuth } from '../services/customer-service';
+const { createCustomer } = useAuth();
 
 // const validFormData = {
 //   firstName: 'John',
