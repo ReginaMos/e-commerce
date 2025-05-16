@@ -33,15 +33,6 @@ body {
   min-height: 100%;
 }
 
-header {
-  top: 48px !important;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
 #app {
   width: 100%;
   margin: 0 auto;
@@ -49,25 +40,6 @@ h1 {
   min-height: 100vh;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-.container {
-  padding-top: 60px;
-  padding-bottom: 140px;
-  padding-left: 135px;
-  padding-right: 135px;
-  max-width: 1440px;
-  width: 100%;
-}
 img {
   max-width: 100%;
   height: auto;

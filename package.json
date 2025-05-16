@@ -18,6 +18,7 @@
     "@commercetools/ts-client": "^3.3.0",
     "@fontsource/poppins": "^5.2.6",
     "@pinia/testing": "^1.0.1",
+    "@vueuse/core": "^13.2.0",
     "pinia": "^3.0.2",
     "vue": "^3.5.13",
     "vue-router": "^4.5.1",

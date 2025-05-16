@@ -1,10 +1,11 @@
 <script setup>
-import { reactive } from 'vue';
+
+import { useAuth } from '../services/customer-service';
 defineProps({
   title: String,
   link: String,
 });
-const isAuth = reactive(false);
+const { isAuth } = useAuth();
 </script>
 
 <template>
