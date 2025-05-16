@@ -12,9 +12,10 @@ import {
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
 import { useRouter } from 'vue-router';
-import { createCustomer } from '../services/customer-service';
+import { useAuth } from '../services/customer-service';
 import { Links } from '../constants/routersLinks';
 
+const { createCustomer } = useAuth();
 const router = useRouter();
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
@@ -86,7 +87,7 @@ const register = async () => {
         toaster?.show('Customer created!', 'success');
         router.push(Links.HOME.LINK);
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         if (err instanceof Error) {
           toaster?.show(err.message, 'error');
         }
@@ -98,12 +99,12 @@ const register = async () => {
 </script>
 
 <template>
-  <v-container class="mt-10">
+  <v-container>
     <v-row justify="center">
-      <v-card>
-        <v-card-title>Create an account</v-card-title>
+      <v-card max-width="500" min-width="260" width="100%">
+        <v-card-title class="mt-7 mx-sm-7 mt-sm-7 form-title">Create an account</v-card-title>
         <v-card-subtitle>Enter your details below</v-card-subtitle>
-        <v-card-text>
+        <v-card-text class="mx-sm-7 mb-sm-7">
           <v-form @submit.prevent="register" class="mb-2" name="registrationForm">
             <v-text-field
               v-model="formData.firstName"
@@ -242,14 +243,34 @@ const register = async () => {
               ></v-autocomplete>
               <v-checkbox v-model="defaultShipping" label="Set as default shipping"></v-checkbox>
             </template>
-            <v-btn color="primary" type="submit" block> Sign up </v-btn>
+            <v-btn type="submit" block class="submit-button mb-5"> Sign up </v-btn>
           </v-form>
-          <span>Already have account?</span>
-          <v-btn :to="Links.LOGIN.LINK" text="Login" variant="text"></v-btn>
+          <RouterLink :to="Links.LOGIN.LINK" class="form-link">Already have account? <span>Login</span></RouterLink>
         </v-card-text>
       </v-card>
     </v-row>
   </v-container>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.form-title {
+  @media screen and (min-width: 576px) {
+    font-size: 24px;
+  }
+}
+.submit-button {
+  color: var(--white-text);
+  background-color: var(--red-secondary);
+  min-width: 150px;
+  margin: 0 auto;
+}
+.form-link {
+  span {
+    text-decoration: underline;
+  }
+  &:hover {
+    color: var(--red-secondary);
+    text-decoration: underline;
+  }
+}
+</style>

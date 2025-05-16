@@ -5,7 +5,7 @@ defineProps({
 </script>
 
 <template>
-  <v-container class="d-flex align-center">
+  <v-container class="d-flex align-center" fluid>
     <div class="box"></div>
     <h2 class="title">{{ title }}</h2>
   </v-container>
