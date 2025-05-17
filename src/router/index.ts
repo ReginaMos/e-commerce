@@ -92,7 +92,9 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const isAuthenticated = localStorage.getItem(USER_KEY);
-
+  if (!isAuthenticated && to.name === Links.USER.NAME) {
+    return { name: Links.SIGNUP.NAME}
+  }
   if (isAuthenticated && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {
     return { name: Links.HOME.NAME };
   }
