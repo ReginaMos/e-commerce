@@ -54,10 +54,11 @@ const { mdAndUp } = useDisplay();
     </v-container>
     <v-card class="footer-copyright">
       <span class="school-logo">RS</span>
-      <v-text class="school-link"> 
-        <a href="https://rs.school/" target="_blank" noopener noreferer>&nbsp;&nbsp;Copyright RS-School 2025. All right reserved</a>
-        </v-text>
-      
+      <v-text class="school-link">
+        <a href="https://rs.school/" target="_blank" noopener noreferer
+          >&nbsp;&nbsp;Copyright RS-School 2025. All right reserved</a
+        >
+      </v-text>
     </v-card>
   </v-footer>
 </template>
@@ -98,7 +99,6 @@ const { mdAndUp } = useDisplay();
   @media screen and (min-width: 1440px) {
     padding-left: 135px;
     padding-right: 135px;
-   
   }
 }
 .footer :deep(.logo.v-list-subheader) {
@@ -117,9 +117,9 @@ const { mdAndUp } = useDisplay();
   display: flex;
   flex-wrap: wrap;
   & a:hover,
-    a:focus,
-    a:active {
-      text-decoration: underline;
+  a:focus,
+  a:active {
+    text-decoration: underline;
   }
   @media screen and (min-width: 1024px) {
     flex-direction: column;
@@ -162,7 +162,6 @@ const { mdAndUp } = useDisplay();
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  
 }
 .footer :deep(.school-link) {
   overflow-wrap: break-all;
