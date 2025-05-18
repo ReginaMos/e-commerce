@@ -3,11 +3,11 @@ import type { MyCustomerDraft, MyCustomerSignin } from '@commercetools/platform-
 import { USER_KEY } from '../constants/local-storage';
 import { ref } from 'vue';
 
-const isAuth = ref(!!localStorage.getItem('vmt-token'));
+const isAuth = ref(!!localStorage.getItem(USER_KEY));
 
 export function useAuth() {
   const checkAuth = () => {
-    isAuth.value = !!localStorage.getItem('vmt-token');
+    isAuth.value = !!localStorage.getItem(USER_KEY);
   };
 
   async function loginCustomer(credentials: MyCustomerSignin) {

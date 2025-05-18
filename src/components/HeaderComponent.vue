@@ -22,9 +22,9 @@ watch(group, () => {
   <v-navigation-drawer class="mobile-menu-drawer" v-model="drawer" absolute bottom temporary v-if="mdAndDown">
     <v-list nav dense>
       <v-item-group v-model="group" active-class="activeMenu">
-        <MobileMenuItem v-for="item in MobileMenuLinks" :key="item.LINK" :title="item.NAME" :link="item.LINK" />
+        <MobileMenuItem v-for="item in MobileMenuLinks" :key="'#' + item.LINK" :title="item.NAME" :link="item.LINK" />
         <v-btn v-if="isAuth" variant="plain" class="mobile-menu-logaut" @click="logoutCustomer"
-          ><span v-if="smAndUp">Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
+          ><span>Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
         >
       </v-item-group>
     </v-list>
@@ -32,7 +32,7 @@ watch(group, () => {
   <v-app-bar :elevation="0" class="header" height="94">
     <v-app-bar-nav-icon v-if="mdAndDown" class="mobile-menu" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     <v-app-bar-title class="header-logo">
-      <RouterLink :to="MenuLinks.HOME.LINK" class=""> Vue Magic Time </RouterLink>
+      <RouterLink :to="MenuLinks.HOME.LINK">Vue Magic Time</RouterLink>
     </v-app-bar-title>
     <div class="menu-wrapper-desktop">
       <v-navigation-drawer v-if="lgAndUp" min-width="278">
@@ -54,7 +54,7 @@ watch(group, () => {
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.CART.LINK">
         <v-icon icon="mdi mdi-cart-outline"></v-icon>
       </v-btn>
-      <v-btn class="icon-button" v-if="smAndUp" :to="Links.USER.LINK">
+      <v-btn class="icon-button" v-if="smAndUp && isAuth" :to="Links.USER.LINK">
         <v-icon>mdi-account-outline</v-icon>
       </v-btn>
       <v-btn v-if="isAuth" class="logout-button" @click="logoutCustomer"
