@@ -7,6 +7,7 @@ import SearchProduct from './SearchProduct.vue';
 import { useDisplay } from 'vuetify';
 import { ref, watch } from 'vue';
 import { useAuth } from '../services/customer-service.ts';
+import MobileSearchProduct from './MobileSearchProduct.vue';
 
 const { isAuth, logoutCustomer } = useAuth();
 const { mdAndDown, lgAndUp, smAndUp } = useDisplay();
@@ -54,9 +55,9 @@ watch(group, () => {
     <SearchProduct />
 
     <div class="icon-wrapper">
-      <v-btn v-if="mdAndDown" class="icon-button">
+      <!-- <v-btn v-if="mdAndDown" class="icon-button">
         <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      </v-btn> -->
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.LIKES.LINK">
         <v-icon icon="mdi mdi-heart-outline"></v-icon>
       </v-btn>
@@ -71,6 +72,7 @@ watch(group, () => {
       >
     </div>
   </v-app-bar>
+  <MobileSearchProduct />
 </template>
 
 <style scoped lang="scss">

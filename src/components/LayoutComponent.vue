@@ -26,7 +26,6 @@ main {
   padding-top: 148px;
   padding-bottom: 80px;
   margin: 0 auto;
-  min-width: var(--small);
   width: 100%;
   @media screen and (min-width: 376.98px) {
     padding-left: var(--padding-horizontal-md);
@@ -45,7 +44,6 @@ main {
     width: var(--xl);
     padding-left: var(--padding-horizontal-xl);
     padding-right: var(--padding-horizontal-xl);
-    max-width: var(--md);
   }
 }
 .advert {

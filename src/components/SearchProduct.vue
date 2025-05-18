@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify';
+import { ref } from 'vue';
 
-const { lgAndUp } = useDisplay();
+const { mdAndUp } = useDisplay();
+const searchQuery = ref('');
 </script>
 
 <template>
-  <div class="input-wrapper" v-if="lgAndUp">
+  <div class="input-wrapper" v-if="mdAndUp">
     <v-text-field
-      type="input"
+      v-model="searchQuery"
+      type="text"
       variant="plain"
       clearable
       label="What are you looking for?"
       class="search-input"
     ></v-text-field>
-    <v-btn class="search-btn" v-if="lgAndUp">
+    <v-btn class="search-btn" v-if="mdAndUp">
       <v-icon> mdi-magnify </v-icon>
     </v-btn>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .input-wrapper {
   margin-right: 24px;
   width: 210px;
@@ -40,11 +43,9 @@ const { lgAndUp } = useDisplay();
   height: 38px;
   padding: 7px 12px 7px 20px;
 }
-/* .search-input :deep(.v-field__outline) {
-  height: 38px;
-} */
+
 .search-input :deep(.v-label) {
-  color: var(--gray-text);
+  color: var(--gray-text-color);
   font-size: 12px;
   padding-left: 20px;
 }
