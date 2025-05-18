@@ -7,6 +7,19 @@
   --white-background: #ffffffff;
   --black-background: #000000;
 
+  --padding-horizontal-xl: 135px;
+  --padding-horizontal-lg: 80px;
+  --padding-horizontal-md: 40px;
+  --padding-horizontal-sm: 20px;
+  --padding-top-sm: 20px;
+
+  --xs: 320px;
+  --small: 376.98px;
+  --sm: 576px;
+  --md: 1024px;
+  --lg: 1200px;
+  --xl: 1440px;
+
   font-family: 'Poppins', sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -28,8 +41,6 @@ html {
 body {
   margin: 0 auto;
   height: 100%;
-  min-width: 320px;
-  max-width: 1440px;
   min-height: 100%;
 }
 
@@ -44,4 +55,8 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+body.menu-open {
+  overflow: hidden;
 }

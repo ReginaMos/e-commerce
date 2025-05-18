@@ -12,6 +12,16 @@ const { isAuth, logoutCustomer } = useAuth();
 const { mdAndDown, lgAndUp, smAndUp } = useDisplay();
 
 const drawer = ref(false);
+watch(drawer, (newVal) => {
+  if (newVal) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.classList.add('menu-open');
+  } else {
+    document.body.classList.remove('menu-open');
+  }
+});
+
+
 const group = ref(null);
 
 watch(group, () => {
@@ -69,28 +79,29 @@ watch(group, () => {
   width: 100%;
   position: fixed;
   top: 48px !important;
+  border-bottom: 1px solid var(--black-background);
 }
 .header :deep(.v-toolbar__content) {
   background-color: var(--white-background);
-  padding-top: 20px;
+  padding-top: var(--padding-top-sm);
   padding-bottom: 8px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: var(--padding-horizontal-sm);
+  padding-right: var(--padding-horizontal-sm);
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-bottom: 1px solid black;
   width: 100%;
-  max-width: 1440px;
+  min-width: var(--xs);
+  max-width: var(--xl);
   margin: 0 auto;
   height: 60px !important;
   @media screen and (min-width: 376.98px) {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: var(--padding-horizontal-md);
+    padding-right: var(--padding-horizontal-md);
   }
   @media screen and (min-width: 1024px) {
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: var(--padding-horizontal-lg);
+    padding-right: var(--padding-horizontal-lg);
   }
   @media screen and (min-width: 1200px) {
     height: 94px !important;
@@ -98,8 +109,8 @@ watch(group, () => {
     padding-bottom: 16px;
   }
   @media screen and (min-width: 1440px) {
-    padding-left: 135px;
-    padding-right: 135px;
+    padding-left: var(--padding-horizontal-xl);
+    padding-right: var(--padding-horizontal-xl);
   }
 }
 .header :deep(.v-btn--icon.v-btn--density-default.mobile-menu) {
