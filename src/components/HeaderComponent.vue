@@ -1,18 +1,41 @@
 <script setup>
 import MenuItem from './MenuItem.vue';
+import MobileMenuItem from './MobileMenuItem.vue';
 import { RouterLink } from 'vue-router';
-import { Links, MenuLinks } from '../constants/routersLinks.ts';
+import { Links, MenuLinks, MobileMenuLinks } from '../constants/routersLinks.ts';
 import SearchProduct from './SearchProduct.vue';
-</script>
+import { useDisplay } from 'vuetify';
+import { ref, watch } from 'vue';
+import { useAuth } from '../services/customer-service.ts';
 
+const { isAuth, logoutCustomer } = useAuth();
+const { mdAndDown, lgAndUp, smAndUp } = useDisplay();
+
+const drawer = ref(false);
+const group = ref(null);
+
+watch(group, () => {
+  drawer.value = false;
+});
+</script>
 <template>
-  <v-app-bar :elevation="0" class="header">
-    <v-app-bar-nav-icon class="hidden-lg-and-up"></v-app-bar-nav-icon>
+  <v-navigation-drawer class="mobile-menu-drawer" v-model="drawer" absolute bottom temporary v-if="mdAndDown">
+    <v-list nav dense>
+      <v-item-group v-model="group" active-class="activeMenu">
+        <MobileMenuItem v-for="item in MobileMenuLinks" :key="'#' + item.LINK" :title="item.NAME" :link="item.LINK" />
+        <v-btn v-if="isAuth" variant="plain" class="mobile-menu-logaut" @click="logoutCustomer"
+          ><span>Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
+        >
+      </v-item-group>
+    </v-list>
+  </v-navigation-drawer>
+  <v-app-bar :elevation="0" class="header" height="94">
+    <v-app-bar-nav-icon v-if="mdAndDown" class="mobile-menu" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     <v-app-bar-title class="header-logo">
-      <RouterLink :to="MenuLinks.HOME.LINK" class=""> Vue Magic Time </RouterLink>
+      <RouterLink :to="MenuLinks.HOME.LINK">Vue Magic Time</RouterLink>
     </v-app-bar-title>
     <div class="menu-wrapper-desktop">
-      <v-navigation-drawer class="hidden-md-and-down" min-width="278">
+      <v-navigation-drawer v-if="lgAndUp" min-width="278">
         <ul class="list">
           <MenuItem v-for="item in MenuLinks" :key="item.LINK" :title="item.NAME" :link="item.LINK"></MenuItem>
         </ul>
@@ -22,80 +45,106 @@ import SearchProduct from './SearchProduct.vue';
     <SearchProduct />
 
     <div class="icon-wrapper">
-      <v-btn class="icon-button">
-        <RouterLink :to="Links.LIKES.LINK" class="">
-          <v-icon icon="mdi mdi-heart-outline"></v-icon>
-        </RouterLink>
+      <v-btn v-if="mdAndDown" class="icon-button">
+        <v-icon>mdi-magnify</v-icon>
       </v-btn>
-      <v-btn class="icon-button">
-        <RouterLink :to="Links.CART.LINK" class="">
-          <v-icon icon="mdi mdi-cart-outline"></v-icon>
-        </RouterLink>
+      <v-btn class="icon-button" v-if="smAndUp" :to="Links.LIKES.LINK">
+        <v-icon icon="mdi mdi-heart-outline"></v-icon>
       </v-btn>
-      <v-btn class="icon-button">
-        <RouterLink :to="Links.USER.LINK">
-          <v-icon>mdi-account-outline</v-icon>
-        </RouterLink>
+      <v-btn class="icon-button" v-if="smAndUp" :to="Links.CART.LINK">
+        <v-icon icon="mdi mdi-cart-outline"></v-icon>
       </v-btn>
+      <v-btn class="icon-button" v-if="smAndUp && isAuth" :to="Links.USER.LINK">
+        <v-icon>mdi-account-outline</v-icon>
+      </v-btn>
+      <v-btn v-if="isAuth" class="logout-button" @click="logoutCustomer"
+        ><span v-if="smAndUp">Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
+      >
     </div>
   </v-app-bar>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.header {
+  width: 100%;
+  position: fixed;
+  top: 48px !important;
+}
 .header :deep(.v-toolbar__content) {
-  background-color: white;
-  padding-top: 40px;
-  padding-bottom: 16px;
-  padding-left: 135px;
-  padding-right: 135px;
+  background-color: var(--white-background);
+  padding-top: 20px;
+  padding-bottom: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
   display: flex;
-  height: 94px !important;
   flex-direction: row;
-  align-items: flex-end !important;
+  align-items: center;
   border-bottom: 1px solid black;
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
+  height: 60px !important;
+  @media screen and (min-width: 376.98px) {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  @media screen and (min-width: 1024px) {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+  @media screen and (min-width: 1200px) {
+    height: 94px !important;
+    padding-top: 40px;
+    padding-bottom: 16px;
+  }
+  @media screen and (min-width: 1440px) {
+    padding-left: 135px;
+    padding-right: 135px;
+  }
 }
-.header :deep(.v-btn--icon.v-btn--density-default) {
+.header :deep(.v-btn--icon.v-btn--density-default.mobile-menu) {
   width: 32px;
   height: 32px;
   padding: 0;
+  margin: 0;
   margin-inline-start: 0px;
-  margin-right: 48px;
+  margin-right: 30px;
 }
-.header-logo {
+
+.header :deep(.header-logo.v-toolbar-title) {
+  margin-inline-start: 0;
   padding: 0;
-  min-width: 150px;
-  max-width: 150px !important;
   margin-right: auto;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 16px;
   &:hover {
-    color: #db4444;
+    color: var(--red-secondary);
     text-decoration: none !important;
+  }
+  @media screen and (min-width: 1024px) {
+    font-size: 18px;
+    margin-right: auto;
+  }
+  @media screen and (min-width: 1440px) {
+    font-size: 24px;
   }
 }
 .header :deep(.v-toolbar-title__placeholder) {
   overflow: visible;
   text-overflow: inherit;
   white-space: nowrap;
-  min-width: 150px !important;
+  text-align: start;
+  margin-inline-start: 0;
 }
 .menu-wrapper-desktop {
-  width: 367px;
-  margin-right: 130px;
+  width: 367px !important;
+  margin-right: 40px;
 }
-.menu-wrapper-desktop .v-navigation-drawer {
+.header :deep(.menu-wrapper-desktop .v-navigation-drawer) {
   position: static !important;
-  height: 24px !important;
   border-right-width: 0 !important;
   width: 367px !important;
 }
-.menu-wrapper-desktop .v-navigation-drawer__content {
-  min-width: 367px !important;
-}
-
 .header :deep(.v-navigation-drawer__content::-webkit-scrollbar-track) {
   -webkit-box-shadow: inset 0 0 6px #5d5d5d;
   background-color: #5d5d5d;
@@ -109,7 +158,8 @@ import SearchProduct from './SearchProduct.vue';
 }
 .list {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-end;
   line-height: 24px;
   letter-spacing: 0;
   font-size: 16px;
@@ -120,7 +170,11 @@ import SearchProduct from './SearchProduct.vue';
 }
 .icon-wrapper {
   display: flex;
+  align-items: center;
   gap: 16px;
+  @media screen and (max-width: 376px) {
+    gap: 0;
+  }
 }
 .header :deep(.v-btn.icon-button) {
   min-width: 32px;
@@ -128,16 +182,15 @@ import SearchProduct from './SearchProduct.vue';
   max-height: 32px;
   padding: 0;
   border-radius: 50%;
+  background-color: transparent;
   &:hover {
-    color: white;
-    background-color: #db4444;
+    color: var(--white-text);
+    background-color: var(--red-secondary);
     transition: background-color 0.28s ease-in-out;
   }
 }
-.header :deep(.search-input) {
-  background-color: #f5f5f5;
-  height: 38px;
-  width: 243px;
+.icon-button.v-btn.v-btn--active.v-btn__overlay {
+  background-color: transparent !important;
 }
 .header :deep(.v-input--density-default) {
   --v-input-control-height: 38px;
@@ -145,5 +198,36 @@ import SearchProduct from './SearchProduct.vue';
 }
 .header :deep(.v-input__control) {
   height: 38px;
+}
+.logout-button {
+  min-width: fit-content;
+  text-transform: none;
+  font-size: 16px;
+  padding: 0 8px;
+  letter-spacing: 0;
+  &:hover {
+    color: var(--white-text);
+    background-color: var(--red-secondary);
+  }
+}
+
+.mobile-menu-drawer {
+  padding: 48px 0px;
+}
+.mobile-menu-logaut.v-btn {
+  width: 100%;
+
+  padding-left: 28px;
+  height: 48px;
+  justify-content: start;
+  text-transform: capitalize;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--black-text);
+  opacity: 1;
+  &:hover {
+    background-color: var(--red-secondary);
+    color: var(--white-text);
+  }
 }
 </style>

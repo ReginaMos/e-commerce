@@ -7,7 +7,7 @@ import ProductsComponent from '../components/ProductsComponent.vue';
 </script>
 
 <template>
-  <v-container class="main-page">
+  <v-container fluid>
     <v-row class="mb-4">
       <CarouselElement />
     </v-row>
@@ -29,7 +29,4 @@ import ProductsComponent from '../components/ProductsComponent.vue';
   </v-container>
 </template>
 
-<style scoped lang="sass">
-.main-page
-  padding: 30px
-</style>
+<style scoped lang="sass"></style>

@@ -1,12 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import RegistrationView from '../views/RegistrationView.vue';
-import { createCustomer } from '../services/create-customer';
+
 import { type VueWrapper } from '@vue/test-utils';
 import { type ComponentPublicInstance } from 'vue';
 import { mountWithVuetify } from './test-utils';
 import router from '../router';
 
-vi.mock('../services/create-customer');
+vi.mock('../services/customer-service', () => ({
+  useAuth: () => ({
+    createCustomer: vi.fn(),
+  }),
+}));
+
+import { useAuth } from '../services/customer-service';
+const { createCustomer } = useAuth();
 
 // const validFormData = {
 //   firstName: 'John',
@@ -46,7 +53,7 @@ describe('RegistrationView', () => {
   });
 
   it('renders all required form fields', () => {
-    expect(wrapper.text()).toContain('Sign Up Form');
+    expect(wrapper.text()).toContain('Create an account');
     expect(wrapper.find('input[name="firstName"]').exists()).toBe(true);
     expect(wrapper.find('input[name="lastName"]').exists()).toBe(true);
     expect(wrapper.find('input[name="email"]').exists()).toBe(true);
