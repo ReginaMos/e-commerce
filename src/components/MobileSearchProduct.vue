@@ -63,18 +63,15 @@ const searchQuery = ref('');
   height: 40px;
   padding: 0;
   padding-left: 20px;
- 
 }
 .input-mobile-wrapper :deep(.v-input) {
   /* height: 40px; */
   padding: 0;
- 
 }
 .input-mobile-wrapper :deep(.v-input__control) {
   background-color: transparent;
   border-radius: 12px;
   padding: 0;
- 
 }
 .input-mobile-wrapper :deep(.v-label.v-field-label) {
   color: var(--gray-text-color);
