@@ -1,30 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import HeaderComponent from '../components/HeaderComponent.vue';
-import FooterComponent from '../components/FooterComponent.vue';
-
-defineProps<{ msg: string }>();
-
-const count = ref(0);
+import AdvantagesComponent from '../components/AdvantagesComponent.vue';
+import CategoriesComponent from '../components/CategoriesComponent.vue';
+import CarouselElement from '../elements/CarouselElement.vue';
+import MainHeading from '../elements/MainHeading.vue';
+import ProductsComponent from '../components/ProductsComponent.vue';
 </script>
 
 <template>
-  <HeaderComponent />
-  <h1>{{ msg }}</h1>
+  <v-container fluid>
+    <v-row class="mb-4">
+      <CarouselElement />
+    </v-row>
 
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-  </div>
+    <v-row class="mb-4">
+      <MainHeading title="Why us?" />
+      <AdvantagesComponent />
+    </v-row>
 
-  <v-btn>
-    <router-link to="/login">Login</router-link>
-  </v-btn>
+    <v-row class="mb-4">
+      <MainHeading title="Categories" />
+      <CategoriesComponent />
+    </v-row>
 
-  <FooterComponent />
+    <v-row class="mb-4">
+      <MainHeading title="Our products" />
+      <ProductsComponent count="4" />
+    </v-row>
+  </v-container>
 </template>
 
-<style scoped>
-.read-the-docs {
-  color: #888;
-}
-</style>
+<style scoped lang="sass"></style>

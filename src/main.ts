@@ -21,6 +21,16 @@ const vuetify = createVuetify({
       mdi,
     },
   },
+  display: {
+    mobileBreakpoint: 'sm',
+    thresholds: {
+      xs: 320,
+      sm: 576,
+      md: 1024,
+      lg: 1200,
+      xl: 1440,
+    },
+  },
 });
 
 const app = createApp(App);

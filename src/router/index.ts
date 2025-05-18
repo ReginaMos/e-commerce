@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 
 import MainPage from '../pages/MainPage.vue';
@@ -12,9 +12,10 @@ import CartPage from '../pages/CartPage.vue';
 import UserPage from '../pages/UserPage.vue';
 import ProductPage from '../pages/ProductPage.vue';
 import CatalogPage from '../pages/CatalogPage.vue';
-import NotFoundComponent from '../pages/NotFoundComponent.vue';
+import NotFoundPage from '../pages/NotFoundPage.vue';
 
 import { Links } from '../constants/routersLinks';
+import { USER_KEY } from '../constants/local-storage';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -75,15 +76,28 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '/:pathMatch(.*)*',
         name: Links.NOTFOUND.NAME,
-        component: NotFoundComponent,
+        component: NotFoundPage,
       },
     ],
   },
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior() {
+    return { top: 0 };
+  },
+});
+
+router.beforeEach(async (to) => {
+  const isAuthenticated = localStorage.getItem(USER_KEY);
+  if (!isAuthenticated && to.name === Links.USER.NAME) {
+    return { name: Links.SIGNUP.NAME };
+  }
+  if (isAuthenticated && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {
+    return { name: Links.HOME.NAME };
+  }
 });
 
 export default router;

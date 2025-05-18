@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import LoginView from '../views/LoginView.vue';
+import NotFoundView from '../views/NotFoundView.vue';
 </script>
 
 <template>
-  <LoginView />
+  <NotFoundView />
 </template>
 
 <style scoped></style>
