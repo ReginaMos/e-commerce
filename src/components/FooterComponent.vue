@@ -54,11 +54,11 @@ const { mdAndUp } = useDisplay();
     </v-container>
     <v-card class="footer-copyright">
       <span class="school-logo">RS</span>
-      <v-text class="school-link">
+      <span class="school-link">
         <a href="https://rs.school/" target="_blank" noopener noreferer
           >&nbsp;&nbsp;Copyright RS-School 2025. All right reserved</a
         >
-      </v-text>
+      </span>
     </v-card>
   </v-footer>
 </template>
@@ -66,7 +66,7 @@ const { mdAndUp } = useDisplay();
 <style scoped lang="scss">
 .footer.v-footer {
   background-color: var(--black-background);
-  color: white;
+  color: var(--white-text);
   padding: 0;
   margin: 0;
   display: flex;
@@ -80,25 +80,24 @@ const { mdAndUp } = useDisplay();
   padding-left: 20px;
   padding-right: 20px;
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--xl);
   margin: 0 auto;
   @media screen and (min-width: 376.98px) {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: var(--padding-horizontal-md);
+    padding-right: var(--padding-horizontal-md);
   }
   @media screen and (min-width: 1024px) {
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: var(--padding-horizontal-lg);
+    padding-right: var(--padding-horizontal-lg);
   }
   @media screen and (min-width: 1200px) {
-    padding-top: 40px;
-    padding-bottom: 16px;
     padding-top: 80px;
     padding-bottom: 60px;
   }
   @media screen and (min-width: 1440px) {
-    padding-left: 135px;
-    padding-right: 135px;
+    padding-left: var(--padding-horizontal-xl);
+    padding-right: var(--padding-horizontal-xl);
+
   }
 }
 .footer :deep(.logo.v-list-subheader) {
@@ -135,9 +134,6 @@ const { mdAndUp } = useDisplay();
   justify-content: space-between;
   flex-direction: row;
   gap: 30px;
-  @media screen and (min-width: 1024px) {
-    /* flex-direction: row; */
-  }
 }
 .footer-copyright {
   background-color: transparent;
@@ -155,7 +151,7 @@ const { mdAndUp } = useDisplay();
   min-width: 30px;
   min-height: 30px;
   border-radius: 50%;
-  background-color: #e9b51b;
+  background-color: #f3d510;
   color: var(--black-text);
   font-size: 16px;
   font-weight: 800;

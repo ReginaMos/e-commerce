@@ -19,12 +19,14 @@ export const MenuLinks: Record<string, LinkItem> = {
   CONTACT: { NAME: 'Contact', LINK: '/contact' },
   ABOUT: { NAME: 'About', LINK: '/about' },
   SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
+  LOGIN: { NAME: 'Login', LINK: '/login'}
 };
 
 export const MobileMenuLinks: Record<string, LinkItem> = {
   HOME: { NAME: 'Home', LINK: '/' },
   CATALOG: { NAME: 'Catalog', LINK: '/catalog' },
-  SIGNUP: { NAME: 'Sign Up / Login', LINK: '/signup' },
+  SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
+  LOGIN: { NAME: 'Login', LINK: '/login' },
   USER: { NAME: 'Account', LINK: '/account' },
   LIKES: { NAME: 'Likes', LINK: '/likes' },
   CART: { NAME: 'Shop Cart', LINK: '/cart' },

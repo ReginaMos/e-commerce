@@ -149,13 +149,15 @@ watch(group, () => {
   margin-inline-start: 0;
 }
 .menu-wrapper-desktop {
-  width: 367px !important;
+  /* width: 367px !important; */
+  width: 500px!important;
   margin-right: 40px;
 }
 .header :deep(.menu-wrapper-desktop .v-navigation-drawer) {
   position: static !important;
   border-right-width: 0 !important;
-  width: 367px !important;
+  /* width: 367px !important; */
+  width: 500px!important;
 }
 .header :deep(.v-navigation-drawer__content::-webkit-scrollbar-track) {
   -webkit-box-shadow: inset 0 0 6px #5d5d5d;

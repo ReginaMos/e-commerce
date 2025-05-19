@@ -1,5 +1,6 @@
 <script setup>
 import { useAuth } from '../services/customer-service';
+import { MobileMenuLinks } from '../constants/routersLinks';
 
 defineProps({
   title: String,
@@ -8,7 +9,7 @@ defineProps({
 const { isAuth } = useAuth();
 </script>
 <template>
-  <v-list-item :value="link" link class="activeMenu" v-if="isAuth ? link !== '/signup' : link">
+  <v-list-item :value="link" link class="activeMenu" v-if="isAuth ? link !== MobileMenuLinks.SIGNUP.LINK && link !== MobileMenuLinks.LOGIN.LINK : link">
     <RouterLink :to="link" class="menu-link" style="width: 100%" exact-active-class="active">
       <v-list-item-title>{{ title }}</v-list-item-title>
     </RouterLink>
