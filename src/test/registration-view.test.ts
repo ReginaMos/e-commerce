@@ -1,10 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import RegistrationView from '../views/RegistrationView.vue';
+import { RouterLink } from 'vue-router';
 
 import { type VueWrapper } from '@vue/test-utils';
 import { type ComponentPublicInstance } from 'vue';
 import { mountWithVuetify } from './test-utils';
 import router from '../router';
+import { Links } from '../constants/routersLinks';
 
 vi.mock('../services/customer-service', () => ({
   useAuth: () => ({
@@ -86,11 +88,11 @@ describe('RegistrationView', () => {
 
   it('navigates to login page when Login button is clicked', async () => {
     const push = vi.spyOn(router, 'push');
-    const loginBtn = wrapper.find('a[href="/login"]');
+    const loginBtn = wrapper.findComponent(RouterLink);
     expect(loginBtn.exists()).toBe(true);
-    loginBtn.trigger('click');
+    await loginBtn.trigger('click');
     expect(push).toHaveBeenCalledOnce();
-    expect(push).toHaveBeenCalledWith('login');
+    expect(push).toHaveBeenCalledWith(Links.LOGIN.LINK);
   });
 
   // it('handles API errors', async () => {
