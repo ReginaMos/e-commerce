@@ -30,6 +30,7 @@ onMounted(async () => {
 .catalog-btn
   color: #fff
   background-color: #db4444
+  margin-top: 20px
 
 .products
   margin-top: 10px

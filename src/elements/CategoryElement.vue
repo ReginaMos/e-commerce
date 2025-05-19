@@ -27,7 +27,7 @@ function choseIcon(name: string): string {
 </script>
 
 <template>
-  <v-col class="category d-flex flex-wrap align-center" cols="12" sm="6" md="3">
+  <v-col class="category d-flex flex-wrap align-center" cols="12" sm="5" md="3">
     <v-icon>
       {{ choseIcon(String(item.name['en-US'])) }}
     </v-icon>
@@ -42,8 +42,8 @@ function choseIcon(name: string): string {
   padding: 15px
   border-radius: 12px
   border: 1px solid #cdcdc2
-  gap: 4px
-  flex-direction: row
+  flex-direction: column
+  margin: 10px
 
 .heading
   margin-top: 10px

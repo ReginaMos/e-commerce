@@ -44,10 +44,11 @@ import { promotions } from '../constants/mainPage';
 @media (max-width: 768px)
   .slide
     flex-direction: column
-  
+
 @media (max-width: 535px)
   .slide
     img
+      margin-bottom: 15px
       width: 80%
 
     &__text
