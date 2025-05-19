@@ -14,7 +14,7 @@ Key pages in the application include:
 
 The application is powered by CommerceTools 🌐, a leading provider of commerce solutions for B2C and B2B enterprises. CommerceTools offers a cloud-native, microservices-based commerce platform that enables brands to create unique and engaging digital commerce experiences.
 
-The application is developed in teams of three 👨‍💻👩‍💻👨‍💻 [sepulator](https://github.com/Sepulator), [Regina](https://github.com/ReginaMos),[ViktoriaRosovska](https://github.com/ViktoriaRosovska).
+The application is developed in teams of three 👨‍💻👩‍💻👨‍💻 [sepulator](https://github.com/Sepulator), [Regina](https://github.com/ReginaMos), [ViktoriaRosovska](https://github.com/ViktoriaRosovska).
 
 ## Features
 
