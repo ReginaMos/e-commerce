@@ -13,8 +13,8 @@ onMounted(async () => {
 
 <template>
   <v-container class="products">
-    <v-row>
-      <ProductItem v-for="(product, ind) in products" :key="ind" class="mx-4" cols="4" :item="product" />
+    <v-row class="justify-center">
+      <ProductItem v-for="(product, ind) in products" :key="ind" class="mx-4" :item="product" />
     </v-row>
     <v-row>
       <v-col>
