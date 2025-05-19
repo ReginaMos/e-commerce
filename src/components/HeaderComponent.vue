@@ -7,11 +7,21 @@ import SearchProduct from './SearchProduct.vue';
 import { useDisplay } from 'vuetify';
 import { ref, watch } from 'vue';
 import { useAuth } from '../services/customer-service.ts';
+import MobileSearchProduct from './MobileSearchProduct.vue';
 
 const { isAuth, logoutCustomer } = useAuth();
 const { mdAndDown, lgAndUp, smAndUp } = useDisplay();
 
 const drawer = ref(false);
+watch(drawer, (newVal) => {
+  if (newVal) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.body.classList.add('menu-open');
+  } else {
+    document.body.classList.remove('menu-open');
+  }
+});
+
 const group = ref(null);
 
 watch(group, () => {
@@ -45,9 +55,9 @@ watch(group, () => {
     <SearchProduct />
 
     <div class="icon-wrapper">
-      <v-btn v-if="mdAndDown" class="icon-button">
+      <!-- <v-btn v-if="mdAndDown" class="icon-button">
         <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      </v-btn> -->
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.LIKES.LINK">
         <v-icon icon="mdi mdi-heart-outline"></v-icon>
       </v-btn>
@@ -62,6 +72,7 @@ watch(group, () => {
       >
     </div>
   </v-app-bar>
+  <MobileSearchProduct />
 </template>
 
 <style scoped lang="scss">
@@ -69,28 +80,29 @@ watch(group, () => {
   width: 100%;
   position: fixed;
   top: 48px !important;
+  border-bottom: 1px solid var(--black-background);
 }
 .header :deep(.v-toolbar__content) {
   background-color: var(--white-background);
-  padding-top: 20px;
+  padding-top: var(--padding-top-sm);
   padding-bottom: 8px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: var(--padding-horizontal-sm);
+  padding-right: var(--padding-horizontal-sm);
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-bottom: 1px solid black;
   width: 100%;
-  max-width: 1440px;
+  min-width: var(--xs);
+  max-width: var(--xl);
   margin: 0 auto;
   height: 60px !important;
   @media screen and (min-width: 376.98px) {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: var(--padding-horizontal-md);
+    padding-right: var(--padding-horizontal-md);
   }
   @media screen and (min-width: 1024px) {
-    padding-left: 80px;
-    padding-right: 80px;
+    padding-left: var(--padding-horizontal-lg);
+    padding-right: var(--padding-horizontal-lg);
   }
   @media screen and (min-width: 1200px) {
     height: 94px !important;
@@ -98,8 +110,8 @@ watch(group, () => {
     padding-bottom: 16px;
   }
   @media screen and (min-width: 1440px) {
-    padding-left: 135px;
-    padding-right: 135px;
+    padding-left: var(--padding-horizontal-xl);
+    padding-right: var(--padding-horizontal-xl);
   }
 }
 .header :deep(.v-btn--icon.v-btn--density-default.mobile-menu) {
@@ -137,13 +149,15 @@ watch(group, () => {
   margin-inline-start: 0;
 }
 .menu-wrapper-desktop {
-  width: 367px !important;
+  /* width: 367px !important; */
+  width: 500px !important;
   margin-right: 40px;
 }
 .header :deep(.menu-wrapper-desktop .v-navigation-drawer) {
   position: static !important;
   border-right-width: 0 !important;
-  width: 367px !important;
+  /* width: 367px !important; */
+  width: 500px !important;
 }
 .header :deep(.v-navigation-drawer__content::-webkit-scrollbar-track) {
   -webkit-box-shadow: inset 0 0 6px #5d5d5d;
