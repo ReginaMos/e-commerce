@@ -19,7 +19,7 @@ export const MenuLinks: Record<string, LinkItem> = {
   CONTACT: { NAME: 'Contact', LINK: '/contact' },
   ABOUT: { NAME: 'About', LINK: '/about' },
   SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
-  LOGIN: { NAME: 'Login', LINK: '/login'}
+  LOGIN: { NAME: 'Login', LINK: '/login' },
 };
 
 export const MobileMenuLinks: Record<string, LinkItem> = {

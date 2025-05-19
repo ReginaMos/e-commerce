@@ -97,7 +97,6 @@ const { mdAndUp } = useDisplay();
   @media screen and (min-width: 1440px) {
     padding-left: var(--padding-horizontal-xl);
     padding-right: var(--padding-horizontal-xl);
-
   }
 }
 .footer :deep(.logo.v-list-subheader) {
