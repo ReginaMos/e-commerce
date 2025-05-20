@@ -38,7 +38,7 @@ const { mdAndUp } = useDisplay();
               <router-link :to="Links.CART.LINK">Shop Cart</router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.LIKES.LINK">Wishlist</router-link>
+              <router-link :to="Links.WISHLIST.LINK">Wishlist</router-link>
             </v-list-item>
           </v-list>
         </v-col>
