@@ -40,4 +40,17 @@ import { promotions } from '../constants/mainPage';
     justify-content: center
     align-items: center
     gap: 25px
+
+@media (max-width: 768px)
+  .slide
+    flex-direction: column
+
+@media (max-width: 535px)
+  .slide
+    img
+      margin-bottom: 15px
+      width: 80%
+
+    &__text
+      gap: 0
 </style>

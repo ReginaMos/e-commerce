@@ -14,7 +14,7 @@ onMounted(async () => {
 <template>
   <v-container>
     <v-row class="d-flex justify-center">
-      <CategoryElement v-for="(category, ind) in categories" :key="ind" class="mx-5" :item="category" />
+      <CategoryElement v-for="(category, ind) in categories" :key="ind" :item="category" />
     </v-row>
   </v-container>
 </template>

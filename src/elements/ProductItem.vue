@@ -16,7 +16,7 @@ function addToCart(): void {
 </script>
 
 <template>
-  <v-col class="product">
+  <v-col class="product" cols="12" sm="5" md="4">
     <div class="img-container">
       <img :src="item.imageUrl" alt="product-img" class="product-img" />
       <div class="icons-part">
@@ -38,9 +38,6 @@ function addToCart(): void {
 .product
     cursor: pointer
     transition: all 0.3s ease
-
-    max-width: 25%
-
     background-color: #f2eeee
     border: 1px solid #cdcdc2
     border-radius: 16px
@@ -48,6 +45,9 @@ function addToCart(): void {
 .img-container
     position: relative
     margin-bottom: 15px
+    display: flex
+    align-items: center
+    justify-content: center
 
     img
       max-height: 40vh
