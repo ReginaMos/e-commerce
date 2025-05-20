@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getProducts} from '../services/catalog';
+import { getProducts } from '../services/catalog';
 import type { ProductInfo } from '../models/models';
 import { ref, onMounted } from 'vue';
 import ProductItem from '../elements/ProductItem.vue';
@@ -12,7 +12,7 @@ onMounted(async () => {
   products.value = await getProducts(4);
 });
 
-function goToProduct(id: string):void {
+function goToProduct(id: string): void {
   router.push({ name: Links.PRODUCT.NAME, params: { id } });
 }
 </script>
@@ -20,7 +20,13 @@ function goToProduct(id: string):void {
 <template>
   <v-container class="products">
     <v-row class="justify-center">
-      <ProductItem v-for="(product, ind) in products" :key="ind" class="mx-4" :item="product" @click="goToProduct(product.id)"/>
+      <ProductItem
+        v-for="(product, ind) in products"
+        :key="ind"
+        class="mx-4"
+        :item="product"
+        @click="goToProduct(product.id)"
+      />
     </v-row>
     <v-row>
       <v-col>
