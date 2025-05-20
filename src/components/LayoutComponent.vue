@@ -24,7 +24,7 @@ main {
   padding-left: var(--padding-horizontal-sm);
   padding-right: var(--padding-horizontal-sm);
   padding-top: 148px;
-  padding-bottom: 80px;
+  padding-bottom: 20px;
   margin: 0 auto;
   width: 100%;
   @media screen and (min-width: 376.98px) {

@@ -5,8 +5,8 @@ import AdvantagesElement from '../elements/AdvantagesElement.vue';
 
 <template>
   <v-container>
-    <v-row>
-      <v-col v-for="(advantage, ind) in advantages" :key="ind" class="mx-4">
+    <v-row class="justify-center">
+      <v-col v-for="(advantage, ind) in advantages" :key="ind" class="mx-4" cols="12" sm="6" md="3">
         <AdvantagesElement :item="advantage" />
       </v-col>
     </v-row>
