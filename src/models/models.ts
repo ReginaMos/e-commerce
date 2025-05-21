@@ -22,4 +22,5 @@ export interface ProductInfo {
   price: number;
   discountedPrice?: number;
   currency: string;
+  description: string;
 }

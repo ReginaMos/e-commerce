@@ -29,13 +29,16 @@ const { mdAndUp } = useDisplay();
               <router-link :to="Links.USER.LINK"> My account </router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.SIGNUP.LINK">Login / Register</router-link>
+              <router-link :to="Links.SIGNUP.LINK">Sign Up</router-link>
+            </v-list-item>
+            <v-list-item>
+              <router-link :to="Links.LOGIN.LINK">Login</router-link>
             </v-list-item>
             <v-list-item>
               <router-link :to="Links.CART.LINK">Shop Cart</router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.LIKES.LINK">Wishlist</router-link>
+              <router-link :to="Links.WISHLIST.LINK">Wishlist</router-link>
             </v-list-item>
           </v-list>
         </v-col>
@@ -43,7 +46,7 @@ const { mdAndUp } = useDisplay();
           <v-list>
             <v-list-subheader v-if="mdAndUp"> Quick Link </v-list-subheader>
             <v-list-item>
-              <router-link :to="Links.ABOUT.LINK"> About Us </router-link>
+              <router-link :to="Links.CATALOG.LINK"> Catalog </router-link>
             </v-list-item>
             <v-list-item>
               <router-link :to="Links.CONTACT.LINK">Contact</router-link>
