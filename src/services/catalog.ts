@@ -38,21 +38,26 @@ function getBriefInfoFromProduct(product: Product): ProductInfo {
   const masterVariant = current.masterVariant;
   const name = Object.values(current.name)[0];
 
-  const imageUrl = masterVariant.images?.[0]?.url || '';
+  const images = masterVariant.images || [];
 
   const priceData = masterVariant.prices?.[0];
   const price = priceData ? priceData.value.centAmount / 100 : 0;
   const discountedPrice = priceData?.discounted?.value.centAmount ? priceData.discounted.value.centAmount / 100 : 0;
   const currency = priceData?.value.currencyCode || 'USD';
   const description = product.masterData.staged.description?.['en-US'] || '';
-
+  const quantity = product.masterData.staged.masterVariant.availability?.availableQuantity || 0;
+  const attributes = product.masterData.staged.masterVariant.attributes || [];
+  const size = attributes.find(attr => attr.name === "size")?.value;
   return {
     id: product.id,
     name,
-    imageUrl,
+    images,
     price,
     discountedPrice,
     currency,
     description,
+    quantity,
+    attributes,
+    size
   };
 }
