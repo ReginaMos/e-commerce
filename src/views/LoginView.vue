@@ -71,7 +71,7 @@ const login = async () => {
               v-model="formData.email"
               :rules="getFieldRulesForm('email').value"
               label="Email"
-              type="email"
+              type="text"
               variant="underlined"
               required
             ></v-text-field>
