@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import RegistrationView from '../views/RegistrationView.vue';
+</script>
 
 <template>
-  <h2>Registartion Page</h2>
+  <RegistrationView />
 </template>
 
 <style scoped></style>

@@ -3,7 +3,7 @@ import MainView from '../views/MainView.vue';
 </script>
 
 <template>
-  <MainView msg="Привет из MainPage!" />
+  <MainView />
 </template>
 
 <style scoped></style>
