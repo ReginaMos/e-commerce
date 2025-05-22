@@ -14,15 +14,25 @@ export const addressSchema = z.object({
     .regex(/^\p{L}+$/u, {
       message: 'City must contain only letters (no spaces, apostrophes, hyphens, numbers, or special characters)',
     }),
-  postalCode: z.string().regex(/^(\d{6}|\d{5}-\d{4}|\d{4}\s\d{3})$/, {
-    message: 'Invalid postal code format (e.g., 000000, 12345-6789, or 1234 567)',
+  postalCode: z.string().regex(/^\d{5}$/, {
+    message: 'Invalid postal code format (e.g., 28013)',
   }),
   country: z.string().min(1, { message: 'Country must be selected' }),
 });
 
 export const registrationSchema = z.object({
-  firstName: z.string().min(1, { message: 'First name must be at least 1 characters long' }),
-  lastName: z.string().min(1, { message: 'Last name must be at least 1 characters long' }),
+  firstName: z
+    .string()
+    .min(1, { message: 'First name must be at least 1 characters long' })
+    .regex(/^\p{L}+$/u, {
+      message: 'First name must contain only letters',
+    }),
+  lastName: z
+    .string()
+    .min(1, { message: 'Last name must be at least 1 characters long' })
+    .regex(/^\p{L}+$/u, {
+      message: 'Last name must contain only letters',
+    }),
   email: z
     .string()
     .regex(/^[a-zA-Z0-9@._-]+$/, {
@@ -43,12 +53,8 @@ export const registrationSchema = z.object({
     })
     .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
 
-  dateOfBirth: z.date().refine(
-    (date) => {
-      return date <= thirteenYearsAgo;
-    },
-    {
-      message: 'Must be at least 13 years old',
-    }
+  dateOfBirth: z.preprocess(
+    (val) => (typeof val === 'string' ? new Date(val) : val),
+    z.date().refine((date) => date <= thirteenYearsAgo, { message: 'Must be at least 13 years old' })
   ),
 });
