@@ -17,8 +17,8 @@ export interface Advantage {
 export interface Images {
   dimensions: {
     w: number;
-    h: number
-  },
+    h: number;
+  };
   url: string;
 }
 
@@ -35,6 +35,6 @@ export interface ProductInfo {
   currency: string;
   description: string;
   quantity: number;
-  attributes: Attributes[],
-  size: string
+  attributes: Attributes[];
+  size: string;
 }

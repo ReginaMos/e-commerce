@@ -1,6 +1,7 @@
 import { apiRoot } from './build-client';
-import type { ClientResponse, Product, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import type { ClientResponse, Product, ProductPagedQueryResponse, ProductProjection} from '@commercetools/platform-sdk';
 import type { ProductInfo } from '../models/models';
+// import { getCategoryIdByKey } from './categories';
 
 export async function getProductById(productId: string): Promise<ProductInfo | null> {
   try {
@@ -13,6 +14,54 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
     return null;
   }
 }
+
+export async function getProductsByCategoryKey(categoryKey: string): Promise<ProductProjection[]> {
+  try {
+    const parentCategoryResponse = await apiRoot.categories().get({
+      queryArgs: {
+        where: `key="${categoryKey}"`,
+        limit: 1
+      }
+    }).execute();
+
+    const parentCategory = parentCategoryResponse.body.results[0];
+    if (!parentCategory) {
+      console.error(`Категория с ключом ${categoryKey} не найдена.`);
+      return [];
+    }
+
+    const parentCategoryId = parentCategory.id;
+    const childrenResponse = await apiRoot.categories().get({
+      queryArgs: {
+        where: `ancestors(id="${parentCategoryId}")`,
+        limit: 500
+      }
+    }).execute();
+
+    const allCategoryIds = [
+      parentCategoryId,
+      ...childrenResponse.body.results.map((cat) => cat.id)
+    ];
+
+    const whereClause = allCategoryIds.map(id => `categories(id="${id}")`).join(" or ");
+    const productsResponse = await apiRoot.productProjections().get({
+      queryArgs: {
+        where: whereClause,
+        limit: 50,
+        staged: true
+      }
+    }).execute();
+
+    return productsResponse.body.results;
+  } catch (error) {
+    console.error('Ошибка при получении товаров по категории:', error);
+    return [];
+  }
+}
+
+const products = await getProductsByCategoryKey('man-wear');
+console.log(products);
+
 
 export async function getProducts(limit?: number): Promise<ProductInfo[]> {
   try {
@@ -47,7 +96,7 @@ function getBriefInfoFromProduct(product: Product): ProductInfo {
   const description = product.masterData.staged.description?.['en-US'] || '';
   const quantity = product.masterData.staged.masterVariant.availability?.availableQuantity || 0;
   const attributes = product.masterData.staged.masterVariant.attributes || [];
-  const size = attributes.find(attr => attr.name === "size")?.value;
+  const size = attributes.find((attr) => attr.name === 'size')?.value;
   return {
     id: product.id,
     name,
@@ -58,6 +107,6 @@ function getBriefInfoFromProduct(product: Product): ProductInfo {
     description,
     quantity,
     attributes,
-    size
+    size,
   };
 }

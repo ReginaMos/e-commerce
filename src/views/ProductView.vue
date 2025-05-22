@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { getProductById } from '../services/catalog';
-import { ref, computed } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import type { ProductInfo, Attributes } from '../models/models';
 
 const route = useRoute();
@@ -38,10 +37,8 @@ const name = computed(() => product.value?.name || '');
         <p>Description: {{ product?.description }}</p>
         <p>Sizes: {{ product?.size }}</p>
         <p>Quantity: {{ product?.quantity }}</p>
-        <p>Brand: {{ product?.attributes.find((attr: Attributes) => attr.name === "brand")?.value }}</p>
-        <v-btn v-if="product?.quantity || 0 > 0" class="btn">
-          Add to Cart
-        </v-btn>
+        <p>Brand: {{ product?.attributes.find((attr: Attributes) => attr.name === 'brand')?.value }}</p>
+        <v-btn v-if="product?.quantity || 0 > 0" class="btn"> Add to Cart </v-btn>
         <p v-else>This product sold</p>
       </v-col>
     </v-row>
@@ -52,4 +49,5 @@ const name = computed(() => product.value?.name || '');
   width: fit-content;
   background-color: var(--red-secondary);
   color: var(--white-text);
-}</style>
+}
+</style>
