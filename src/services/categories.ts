@@ -20,8 +20,8 @@ export async function getMainCategories() {
       .get({
         queryArgs: {
           where: 'parent is not defined',
-          limit: 100
-        }
+          limit: 100,
+        },
       })
       .execute();
 

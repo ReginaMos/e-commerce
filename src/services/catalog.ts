@@ -1,5 +1,10 @@
 import { apiRoot } from './build-client';
-import type { ClientResponse, Product, ProductPagedQueryResponse, ProductProjection} from '@commercetools/platform-sdk';
+import type {
+  ClientResponse,
+  Product,
+  ProductPagedQueryResponse,
+  ProductProjection,
+} from '@commercetools/platform-sdk';
 import type { ProductInfo } from '../models/models';
 // import { getCategoryIdByKey } from './categories';
 
@@ -17,12 +22,15 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
 
 export async function getProductsByCategoryKey(categoryKey: string): Promise<ProductProjection[]> {
   try {
-    const parentCategoryResponse = await apiRoot.categories().get({
-      queryArgs: {
-        where: `key="${categoryKey}"`,
-        limit: 1
-      }
-    }).execute();
+    const parentCategoryResponse = await apiRoot
+      .categories()
+      .get({
+        queryArgs: {
+          where: `key="${categoryKey}"`,
+          limit: 1,
+        },
+      })
+      .execute();
 
     const parentCategory = parentCategoryResponse.body.results[0];
     if (!parentCategory) {
@@ -31,26 +39,29 @@ export async function getProductsByCategoryKey(categoryKey: string): Promise<Pro
     }
 
     const parentCategoryId = parentCategory.id;
-    const childrenResponse = await apiRoot.categories().get({
-      queryArgs: {
-        where: `ancestors(id="${parentCategoryId}")`,
-        limit: 500
-      }
-    }).execute();
+    const childrenResponse = await apiRoot
+      .categories()
+      .get({
+        queryArgs: {
+          where: `ancestors(id="${parentCategoryId}")`,
+          limit: 500,
+        },
+      })
+      .execute();
 
-    const allCategoryIds = [
-      parentCategoryId,
-      ...childrenResponse.body.results.map((cat) => cat.id)
-    ];
+    const allCategoryIds = [parentCategoryId, ...childrenResponse.body.results.map((cat) => cat.id)];
 
-    const whereClause = allCategoryIds.map(id => `categories(id="${id}")`).join(" or ");
-    const productsResponse = await apiRoot.productProjections().get({
-      queryArgs: {
-        where: whereClause,
-        limit: 50,
-        staged: true
-      }
-    }).execute();
+    const whereClause = allCategoryIds.map((id) => `categories(id="${id}")`).join(' or ');
+    const productsResponse = await apiRoot
+      .productProjections()
+      .get({
+        queryArgs: {
+          where: whereClause,
+          limit: 50,
+          staged: true,
+        },
+      })
+      .execute();
 
     return productsResponse.body.results;
   } catch (error) {
@@ -61,7 +72,6 @@ export async function getProductsByCategoryKey(categoryKey: string): Promise<Pro
 
 const products = await getProductsByCategoryKey('man-wear');
 console.log(products);
-
 
 export async function getProducts(limit?: number): Promise<ProductInfo[]> {
   try {
