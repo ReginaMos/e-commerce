@@ -106,14 +106,14 @@ const { mdAndUp } = useDisplay();
 .footer :deep(.v-list-subheader__text) {
   color: var(--white-text);
   font-size: 16px;
-  
+
   font-weight: bold;
   overflow: visible;
   @media screen and (min-width: 1024px) {
     font-size: 18px;
   }
   @media screen and (min-width: 1440px) {
-   font-size: 24px;
+    font-size: 24px;
   }
 }
 .footer :deep(.v-list) {
