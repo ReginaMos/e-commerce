@@ -102,13 +102,19 @@ const { mdAndUp } = useDisplay();
     padding-right: var(--padding-horizontal-xl);
   }
 }
-.footer :deep(.logo.v-list-subheader) {
-  font-size: 24px;
-  font-weight: bold;
-}
-.footer :deep(.v-list-subheader) {
+
+.footer :deep(.v-list-subheader__text) {
   color: var(--white-text);
-  font-size: 20px;
+  font-size: 16px;
+  
+  font-weight: bold;
+  overflow: visible;
+  @media screen and (min-width: 1024px) {
+    font-size: 18px;
+  }
+  @media screen and (min-width: 1440px) {
+   font-size: 24px;
+  }
 }
 .footer :deep(.v-list) {
   background-color: var(--black-background);
@@ -153,7 +159,7 @@ const { mdAndUp } = useDisplay();
   min-width: 30px;
   min-height: 30px;
   border-radius: 50%;
-  background-color: #f3d510;
+  background-color: #f3cd10;
   color: var(--black-text);
   font-size: 16px;
   font-weight: 800;

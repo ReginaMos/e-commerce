@@ -70,7 +70,7 @@ export async function getProductsByCategoryKey(categoryKey: string): Promise<Pro
   }
 }
 
-const products = await getProductsByCategoryKey('man-wear');
+const products = await getProductsByCategoryKey('accessories');
 console.log(products);
 
 export async function getProducts(limit?: number): Promise<ProductInfo[]> {
