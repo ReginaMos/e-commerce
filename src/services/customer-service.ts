@@ -1,5 +1,5 @@
 import { apiRoot, buildCustomerClient, resetClient } from './build-client';
-import type { MyCustomerDraft, MyCustomerSignin } from '@commercetools/platform-sdk';
+import type { Customer, MyCustomerDraft, MyCustomerSignin } from '@commercetools/platform-sdk';
 import { USER_KEY } from '../constants/local-storage';
 import { ref } from 'vue';
 
@@ -41,5 +41,18 @@ export function useAuth() {
     checkAuth();
     return result.body;
   }
-  return { isAuth, loginCustomer, logoutCustomer, createCustomer };
+  return { isAuth, loginCustomer, logoutCustomer, createCustomer, getCustomer };
+}
+
+export function getCustomer() {
+  const data = localStorage.getItem(USER_KEY);
+  if (!data) {
+    throw new Error('Customer not found');
+  }
+
+  try {
+    return JSON.parse(data) as Customer;
+  } catch {
+    throw new Error('Customer data corrupted');
+  }
 }

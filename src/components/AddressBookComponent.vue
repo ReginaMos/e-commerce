@@ -1,4 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { getCustomer } from '../services/customer-service';
+import { getAddress } from '../utils/user-profile';
+import AddressCardComponent from './AddressCardComponent.vue';
+
+const customer = getCustomer();
+const { shipAddress, billAddress, otherAddress } = getAddress(customer);
+</script>
 
 <template>
   <v-row>
@@ -14,32 +21,11 @@
     </v-col>
   </v-row>
   <v-row>
-    <v-col>
-      <v-card
-        variant="outlined"
-        prepend-icon="mdi-truck-delivery-outline"
-        class="text-left"
-        title="Default Delivery Address"
-      >
-        <template v-slot:actions>
-          <v-btn text="Edit" variant="tonal" />
-          <v-btn text="Remove" variant="tonal" />
-        </template>
-        <v-list density="compact">
-          <v-list-item>
-            <span>City:</span>
-          </v-list-item>
-          <v-list-item>
-            <span>Postal Code:</span>
-          </v-list-item>
-          <v-list-item>
-            <span>Street:</span>
-          </v-list-item>
-          <v-list-item>
-            <span>Country:</span>
-          </v-list-item>
-        </v-list>
-      </v-card>
+    <v-col sm="7" md="6">
+      <AddressCardComponent :address="shipAddress" type="shipping" />
+    </v-col>
+    <v-col sm="7" md="6">
+      <AddressCardComponent :address="billAddress" type="billing" />
     </v-col>
   </v-row>
   <v-row>
@@ -48,13 +34,13 @@
     </v-col>
   </v-row>
   <v-row>
-    <v-col class="text-left">
-      <v-card variant="outlined" class="text-left" subtitle="Saved Address">
-        <template v-slot:actions>
-          <v-btn text="Edit" variant="tonal" />
-          <v-btn text="Remove" variant="tonal" />
-        </template>
-      </v-card>
+    <v-col>
+      <template v-if="otherAddress.length === 0">
+        <AddressCardComponent :address="undefined" type="saved" />
+      </template>
+      <template v-else v-for="address in otherAddress" :key="address.id">
+        <AddressCardComponent :address="address" type="saved" />
+      </template>
     </v-col>
   </v-row>
 </template>
