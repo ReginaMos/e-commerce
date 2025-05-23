@@ -9,7 +9,7 @@ import { Links } from '../constants/routersLinks';
 const products = ref<ProductInfo[]>([]);
 
 onMounted(async () => {
-  products.value = await getProducts(4);
+  products.value = await getProducts(50);
 });
 
 function goToProduct(id: string): void {

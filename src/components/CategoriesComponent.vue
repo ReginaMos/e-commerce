@@ -2,12 +2,14 @@
 import { ref, onMounted } from 'vue';
 import type { Category } from '@commercetools/platform-sdk';
 import CategoryElement from '../elements/CategoryElement.vue';
-import { getCategories } from '../services/categories';
+// import { getCategories } from '../services/categories';
+import { getMainCategories } from '../services/categories';
 
 const categories = ref<Category[]>([]);
 
 onMounted(async () => {
-  categories.value = await getCategories();
+  // categories.value = await getCategories();
+  categories.value = await getMainCategories();
 });
 </script>
 
