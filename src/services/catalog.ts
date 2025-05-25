@@ -70,9 +70,6 @@ export async function getProductsByCategoryKey(categoryKey: string): Promise<Pro
   }
 }
 
-const products = await getProductsByCategoryKey('accessories-man-wear');
-console.log(products);
-
 export async function getProducts(limit?: number): Promise<ProductInfo[]> {
   try {
     const { body }: ClientResponse<ProductPagedQueryResponse> = await apiRoot
