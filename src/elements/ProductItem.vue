@@ -18,7 +18,7 @@ function addToCart(): void {
 <template>
   <v-col class="product" cols="12" sm="5" md="4">
     <div class="img-container">
-      <img :src="item.imageUrl" alt="product-img" class="product-img" />
+      <img :src="item.images[0].url" alt="product-img" class="product-img" />
       <div class="icons-part">
         <v-icon @click="addToFavor()" size="30"> {{ favorIcon }}</v-icon>
         <v-icon icon="mdi mdi-eye-outline" size="30"></v-icon>
