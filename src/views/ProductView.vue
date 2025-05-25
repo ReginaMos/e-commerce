@@ -121,10 +121,14 @@ const count = ref(1);
   color: var(--white-text);
 }
 .dialog-slider {
-  width: fit-content;
+  max-width: 800px;
+  max-height: 80%;
+  width: auto;
+  height: 100%;
+  min-width: 300px;
 }
 .dialog-slider :deep(.v-img__img) {
-  object-fit: scale-down !important;
+  object-fit: contain !important;
   width: auto !important;
   height: auto !important;
   max-width: 100%;
@@ -148,8 +152,8 @@ const count = ref(1);
 .card-dialog {
   background-color: var(--white-background);
   padding: 30px;
-  max-width: auto !important;
-  height: auto !important;
+  max-width: auto!important;
+  height: auto!important;
 }
 .carousel-slider.v-carousel {
   height: auto !important;
