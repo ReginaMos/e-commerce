@@ -11,11 +11,11 @@ export const addressSchema = z.object({
   city: z
     .string()
     .min(1, { message: 'City must be at least 1 character long' })
-    .regex(/^[a-zA-Z\s]*$/, {
-      message: 'City must contain only letters and spaces',
+    .regex(/^\p{L}+$/u, {
+      message: 'City must contain only letters (no spaces, apostrophes, hyphens, numbers, or special characters)',
     }),
-  postalCode: z.string().regex(/^(\d{6}|\d{5}-\d{4}|\d{4}\s\d{3})$/, {
-    message: 'Invalid postal code format (e.g., 000000, 12345-6789, or 1234 567)',
+  postalCode: z.string().regex(/^\d{5}$/, {
+    message: 'Invalid postal code format (e.g., 28013)',
   }),
   country: z.string().min(1, { message: 'Country must be selected' }),
 });
@@ -23,15 +23,27 @@ export const addressSchema = z.object({
 export const registrationSchema = z.object({
   firstName: z
     .string()
-    .min(1, { message: 'Username must be at least 1 characters long' })
-    .regex(/^[a-zA-Z]*$/, { message: 'Username must contain only letters' }),
+    .min(1, { message: 'First name must be at least 1 characters long' })
+    .regex(/^\p{L}+$/u, {
+      message: 'First name must contain only letters',
+    }),
   lastName: z
     .string()
-    .min(1, { message: 'Username must be at least 1 characters long' })
-    .regex(/^[a-zA-Z]*$/, { message: 'Username must contain only letters' }),
-  email: z.string().email({ message: 'Invalid email address' }),
+    .min(1, { message: 'Last name must be at least 1 characters long' })
+    .regex(/^\p{L}+$/u, {
+      message: 'Last name must contain only letters',
+    }),
+  email: z
+    .string()
+    .regex(/^[a-zA-Z0-9@._-]+$/, {
+      message: 'Email address must contain only Latin letters, numbers, and allowed symbols (@, ., _, -)',
+    })
+    .email(),
   password: z
     .string()
+    .regex(/^[a-zA-Z0-9!@#$%^&*]*$/, {
+      message: 'Password can contain only Latin letters, numbers, and special characters (!@#$%^&*)',
+    })
     .min(8, { message: 'Password must be at least 8 characters long' })
     .regex(/[a-z]/, {
       message: 'Password must contain at least one lowercase letter',
@@ -40,12 +52,9 @@ export const registrationSchema = z.object({
       message: 'Password must contain at least one uppercase letter',
     })
     .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
-  dateOfBirth: z.date().refine(
-    (date) => {
-      return date <= thirteenYearsAgo;
-    },
-    {
-      message: 'Must be at least 13 years old',
-    }
+
+  dateOfBirth: z.preprocess(
+    (val) => (typeof val === 'string' ? new Date(val) : val),
+    z.date().refine((date) => date <= thirteenYearsAgo, { message: 'Must be at least 13 years old' })
   ),
 });
