@@ -152,8 +152,8 @@ const count = ref(1);
 .card-dialog {
   background-color: var(--white-background);
   padding: 30px;
-  max-width: auto!important;
-  height: auto!important;
+  max-width: auto !important;
+  height: auto !important;
 }
 .carousel-slider.v-carousel {
   height: auto !important;
