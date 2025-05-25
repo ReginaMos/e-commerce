@@ -17,9 +17,7 @@ function addToCart(): void {
 
 <template>
   <v-col class="product" cols="12" sm="4" md="3">
-    <div v-if="item.discountedPrice" class="discount">
-      SALE!
-    </div>
+    <div v-if="item.discountedPrice" class="discount">SALE!</div>
 
     <div class="main-part">
       <div class="img-container">
@@ -28,28 +26,21 @@ function addToCart(): void {
       </div>
 
       <div class="icons-part">
-          <v-icon @click.stop="addToFavor()" size="30"> {{ favorIcon }}</v-icon>
+        <v-icon @click.stop="addToFavor()" size="30"> {{ favorIcon }}</v-icon>
       </div>
 
       <h3 class="heading">
-            {{ item.name }}
+        {{ item.name }}
       </h3>
     </div>
 
     <div class="price-container">
-      <span class="price">Price:</span> 
-      <p v-if="item.discountedPrice"> 
-        <span class="discounted-price"> 
-          {{ item.discountedPrice }}&nbsp;{{ item.currency }}&nbsp;
-        </span>
-        <span class="prev-price">
-          {{ item.price }}&nbsp;{{ item.currency }}
-        </span>
+      <span class="price">Price:</span>
+      <p v-if="item.discountedPrice">
+        <span class="discounted-price"> {{ item.discountedPrice }}&nbsp;{{ item.currency }}&nbsp; </span>
+        <span class="prev-price"> {{ item.price }}&nbsp;{{ item.currency }} </span>
       </p>
-      <p v-else> 
-        {{ item.price }} {{ item.currency }}
-      </p>
-      
+      <p v-else>{{ item.price }} {{ item.currency }}</p>
     </div>
   </v-col>
 </template>
