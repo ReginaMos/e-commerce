@@ -4,6 +4,9 @@ import CategoriesComponent from '../components/CategoriesComponent.vue';
 import CarouselElement from '../elements/CarouselElement.vue';
 import MainHeading from '../elements/MainHeading.vue';
 import ProductsComponent from '../components/ProductsComponent.vue';
+import ButtonElement from '../elements/ButtonElement.vue';
+
+const count: number = 6;
 </script>
 
 <template>
@@ -24,7 +27,8 @@ import ProductsComponent from '../components/ProductsComponent.vue';
 
     <v-row class="mb-4">
       <MainHeading title="Our products" />
-      <ProductsComponent count="4" />
+      <ProductsComponent :productsCount="count" />
+      <ButtonElement title="View all products" link="/catalog" />
     </v-row>
   </v-container>
 </template>

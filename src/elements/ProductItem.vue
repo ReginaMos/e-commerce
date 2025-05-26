@@ -16,13 +16,11 @@ function addToCart(): void {
 </script>
 
 <template>
-  <v-col class="product" cols="12" sm="5" md="4">
+  <v-col class="product" cols="12" sm="4" md="3">
     <div class="img-container">
-      <img :src="item.imageUrl" alt="product-img" class="product-img" />
+      <img :src="item.images[0].url" alt="product-img" class="product-img" />
       <div class="icons-part">
         <v-icon @click="addToFavor()" size="30"> {{ favorIcon }}</v-icon>
-        <v-icon icon="mdi mdi-eye-outline" size="30"></v-icon>
-        <!--Redirect to more-info-page-->
       </div>
       <div class="add-to-cart" @click="addToCart()">Add To Cart</div>
     </div>
@@ -56,7 +54,7 @@ function addToCart(): void {
 
 .icons-part
     position: absolute
-    right: 5px
+    right: 3px
     top: 10px
 
     display: flex
@@ -79,7 +77,7 @@ function addToCart(): void {
     font-weight: 600
 
 .product:hover
-    transform: scale(1.2)
+    transform: scale(1.1)
     box-shadow: 4px 0px 16px 14px rgba(34, 60, 80, 0.2)
 
 .product:hover .add-to-cart
