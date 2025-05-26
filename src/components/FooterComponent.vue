@@ -29,16 +29,13 @@ const { mdAndUp } = useDisplay();
               <router-link :to="Links.USER.LINK"> My account </router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.SIGNUP.LINK">Sign Up</router-link>
-            </v-list-item>
-            <v-list-item>
-              <router-link :to="Links.LOGIN.LINK">Login</router-link>
+              <router-link :to="Links.SIGNUP.LINK">Login / Register</router-link>
             </v-list-item>
             <v-list-item>
               <router-link :to="Links.CART.LINK">Shop Cart</router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.WISHLIST.LINK">Wishlist</router-link>
+              <router-link :to="Links.LIKES.LINK">Wishlist</router-link>
             </v-list-item>
           </v-list>
         </v-col>
@@ -46,7 +43,7 @@ const { mdAndUp } = useDisplay();
           <v-list>
             <v-list-subheader v-if="mdAndUp"> Quick Link </v-list-subheader>
             <v-list-item>
-              <router-link :to="Links.CATALOG.LINK"> Catalog </router-link>
+              <router-link :to="Links.ABOUT.LINK"> About Us </router-link>
             </v-list-item>
             <v-list-item>
               <router-link :to="Links.CONTACT.LINK">Contact</router-link>
@@ -102,19 +99,13 @@ const { mdAndUp } = useDisplay();
     padding-right: var(--padding-horizontal-xl);
   }
 }
-
-.footer :deep(.v-list-subheader__text) {
-  color: var(--white-text);
-  font-size: 16px;
-
+.footer :deep(.logo.v-list-subheader) {
+  font-size: 24px;
   font-weight: bold;
-  overflow: visible;
-  @media screen and (min-width: 1024px) {
-    font-size: 18px;
-  }
-  @media screen and (min-width: 1440px) {
-    font-size: 24px;
-  }
+}
+.footer :deep(.v-list-subheader) {
+  color: var(--white-text);
+  font-size: 20px;
 }
 .footer :deep(.v-list) {
   background-color: var(--black-background);
@@ -159,7 +150,7 @@ const { mdAndUp } = useDisplay();
   min-width: 30px;
   min-height: 30px;
   border-radius: 50%;
-  background-color: #f3cd10;
+  background-color: #f3d510;
   color: var(--black-text);
   font-size: 16px;
   font-weight: 800;

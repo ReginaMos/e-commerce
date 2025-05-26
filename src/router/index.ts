@@ -7,7 +7,7 @@ import RegistrationPage from '../pages/RegistrationPage.vue';
 import AboutPage from '../pages/AboutPage.vue';
 import ContactsPage from '../pages/ContactsPage.vue';
 import LayoutComponent from '../components/LayoutComponent.vue';
-import WishListPage from '../pages/WishListPage.vue';
+import LikesPage from '../pages/LikesPage.vue';
 import CartPage from '../pages/CartPage.vue';
 import UserPage from '../pages/UserPage.vue';
 import ProductPage from '../pages/ProductPage.vue';
@@ -48,9 +48,9 @@ const routes: Array<RouteRecordRaw> = [
         component: RegistrationPage,
       },
       {
-        path: Links.WISHLIST.LINK,
-        name: Links.WISHLIST.NAME,
-        component: WishListPage,
+        path: Links.LIKES.LINK,
+        name: Links.LIKES.NAME,
+        component: LikesPage,
       },
       {
         path: Links.CART.LINK,
@@ -68,10 +68,11 @@ const routes: Array<RouteRecordRaw> = [
         component: CatalogPage,
       },
       {
-        path: `${Links.PRODUCT.LINK}/:id`,
+        path: `Links.PRODUCT.LINK/${1}`,
         name: Links.PRODUCT.NAME,
         component: ProductPage,
       },
+
       {
         path: '/:pathMatch(.*)*',
         name: Links.NOTFOUND.NAME,

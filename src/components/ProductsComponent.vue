@@ -3,30 +3,18 @@ import { getProducts } from '../services/catalog';
 import type { ProductInfo } from '../models/models';
 import { ref, onMounted } from 'vue';
 import ProductItem from '../elements/ProductItem.vue';
-import router from '../router';
-import { Links } from '../constants/routersLinks';
 
 const products = ref<ProductInfo[]>([]);
 
 onMounted(async () => {
   products.value = await getProducts(4);
 });
-
-function goToProduct(id: string): void {
-  router.push({ name: Links.PRODUCT.NAME, params: { id } });
-}
 </script>
 
 <template>
   <v-container class="products">
     <v-row class="justify-center">
-      <ProductItem
-        v-for="(product, ind) in products"
-        :key="ind"
-        class="mx-4"
-        :item="product"
-        @click="goToProduct(product.id)"
-      />
+      <ProductItem v-for="(product, ind) in products" :key="ind" class="mx-4" :item="product" />
     </v-row>
     <v-row>
       <v-col>
