@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { getProductById } from '../services/catalog';
-import { onMounted, ref} from 'vue';
+import { onMounted, ref } from 'vue';
 import type { ProductInfo } from '../models/models';
 import ProductPageContent from '../components/ProductPageContent.vue';
 import ProductPageSlider from '../components/ProductPageSlider.vue';
@@ -19,7 +19,6 @@ onMounted(async () => {
     console.error('invalid param Id:', id);
   }
 });
-
 </script>
 
 <template>
@@ -27,15 +26,13 @@ onMounted(async () => {
     <v-row class="product-page-container">
       <v-col>
         <ModalWindowComponent v-if="product" :images="product.images" :altText="product.name">
-          <template #activator="{  on = {}, attrs = {} }">
+          <template #activator="{ on = {}, attrs = {} }">
             <ProductPageSlider v-bind="attrs" v-on="on" v-if="product" :product="product" />
           </template>
         </ModalWindowComponent>
       </v-col>
       <v-col class="text-left product-content">
-        <ProductPageContent 
-          v-if="product" :product="product"
-        />
+        <ProductPageContent v-if="product" :product="product" />
       </v-col>
     </v-row>
   </v-container>

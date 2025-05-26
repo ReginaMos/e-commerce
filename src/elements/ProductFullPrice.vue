@@ -1,18 +1,18 @@
 <script setup lang="ts">
 defineProps({
-    price: Number,
-    discountedPrice: Number,
-    currency: String,
-})
+  price: Number,
+  discountedPrice: Number,
+  currency: String,
+});
 </script>
 <template>
-    <p v-if="discountedPrice">
-          <span class="red-ligthing-price">{{ discountedPrice }}</span
-          ><span class="red-ligthing-price">{{ currency }}</span
-          >&nbsp;&nbsp;<span class="gray-through-price">{{ price }}</span>
-          <span class="gray-through-price">{{ currency }}</span>
-        </p>
-        <p v-else>{{ price }} {{ currency }}</p>
+  <p v-if="discountedPrice">
+    <span class="red-ligthing-price">{{ discountedPrice }}</span
+    ><span class="red-ligthing-price">{{ currency }}</span
+    >&nbsp;&nbsp;<span class="gray-through-price">{{ price }}</span>
+    <span class="gray-through-price">{{ currency }}</span>
+  </p>
+  <p v-else>{{ price }} {{ currency }}</p>
 </template>
 <style scoped lang="scss">
 .red-ligthing-price {
