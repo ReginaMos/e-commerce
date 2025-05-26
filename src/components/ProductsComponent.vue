@@ -7,15 +7,13 @@ import router from '../router';
 import { Links } from '../constants/routersLinks';
 
 const props = defineProps({
-  productsCount: Number
+  productsCount: Number,
 });
 
 const products = ref<ProductInfo[]>([]);
 
 onMounted(async () => {
- products.value = props.productsCount != null
-    ? await getProducts(props.productsCount)
-    : await getProducts();
+  products.value = props.productsCount != null ? await getProducts(props.productsCount) : await getProducts();
 });
 
 function goToProduct(id: string): void {
