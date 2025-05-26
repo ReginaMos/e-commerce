@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import CatalogView from '../views/CatalogView.vue';
+</script>
 
 <template>
-  <h1>CatalogPage!</h1>
+  <CatalogView />
 </template>
 
 <style scoped></style>

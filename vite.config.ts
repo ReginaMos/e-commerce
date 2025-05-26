@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
 export default defineConfig({
-  base: '/e-commerce/release-sprint-2/',
+  base: '/e-commerce/release-sprint-3/',
   plugins: [vue(), vuetify({ autoImport: true })],
   test: {
     globals: true,
