@@ -27,7 +27,7 @@ onMounted(async () => {
       <v-col>
         <ModalWindowComponent v-if="product" :images="product.images" :altText="product.name">
           <template #activator="slotProps">
-            <ProductPageSlider v-bind="slotProps" v-if="product" :product="product"/>
+            <ProductPageSlider v-bind="slotProps" v-if="product" :product="product" />
           </template>
         </ModalWindowComponent>
       </v-col>
