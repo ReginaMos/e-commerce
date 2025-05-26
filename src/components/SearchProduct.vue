@@ -10,14 +10,14 @@ const searchQuery = ref('');
 const router = useRouter();
 const getSerchQuery = (query: string) => {
   if (query.trim()) {
-  if (router)
-    router.push({
-      path: Links.SEARCH.LINK,
-      query: {
-        search: query,
-      },
-    });
-  };
+    if (router)
+      router.push({
+        path: Links.SEARCH.LINK,
+        query: {
+          search: query,
+        },
+      });
+  }
 };
 // function onChange() {
 //   console.log('searchQuery: ', searchQuery);
