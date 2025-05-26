@@ -18,15 +18,10 @@ const activeTab = ref('addressBook');
 
       <v-tabs-window v-model="activeTab" class="w-66">
         <v-tabs-window-item value="addressBook">
-          <v-card flat>
-            <AddressBookComponent />
-          </v-card>
+          <AddressBookComponent />
         </v-tabs-window-item>
-
         <v-tabs-window-item value="personalDetails">
-          <v-card flat>
-            <PersonalDetailsComponent />
-          </v-card>
+          <PersonalDetailsComponent />
         </v-tabs-window-item>
       </v-tabs-window>
     </div>
