@@ -45,7 +45,7 @@ const { firstName, lastName, dateOfBirth, email } = getCustomer();
   <v-row>
     <v-col>
       <v-card variant="text" class="text-left" title="Your Password">
-        <v-card-text> ********* </v-card-text>
+        <v-card-text class="ml-5">*********</v-card-text>
       </v-card>
     </v-col>
     <v-col align-self="center">
