@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Address } from '@commercetools/platform-sdk';
-import { computed } from 'vue';
+import { getCountryName } from '../utils/user-profile';
 
 type Messages = 'billing' | 'shipping' | 'saved';
 type MessagesProps = Record<Messages, { text: string; icon: string }>;
@@ -11,12 +11,10 @@ const msg: MessagesProps = {
   saved: { text: 'Saved Address', icon: 'mdi-map-marker-outline' },
 };
 
-const props = defineProps<{
+defineProps<{
   address: Address | undefined;
   type: Messages;
 }>();
-
-const shipArray = computed(() => (props.address ? Object.entries(props.address).filter(([key]) => key !== 'id') : []));
 </script>
 
 <template>
@@ -34,8 +32,17 @@ const shipArray = computed(() => (props.address ? Object.entries(props.address).
       <v-btn location="center" text="Add a new address" variant="tonal" class="text-center" />
     </template>
     <v-list v-if="address" density="compact">
-      <v-list-item v-for="[key, value] in shipArray" :key="key">
-        <span>{{ value }}</span>
+      <v-list-item>
+        <strong>Street</strong> <span>{{ address.streetName }}</span>
+      </v-list-item>
+      <v-list-item>
+        <strong>City</strong> <span>{{ address.city }}</span>
+      </v-list-item>
+      <v-list-item>
+        <strong>Postal code</strong> <span>{{ address.postalCode }}</span>
+      </v-list-item>
+      <v-list-item>
+        <strong>Country</strong> <span>{{ getCountryName(address.country) }}</span>
       </v-list-item>
     </v-list>
     <v-card-text v-else class="text-center text-body-1">
