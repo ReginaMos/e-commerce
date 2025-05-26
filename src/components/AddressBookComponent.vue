@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { AnyZodObject } from 'zod';
-import { computed, reactive, ref, type ComputedRef } from 'vue';
+import { reactive, ref } from 'vue';
 import { getCustomer } from '../services/customer-service';
-import { getAddress } from '../utils/user-profile';
+import { getAddress, getFieldRules } from '../utils/user-profile';
 import AddressCardComponent from './AddressCardComponent.vue';
 import { addressSchema, type AddressData } from '../utils/registration-schema';
 import { countyList } from '../constants/country-list';
@@ -10,6 +9,7 @@ import { countyList } from '../constants/country-list';
 const isNewAddress = ref(false);
 const customer = getCustomer();
 const { shipAddress, billAddress, otherAddress } = getAddress(customer);
+const addressForm = ref();
 
 const address = reactive<AddressData>({
   city: '',
@@ -21,18 +21,6 @@ const address = reactive<AddressData>({
 const defaultBilling = ref(false);
 const defaultShipping = ref(false);
 
-const getFieldRules = <T extends object>(
-  fieldName: keyof T,
-  schema: AnyZodObject
-): ComputedRef<((v: string) => true | string)[]> => {
-  return computed(() => [
-    (v: string) => {
-      const result = schema.shape[fieldName].safeParse(v);
-      return result.success ? true : result.error.issues[0].message;
-    },
-  ]);
-};
-
 const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
 
 const register = async () => {
@@ -40,6 +28,11 @@ const register = async () => {
   if (result) {
     console.log(address);
   }
+};
+
+const clear = () => {
+  addressForm.value?.reset();
+  isNewAddress.value = !isNewAddress.value;
 };
 </script>
 
@@ -56,12 +49,8 @@ const register = async () => {
           variant="text"
           class="text-left"
         >
-          <template v-slot:actions>
-            <v-btn text="Save Address" @click="isNewAddress = !isNewAddress" color="black" variant="flat" />
-            <v-btn text="Cancel" @click="isNewAddress = !isNewAddress" color="black" variant="outlined" />
-          </template>
           <v-card-text>
-            <v-form @submit.prevent="register" class="mb-2" name="registrationForm">
+            <v-form ref="addressForm" @submit.prevent="register" class="mb-2" name="registrationForm">
               <v-text-field
                 v-model="address.streetName"
                 :rules="getFieldRulesAddress('streetName').value"
@@ -99,6 +88,8 @@ const register = async () => {
               ></v-autocomplete>
               <v-checkbox v-model="defaultShipping" label="Set as default shipping" hide-details></v-checkbox>
               <v-checkbox v-model="defaultBilling" label="Set as default billing" hide-details></v-checkbox>
+              <v-btn type="submit" text="Save Address" color="black" variant="elevated" class="me-4" />
+              <v-btn type="reset" text="Cancel" color="black" variant="outlined" @click="clear" />
             </v-form>
           </v-card-text>
         </v-card>

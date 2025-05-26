@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export type FormData = z.infer<typeof registrationSchema>;
 export type AddressData = z.infer<typeof addressSchema>;
+export type NoPassword = z.infer<typeof schemaWithoutPassword>;
 
 const today = new Date();
 export const thirteenYearsAgo = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
@@ -58,3 +59,5 @@ export const registrationSchema = z.object({
     z.date().refine((date) => date <= thirteenYearsAgo, { message: 'Must be at least 13 years old' })
   ),
 });
+
+export const schemaWithoutPassword = registrationSchema.omit({ password: true });

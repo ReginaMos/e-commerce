@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
-import { type AnyZodObject } from 'zod';
+import { ref, reactive, computed, inject } from 'vue';
+
 import { countyList } from '../constants/country-list';
 import {
   addressSchema,
@@ -14,6 +14,7 @@ import { formatDateISO8601 } from '../utils/format-date';
 import { useRouter } from 'vue-router';
 import { useAuth } from '../services/customer-service';
 import { Links } from '../constants/routersLinks';
+import { getFieldRules } from '../utils/user-profile';
 
 const { createCustomer } = useAuth();
 const router = useRouter();
@@ -43,18 +44,6 @@ const menu = ref(false);
 const sameAddress = ref(true);
 const defaultBilling = ref(false);
 const defaultShipping = ref(false);
-
-const getFieldRules = <T extends object>(
-  fieldName: keyof T,
-  schema: AnyZodObject
-): ComputedRef<((v: string) => true | string)[]> => {
-  return computed(() => [
-    (v: string) => {
-      const result = schema.shape[fieldName].safeParse(v);
-      return result.success ? true : result.error.issues[0].message;
-    },
-  ]);
-};
 
 const getFieldRulesForm = (fieldName: keyof FormData) => getFieldRules(fieldName, registrationSchema);
 const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
