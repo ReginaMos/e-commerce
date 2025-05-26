@@ -17,7 +17,12 @@ const sizes: ComputedRef<Array<string>> = computed(
       ?.value.split(',')
       .map((s) => s.trim()) ?? []
 );
-const { name, price, discountedPrice, currency, quantity, description } = props.product;
+const productDetails = computed(() => {
+  if (!props.product) return null;
+  const { name, price, discountedPrice, currency, quantity, description } = props.product;
+  return { name, price, discountedPrice, currency, quantity, description };
+});
+
 const selectedSize: Ref<string, string> = ref(sizes.value[0] ?? 'One size');
 
 watch(sizes, (newSizes) => {
@@ -29,9 +34,14 @@ watch(sizes, (newSizes) => {
 const count = ref(1);
 </script>
 <template>
-  <h2>{{ name }}</h2>
-  <ProductFullPrice :price="price" :discountedPrice="discountedPrice" :currency="currency" />
-  <p>{{ description }}</p>
+  <h2>{{ productDetails?.name }}</h2>
+  <ProductFullPrice
+    v-if="productDetails"
+    :price="productDetails?.price"
+    :discountedPrice="productDetails?.discountedPrice"
+    :currency="productDetails?.currency"
+  />
+  <p>{{ productDetails?.description }}</p>
   <v-divider></v-divider>
   <p>
     Brand:&nbsp;<span class="brand">{{
@@ -39,8 +49,8 @@ const count = ref(1);
     }}</span>
   </p>
   <ProductSizeComponent v-model="selectedSize" :sizes="sizes" />
-  <ProductQuantityComponent v-model="count" :min="1" :max="quantity" />
-  <v-btn v-if="quantity || 0 > 0" class="btn"> Add to Cart </v-btn>
+  <ProductQuantityComponent v-model="count" :min="1" :max="productDetails?.quantity" />
+  <v-btn v-if="productDetails?.quantity || 0 > 0" class="btn"> Add to Cart </v-btn>
   <p v-else>This product sold</p>
 </template>
 <style scoped lang="scss">
