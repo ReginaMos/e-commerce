@@ -37,4 +37,5 @@ export interface ProductInfo {
   quantity: number;
   attributes: Attributes[];
   size: string;
+  brand: string;
 }
