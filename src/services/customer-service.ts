@@ -1,7 +1,9 @@
 import { apiRoot, buildCustomerClient, resetClient } from './build-client';
-import type { Customer, MyCustomerDraft, MyCustomerSignin } from '@commercetools/platform-sdk';
+import type { Customer, MyCustomerDraft, MyCustomerSignin, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
 import { USER_KEY } from '../constants/local-storage';
 import { ref } from 'vue';
+import type { PersonalData } from '../utils/registration-schema';
+import { formatDateISO8601 } from '../utils/format-date';
 
 const isAuth = ref(!!localStorage.getItem(USER_KEY));
 
@@ -55,4 +57,38 @@ export function getCustomer() {
   } catch {
     throw new Error('Customer data corrupted');
   }
+}
+
+export async function updateCustomerProfile(updates: PersonalData) {
+  const customer = getCustomer();
+  const actions: MyCustomerUpdateAction[] = [];
+
+  if (updates.firstName !== undefined) {
+    actions.push({ action: 'setFirstName', firstName: updates.firstName });
+  }
+  if (updates.lastName !== undefined) {
+    actions.push({ action: 'setLastName', lastName: updates.lastName });
+  }
+  if (updates.email !== undefined) {
+    actions.push({ action: 'changeEmail', email: updates.email });
+  }
+  if (updates.dateOfBirth !== undefined) {
+    actions.push({ action: 'setDateOfBirth', dateOfBirth: formatDateISO8601(updates.dateOfBirth) });
+  }
+
+  if (actions.length === 0) return customer;
+
+  const response = await apiRoot
+    .me()
+    .post({
+      body: {
+        version: customer.version,
+        actions,
+      },
+    })
+    .execute();
+
+  localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+
+  return response.body;
 }
