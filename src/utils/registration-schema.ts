@@ -3,6 +3,7 @@ import { z } from 'zod';
 export type FormData = z.infer<typeof registrationSchema>;
 export type AddressData = z.infer<typeof addressSchema>;
 export type PersonalData = z.infer<typeof schemaPersonal>;
+export type UpdatePasswordData = z.infer<typeof schemaUpdatePassword>;
 
 const today = new Date();
 export const thirteenYearsAgo = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
@@ -63,5 +64,10 @@ const schemaBase = z.object({
 });
 
 export const registrationSchema = schemaBase.extend(schemaPassword.shape);
+
+export const schemaUpdatePassword = z.object({
+  oldPassword: schemaPassword.shape.password,
+  newPassword: schemaPassword.shape.password,
+});
 
 export const schemaPersonal = schemaBase.partial();

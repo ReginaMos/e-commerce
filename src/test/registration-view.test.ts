@@ -7,15 +7,17 @@ import { type ComponentPublicInstance } from 'vue';
 import { mountWithVuetify } from './test-utils';
 import router from '../router';
 import { Links } from '../constants/routersLinks';
+import { createCustomer } from '../services/customer-service';
 
-vi.mock('../services/customer-service', () => ({
-  useAuth: () => ({
+// vi.mock('../services/customer-service');
+
+vi.mock(import('../services/customer-service'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
     createCustomer: vi.fn(),
-  }),
-}));
-
-import { useAuth } from '../services/customer-service';
-const { createCustomer } = useAuth();
+  };
+});
 
 // const validFormData = {
 //   firstName: 'John',

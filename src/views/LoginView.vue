@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
 import { z, type AnyZodObject } from 'zod';
+import type { MyCustomerDraft } from '@commercetools/platform-sdk';
 import { loginSchema } from '../utils/login-schema.ts';
-
-import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
-import { useAuth } from '../services/customer-service.ts';
-
 import { Links } from '../constants/routersLinks.ts';
 import { RouterLink, useRouter } from 'vue-router';
+import { loginCustomer } from '../services/customer-service.ts';
 
-const { loginCustomer } = useAuth();
 type FormData = z.infer<typeof loginSchema>;
 
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');

@@ -1,15 +1,24 @@
 <script setup lang="ts">
 import { computed, inject, reactive, ref } from 'vue';
-import { getCustomer, updateCustomerPersonal } from '../services/customer-service';
-import { schemaPersonal, type PersonalData } from '../utils/registration-schema';
+import { getCustomer, updateCustomerPassword, updateCustomerPersonal } from '../services/customer-service';
+import {
+  schemaPersonal,
+  schemaUpdatePassword,
+  type PersonalData,
+  type UpdatePasswordData,
+} from '../utils/registration-schema';
 
 import { getFieldRules } from '../utils/user-profile';
 
-const isOpened = ref(false);
+const isOpenedInfo = ref(false);
+const isOpenedPass = ref(false);
 const isLoading = ref(false);
-const form = ref();
+const visibleOld = ref(false);
+const visibleNew = ref(false);
 const menu = ref(false);
+
 const { firstName, lastName, dateOfBirth, email } = getCustomer();
+
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const formData = reactive<PersonalData>({
@@ -19,7 +28,10 @@ const formData = reactive<PersonalData>({
   dateOfBirth: new Date(dateOfBirth || ''),
 });
 
+const passData = reactive<UpdatePasswordData>({ oldPassword: '', newPassword: '' });
+
 const getFieldRulesForm = (fieldName: keyof PersonalData) => getFieldRules(fieldName, schemaPersonal);
+const getFieldRulesPass = (fieldName: keyof UpdatePasswordData) => getFieldRules(fieldName, schemaUpdatePassword);
 
 const formattedDate = computed(() => {
   return formData.dateOfBirth ? new Intl.DateTimeFormat().format(new Date(formData.dateOfBirth)) : '';
@@ -34,6 +46,7 @@ const register = async () => {
       .then(() => {
         toaster?.show('Personal info updated!', 'success');
         isLoading.value = false;
+        clear();
       })
       .catch((err: unknown) => {
         if (err instanceof Error) {
@@ -51,18 +64,46 @@ const clear = () => {
   formData.lastName = lastName || '';
   formData.email = email || '';
   formData.dateOfBirth = new Date(dateOfBirth || '');
-  isOpened.value = !isOpened.value;
+  isOpenedInfo.value = !isOpenedInfo.value;
+};
+
+const clearPass = () => {
+  passData.oldPassword = '';
+  passData.newPassword = '';
+  isOpenedPass.value = !isOpenedPass.value;
+};
+
+const updatePass = async () => {
+  const isValid = schemaUpdatePassword.safeParse(passData).success;
+  if (isValid) {
+    isLoading.value = true;
+
+    await updateCustomerPassword(passData)
+      .then(() => {
+        toaster?.show('Password updated!', 'success');
+        isLoading.value = false;
+        clearPass();
+      })
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          toaster?.show(err.message, 'error');
+          isLoading.value = false;
+        }
+      });
+  } else {
+    toaster?.show('Check validation errors!', 'error');
+  }
 };
 </script>
 
 <template>
-  <template v-if="isOpened">
+  <template v-if="isOpenedInfo">
     <v-row justify="start">
       <v-col>
         <v-card max-width="400" min-width="260" width="100%" class="text-left" variant="text">
           <v-card-title>Personal Details</v-card-title>
           <v-card-text>
-            <v-form ref="form" @submit.prevent="register" name="registrationForm">
+            <v-form @submit.prevent="register" name="personalForm">
               <v-text-field
                 v-model="formData.firstName"
                 :rules="getFieldRulesForm('firstName').value"
@@ -126,7 +167,52 @@ const clear = () => {
       </v-col>
     </v-row>
   </template>
-  <template v-else>
+  <template v-if="isOpenedPass">
+    <v-row justify="start">
+      <v-col>
+        <v-card max-width="400" min-width="260" width="100%" class="text-left" variant="text">
+          <v-card-title>Personal Details</v-card-title>
+          <v-card-text>
+            <v-form ref="form" @submit.prevent="updatePass" name="passwordForm">
+              <v-text-field
+                :append-inner-icon="visibleOld ? 'mdi-eye-off' : 'mdi-eye'"
+                :type="visibleOld ? 'text' : 'password'"
+                :rules="getFieldRulesPass('oldPassword').value"
+                v-model="passData.oldPassword"
+                label="Current Password"
+                variant="underlined"
+                @click:append-inner="visibleOld = !visibleOld"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                :append-inner-icon="visibleNew ? 'mdi-eye-off' : 'mdi-eye'"
+                :type="visibleNew ? 'text' : 'password'"
+                :rules="getFieldRulesPass('newPassword').value"
+                v-model="passData.newPassword"
+                label="New Password"
+                variant="underlined"
+                @click:append-inner="visibleNew = !visibleNew"
+                class="mb-4"
+                required
+              ></v-text-field>
+
+              <v-btn
+                type="submit"
+                text="Change Password"
+                color="black"
+                variant="elevated"
+                class="me-4"
+                :loading="isLoading"
+              />
+              <v-btn type="reset" text="Cancel" color="black" variant="outlined" @click="clearPass" />
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </template>
+  <template v-if="!isOpenedInfo && !isOpenedPass">
     <v-row>
       <v-col class="text-left">
         <h2>Login & Security</h2>
@@ -160,7 +246,7 @@ const clear = () => {
         </v-card>
       </v-col>
       <v-col align-self="center">
-        <v-btn text="Change" variant="tonal" @click="isOpened = !isOpened" />
+        <v-btn text="Change" variant="tonal" @click="isOpenedInfo = !isOpenedInfo" />
       </v-col>
       <v-divider />
     </v-row>
@@ -171,7 +257,7 @@ const clear = () => {
         </v-card>
       </v-col>
       <v-col align-self="center">
-        <v-btn text="Change" variant="tonal" />
+        <v-btn text="Change" variant="tonal" @click="isOpenedPass = !isOpenedPass" />
       </v-col>
     </v-row>
   </template>

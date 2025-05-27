@@ -6,10 +6,13 @@ import { Links, MenuLinks, MobileMenuLinks } from '../constants/routersLinks.ts'
 import SearchProduct from './SearchProduct.vue';
 import { useDisplay } from 'vuetify';
 import { ref, watch } from 'vue';
-import { useAuth } from '../services/customer-service.ts';
+import { isAuth, logoutCustomer } from '../services/customer-service.ts';
 import MobileSearchProduct from './MobileSearchProduct.vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const { isAuth, logoutCustomer } = useAuth();
+const route = useRoute();
+const router = useRouter();
+
 const { mdAndDown, lgAndUp, smAndUp } = useDisplay();
 
 const drawer = ref(false);
@@ -27,13 +30,20 @@ const group = ref(null);
 watch(group, () => {
   drawer.value = false;
 });
+
+const logout = () => {
+  if (route.path === Links.USER.LINK) {
+    router.push(Links.HOME.LINK);
+  }
+  logoutCustomer();
+};
 </script>
 <template>
   <v-navigation-drawer class="mobile-menu-drawer" v-model="drawer" absolute bottom temporary v-if="mdAndDown">
     <v-list nav dense>
       <v-item-group v-model="group" active-class="activeMenu">
         <MobileMenuItem v-for="item in MobileMenuLinks" :key="'#' + item.LINK" :title="item.NAME" :link="item.LINK" />
-        <v-btn v-if="isAuth" variant="plain" class="mobile-menu-logaut" @click="logoutCustomer"
+        <v-btn v-if="isAuth" variant="plain" class="mobile-menu-logout" @click="logout"
           ><span>Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
         >
       </v-item-group>
@@ -67,7 +77,7 @@ watch(group, () => {
       <v-btn class="icon-button" v-if="smAndUp && isAuth" :to="Links.USER.LINK">
         <v-icon>mdi-account-outline</v-icon>
       </v-btn>
-      <v-btn v-if="isAuth" class="logout-button" @click="logoutCustomer"
+      <v-btn v-if="isAuth" class="logout-button" @click="logout"
         ><span v-if="smAndUp">Logout&nbsp;</span><v-icon size="18">mdi-logout</v-icon></v-btn
       >
     </div>
@@ -226,7 +236,7 @@ watch(group, () => {
 .mobile-menu-drawer {
   padding: 48px 0px;
 }
-.mobile-menu-logaut.v-btn {
+.mobile-menu-logout.v-btn {
   width: 100%;
 
   padding-left: 28px;

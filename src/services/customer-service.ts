@@ -1,49 +1,45 @@
-import { apiRoot, buildCustomerClient, resetClient } from './build-client';
-import type { Customer, MyCustomerDraft, MyCustomerSignin, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
-import { USER_KEY } from '../constants/local-storage';
 import { ref } from 'vue';
-import type { PersonalData } from '../utils/registration-schema';
+import type { Customer, MyCustomerDraft, MyCustomerSignin, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
+
+import { USER_KEY } from '../constants/local-storage';
 import { formatDateISO8601 } from '../utils/format-date';
+import { apiRoot, buildCustomerClient, resetClient } from './build-client';
+import type { PersonalData, UpdatePasswordData } from '../utils/registration-schema';
 
-const isAuth = ref(!!localStorage.getItem(USER_KEY));
+export const isAuth = ref(!!localStorage.getItem(USER_KEY));
 
-export function useAuth() {
-  const checkAuth = () => {
-    isAuth.value = !!localStorage.getItem(USER_KEY);
-  };
+const checkAuth = () => {
+  isAuth.value = !!localStorage.getItem(USER_KEY);
+};
 
-  async function loginCustomer(credentials: MyCustomerSignin) {
-    const result = await buildCustomerClient({ password: credentials.password, username: credentials.email })
-      .me()
-      .login()
-      .post({ body: credentials })
-      .execute();
+export async function loginCustomer(credentials: MyCustomerSignin) {
+  const result = await buildCustomerClient({ password: credentials.password, username: credentials.email })
+    .me()
+    .login()
+    .post({ body: credentials })
+    .execute();
 
-    console.log('Customer logged in:', result.body);
-
-    if (result.body.customer) {
-      localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
-    }
-    checkAuth();
-    return result.body;
+  if (result.body.customer) {
+    localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
   }
+  checkAuth();
+  return result.body;
+}
 
-  function logoutCustomer() {
-    localStorage.removeItem(USER_KEY);
-    resetClient();
-    checkAuth();
-  }
+export function logoutCustomer() {
+  localStorage.removeItem(USER_KEY);
+  resetClient();
+  checkAuth();
+}
 
-  async function createCustomer(customer: MyCustomerDraft) {
-    const result = await apiRoot.me().signup().post({ body: customer }).execute();
-    console.log('Customer created:', result.body);
-    if (result.body.customer) {
-      localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
-    }
-    checkAuth();
-    return result.body;
+export async function createCustomer(customer: MyCustomerDraft) {
+  const result = await apiRoot.me().signup().post({ body: customer }).execute();
+  console.log('Customer created:', result.body);
+  if (result.body.customer) {
+    localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
   }
-  return { isAuth, loginCustomer, logoutCustomer, createCustomer, getCustomer };
+  checkAuth();
+  return result.body;
 }
 
 export function getCustomer() {
@@ -92,6 +88,29 @@ export async function updateCustomerPersonal(original: PersonalData, updates: Pe
 
   if (response.statusCode === 200) {
     localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+  }
+
+  return response.body;
+}
+
+export async function updateCustomerPassword(data: UpdatePasswordData) {
+  const customer = getCustomer();
+
+  const response = await apiRoot
+    .me()
+    .password()
+    .post({
+      body: {
+        version: customer.version,
+        currentPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      },
+    })
+    .execute();
+
+  if (response.statusCode === 200) {
+    localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+    await loginCustomer({ email: customer.email, password: data.newPassword });
   }
 
   return response.body;
