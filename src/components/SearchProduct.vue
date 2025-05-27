@@ -1,9 +1,27 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { Links } from '../constants/routersLinks.ts';
 
 const { mdAndUp } = useDisplay();
 const searchQuery = ref('');
+
+const router = useRouter();
+const getSerchQuery = (query: string) => {
+  if (query.trim()) {
+    if (router)
+      router.push({
+        path: Links.SEARCH.LINK,
+        query: {
+          search: query,
+        },
+      });
+  }
+};
+// function onChange() {
+//   console.log('searchQuery: ', searchQuery);
+// }
 </script>
 
 <template>
@@ -15,13 +33,26 @@ const searchQuery = ref('');
       clearable
       label="What are you looking for?"
       class="search-input"
-    ></v-text-field>
-    <v-btn class="search-btn" v-if="mdAndUp">
+      persistent-clear
+      @keydown.enter="getSerchQuery(searchQuery)"
+    />
+    <v-btn class="search-btn" v-if="mdAndUp" @click="getSerchQuery(searchQuery)">
       <v-icon> mdi-magnify </v-icon>
     </v-btn>
   </div>
 </template>
-
+<style>
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: black !important;
+  caret-color: black;
+  transition: background-color 5000s ease-in-out 0s;
+}
+</style>
 <style scoped lang="scss">
 .input-wrapper {
   margin-right: 24px;
@@ -43,7 +74,6 @@ const searchQuery = ref('');
   height: 38px;
   padding: 7px 12px 7px 20px;
 }
-
 .search-input :deep(.v-label) {
   color: var(--gray-text-color);
   font-size: 12px;
