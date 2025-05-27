@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
-import { getCustomer } from '../services/customer-service';
+import { computed, inject, reactive, ref } from 'vue';
+import { getCustomer, updateCustomerPersonal } from '../services/customer-service';
 import { schemaPersonal, type PersonalData } from '../utils/registration-schema';
 
 import { getFieldRules } from '../utils/user-profile';
 
-const isPersonal = ref(false);
+const isOpened = ref(false);
+const isLoading = ref(false);
 const form = ref();
 const menu = ref(false);
 const { firstName, lastName, dateOfBirth, email } = getCustomer();
+const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const formData = reactive<PersonalData>({
   firstName: firstName || '',
@@ -24,19 +26,37 @@ const formattedDate = computed(() => {
 });
 
 const register = async () => {
-  const result = schemaPersonal.safeParse(formData).success;
-  if (result) {
-    console.log(formData);
+  const isValid = schemaPersonal.safeParse(formData).success;
+  if (isValid) {
+    isLoading.value = true;
+
+    await updateCustomerPersonal({ firstName, lastName, dateOfBirth: new Date(dateOfBirth || ''), email }, formData)
+      .then(() => {
+        toaster?.show('Personal info updated!', 'success');
+        isLoading.value = false;
+      })
+      .catch((err: unknown) => {
+        if (err instanceof Error) {
+          toaster?.show(err.message, 'error');
+          isLoading.value = false;
+        }
+      });
+  } else {
+    toaster?.show('Fill in required fields!', 'error');
   }
 };
 
 const clear = () => {
-  isPersonal.value = !isPersonal.value;
+  formData.firstName = firstName || '';
+  formData.lastName = lastName || '';
+  formData.email = email || '';
+  formData.dateOfBirth = new Date(dateOfBirth || '');
+  isOpened.value = !isOpened.value;
 };
 </script>
 
 <template>
-  <template v-if="isPersonal">
+  <template v-if="isOpened">
     <v-row justify="start">
       <v-col>
         <v-card max-width="400" min-width="260" width="100%" class="text-left" variant="text">
@@ -78,6 +98,7 @@ const clear = () => {
               >
                 <template v-slot:activator="{ props }">
                   <v-text-field
+                    class="mb-4"
                     v-model="formData.dateOfBirth"
                     :rules="getFieldRulesForm('dateOfBirth').value"
                     :value="formattedDate"
@@ -90,7 +111,14 @@ const clear = () => {
                 </template>
                 <v-date-picker v-model="formData.dateOfBirth" name="dateOfBirth" @input="menu = false"></v-date-picker>
               </v-menu>
-              <v-btn type="submit" text="Save Address" color="black" variant="elevated" class="me-4" />
+              <v-btn
+                type="submit"
+                text="Save Address"
+                color="black"
+                variant="elevated"
+                class="me-4"
+                :loading="isLoading"
+              />
               <v-btn type="reset" text="Cancel" color="black" variant="outlined" @click="clear" />
             </v-form>
           </v-card-text>
@@ -132,7 +160,7 @@ const clear = () => {
         </v-card>
       </v-col>
       <v-col align-self="center">
-        <v-btn text="Change" variant="tonal" @click="isPersonal = !isPersonal" />
+        <v-btn text="Change" variant="tonal" @click="isOpened = !isOpened" />
       </v-col>
       <v-divider />
     </v-row>

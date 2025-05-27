@@ -59,24 +59,26 @@ export function getCustomer() {
   }
 }
 
-export async function updateCustomerProfile(updates: PersonalData) {
+export async function updateCustomerPersonal(original: PersonalData, updates: PersonalData) {
   const customer = getCustomer();
   const actions: MyCustomerUpdateAction[] = [];
 
-  if (updates.firstName !== undefined) {
+  if (updates.firstName !== undefined && updates.firstName !== original.firstName) {
     actions.push({ action: 'setFirstName', firstName: updates.firstName });
   }
-  if (updates.lastName !== undefined) {
+  if (updates.lastName !== undefined && updates.lastName !== original.lastName) {
     actions.push({ action: 'setLastName', lastName: updates.lastName });
   }
-  if (updates.email !== undefined) {
+  if (updates.email !== undefined && updates.email !== original.email) {
     actions.push({ action: 'changeEmail', email: updates.email });
   }
-  if (updates.dateOfBirth !== undefined) {
+  if (updates.dateOfBirth !== undefined && updates.dateOfBirth !== updates.dateOfBirth) {
     actions.push({ action: 'setDateOfBirth', dateOfBirth: formatDateISO8601(updates.dateOfBirth) });
   }
 
-  if (actions.length === 0) return customer;
+  if (actions.length === 0) {
+    throw new Error('Nothing to update');
+  }
 
   const response = await apiRoot
     .me()
@@ -88,7 +90,9 @@ export async function updateCustomerProfile(updates: PersonalData) {
     })
     .execute();
 
-  localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+  if (response.statusCode === 200) {
+    localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+  }
 
   return response.body;
 }
