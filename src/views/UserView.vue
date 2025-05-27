@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import AddressBookComponent from '../components/AddressBookComponent.vue';
 import PersonalDetailsComponent from '../components/PersonalDetailsComponent.vue';
 
-const activeTab = ref('addressBook');
+const activeTab = ref('personalDetails');
 </script>
 
 <template>

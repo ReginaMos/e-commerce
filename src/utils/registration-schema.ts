@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export type FormData = z.infer<typeof registrationSchema>;
 export type AddressData = z.infer<typeof addressSchema>;
-export type NoPassword = z.infer<typeof schemaWithoutPassword>;
+export type PersonalData = z.infer<typeof schemaPersonal>;
 
 const today = new Date();
 export const thirteenYearsAgo = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
@@ -21,7 +21,23 @@ export const addressSchema = z.object({
   country: z.string().min(1, { message: 'Country must be selected' }),
 });
 
-export const registrationSchema = z.object({
+export const schemaPassword = z.object({
+  password: z
+    .string()
+    .regex(/^[a-zA-Z0-9!@#$%^&*]*$/, {
+      message: 'Password can contain only Latin letters, numbers, and special characters (!@#$%^&*)',
+    })
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[a-z]/, {
+      message: 'Password must contain at least one lowercase letter',
+    })
+    .regex(/[A-Z]/, {
+      message: 'Password must contain at least one uppercase letter',
+    })
+    .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
+});
+
+const schemaBase = z.object({
   firstName: z
     .string()
     .min(1, { message: 'First name must be at least 1 characters long' })
@@ -40,24 +56,12 @@ export const registrationSchema = z.object({
       message: 'Email address must contain only Latin letters, numbers, and allowed symbols (@, ., _, -)',
     })
     .email(),
-  password: z
-    .string()
-    .regex(/^[a-zA-Z0-9!@#$%^&*]*$/, {
-      message: 'Password can contain only Latin letters, numbers, and special characters (!@#$%^&*)',
-    })
-    .min(8, { message: 'Password must be at least 8 characters long' })
-    .regex(/[a-z]/, {
-      message: 'Password must contain at least one lowercase letter',
-    })
-    .regex(/[A-Z]/, {
-      message: 'Password must contain at least one uppercase letter',
-    })
-    .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
-
   dateOfBirth: z.preprocess(
     (val) => (typeof val === 'string' ? new Date(val) : val),
     z.date().refine((date) => date <= thirteenYearsAgo, { message: 'Must be at least 13 years old' })
   ),
 });
 
-export const schemaWithoutPassword = registrationSchema.omit({ password: true });
+export const registrationSchema = schemaBase.extend(schemaPassword.shape);
+
+export const schemaPersonal = schemaBase.partial();

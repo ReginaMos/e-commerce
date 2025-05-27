@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import { getCustomer } from '../services/customer-service';
-import { schemaWithoutPassword, type NoPassword } from '../utils/registration-schema';
+import { schemaPersonal, type PersonalData } from '../utils/registration-schema';
 
 import { getFieldRules } from '../utils/user-profile';
 
@@ -10,21 +10,21 @@ const form = ref();
 const menu = ref(false);
 const { firstName, lastName, dateOfBirth, email } = getCustomer();
 
-const formData = reactive<NoPassword>({
+const formData = reactive<PersonalData>({
   firstName: firstName || '',
   lastName: lastName || '',
   email: email || '',
   dateOfBirth: new Date(dateOfBirth || ''),
 });
 
-const getFieldRulesForm = (fieldName: keyof NoPassword) => getFieldRules(fieldName, schemaWithoutPassword);
+const getFieldRulesForm = (fieldName: keyof PersonalData) => getFieldRules(fieldName, schemaPersonal);
 
 const formattedDate = computed(() => {
   return formData.dateOfBirth ? new Intl.DateTimeFormat().format(new Date(formData.dateOfBirth)) : '';
 });
 
 const register = async () => {
-  const result = schemaWithoutPassword.safeParse(formData).success;
+  const result = schemaPersonal.safeParse(formData).success;
   if (result) {
     console.log(formData);
   }
