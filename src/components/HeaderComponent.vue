@@ -27,10 +27,10 @@ watch(group, () => {
   drawer.value = false;
 });
 
-const searchQuery = ref(localStorage.getItem("searchQuery") ?? '');
+const searchQuery = ref(localStorage.getItem('searchQuery') ?? '');
 watch(searchQuery, (newVal) => {
   console.log('searchQuery:', newVal);
-  localStorage.setItem("searchQuery", newVal);
+  localStorage.setItem('searchQuery', newVal);
 });
 function onClear() {
   localStorage.removeItem('searchQuery');
@@ -38,7 +38,7 @@ function onClear() {
 }
 
 const router = useRouter();
-const getSearchQuery = (query: string):void => {
+const getSearchQuery = (query: string): void => {
   if (query.trim()) {
     if (router)
       router.push({
@@ -49,7 +49,6 @@ const getSearchQuery = (query: string):void => {
       });
   }
 };
-
 </script>
 <template>
   <v-navigation-drawer class="mobile-menu-drawer" v-model="drawer" absolute bottom temporary v-if="mdAndDown">
@@ -75,7 +74,7 @@ const getSearchQuery = (query: string):void => {
       </v-navigation-drawer>
     </div>
 
-    <SearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery"/>
+    <SearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" />
 
     <div class="icon-wrapper">
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.WISHLIST.LINK">
@@ -92,7 +91,7 @@ const getSearchQuery = (query: string):void => {
       >
     </div>
   </v-app-bar>
-  <MobileSearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" v-show="mdAndUp"/>
+  <MobileSearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" v-show="mdAndUp" />
 </template>
 
 <style scoped lang="scss">

@@ -2,9 +2,9 @@
 import { useDisplay } from 'vuetify';
 
 const props = defineProps<{
-  modelValue: string,
-  onClear: () => void
-  getSearchQuery: (query: string) => void
+  modelValue: string;
+  onClear: () => void;
+  getSearchQuery: (query: string) => void;
 }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
@@ -32,11 +32,7 @@ const { smAndDown } = useDisplay();
       @keydown.enter="props.getSearchQuery(props.modelValue)"
       @click:clear="props.onClear"
     ></v-text-field>
-    <v-btn 
-      class="search-mobile-btn" 
-      v-show="smAndDown" 
-      variant="plain" 
-      @click="props.getSearchQuery(props.modelValue)">
+    <v-btn class="search-mobile-btn" v-show="smAndDown" variant="plain" @click="props.getSearchQuery(props.modelValue)">
       <v-icon> mdi-magnify </v-icon>
     </v-btn>
   </div>
@@ -120,16 +116,15 @@ const { smAndDown } = useDisplay();
   height: 38px;
   align-items: center;
   justify-content: center;
-  
 }
 ::v-deep(.v-field__clearable .v-icon) {
   color: var(--black-text);
   font-size: 18px;
-  opacity: 1!important;
+  opacity: 1 !important;
   &:hover,
   &:focus,
   &:active {
-    color: var(--red-secondary)
+    color: var(--red-secondary);
   }
 }
 </style>

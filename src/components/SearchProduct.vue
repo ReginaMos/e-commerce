@@ -2,9 +2,9 @@
 import { useDisplay } from 'vuetify';
 
 const props = defineProps<{
-  modelValue: string,
-  onClear: () => void
-  getSearchQuery: (query: string) => void
+  modelValue: string;
+  onClear: () => void;
+  getSearchQuery: (query: string) => void;
 }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
@@ -31,7 +31,7 @@ const { mdAndUp } = useDisplay();
       @keydown.enter="props.getSearchQuery(props.modelValue)"
       @click:clear="props.onClear"
     />
-    <v-btn class="search-btn"  v-show="mdAndUp" @click="props.getSearchQuery(props.modelValue)">
+    <v-btn class="search-btn" v-show="mdAndUp" @click="props.getSearchQuery(props.modelValue)">
       <v-icon> mdi-magnify </v-icon>
     </v-btn>
   </div>
@@ -81,16 +81,15 @@ const { mdAndUp } = useDisplay();
   height: 38px;
   align-items: center;
   justify-content: center;
-  
 }
 ::v-deep(.v-field__clearable .v-icon) {
   color: var(--black-text);
   font-size: 18px;
-  opacity: 1!important;
+  opacity: 1 !important;
   &:hover,
   &:focus,
   &:active {
-    color: var(--red-secondary)
+    color: var(--red-secondary);
   }
 }
 </style>
