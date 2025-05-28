@@ -14,7 +14,6 @@ const products = ref<ProductInfo[]>([]);
 onMounted(async () => {
   products.value = await getProducts(6);
 });
-
 </script>
 
 <template>

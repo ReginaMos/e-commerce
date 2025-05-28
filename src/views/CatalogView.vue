@@ -12,7 +12,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ProductsComponent :products="products"/>
+  <ProductsComponent :products="products" />
 </template>
 
 <style scoped></style>
