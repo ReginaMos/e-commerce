@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import MenuItem from './MenuItem.vue';
 import MobileMenuItem from './MobileMenuItem.vue';
 import { RouterLink } from 'vue-router';
@@ -8,7 +8,7 @@ import { useDisplay } from 'vuetify';
 import { ref, watch } from 'vue';
 import { useAuth } from '../services/customer-service.ts';
 import MobileSearchProduct from './MobileSearchProduct.vue';
-
+import { useRouter } from 'vue-router';
 const { isAuth, logoutCustomer } = useAuth();
 const { mdAndDown, lgAndUp, smAndUp } = useDisplay();
 
@@ -23,10 +23,33 @@ watch(drawer, (newVal) => {
 });
 
 const group = ref(null);
-
 watch(group, () => {
   drawer.value = false;
 });
+
+const searchQuery = ref(localStorage.getItem("searchQuery") ?? '');
+watch(searchQuery, (newVal) => {
+  console.log('searchQuery:', newVal);
+  localStorage.setItem("searchQuery", newVal);
+});
+function onClear() {
+  localStorage.removeItem('searchQuery');
+  searchQuery.value = '';
+}
+
+const router = useRouter();
+const getSearchQuery = (query: string):void => {
+  if (query.trim()) {
+    if (router)
+      router.push({
+        path: Links.SEARCH.LINK,
+        query: {
+          search: query,
+        },
+      });
+  }
+};
+
 </script>
 <template>
   <v-navigation-drawer class="mobile-menu-drawer" v-model="drawer" absolute bottom temporary v-if="mdAndDown">
@@ -52,7 +75,7 @@ watch(group, () => {
       </v-navigation-drawer>
     </div>
 
-    <SearchProduct />
+    <SearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery"/>
 
     <div class="icon-wrapper">
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.WISHLIST.LINK">
@@ -69,7 +92,7 @@ watch(group, () => {
       >
     </div>
   </v-app-bar>
-  <MobileSearchProduct />
+  <MobileSearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" v-show="mdAndUp"/>
 </template>
 
 <style scoped lang="scss">

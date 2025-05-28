@@ -60,3 +60,14 @@ img {
 body.menu-open {
   overflow: hidden;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 100 1000px var(--gray-secondary) inset !important;
+  box-shadow: 0 0 100 1000px var(--gray-secondary) inset !important;
+  -webkit-text-fill-color: black !important;
+  caret-color: black !important;
+  transition: background-color 9999s ease-out, color 9999s ease-out;
+}
