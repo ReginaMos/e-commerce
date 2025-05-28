@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, reactive, ref } from 'vue';
-import { addCustomerAddress, getCustomer } from '../services/customer-service';
+import { addCustomerAddress, getCustomer, removeCustomerAddress } from '../services/customer-service';
 import { getAddress, getFieldRules } from '../utils/user-profile';
 import AddressCardComponent from './AddressCardComponent.vue';
 import { addressSchema, type AddressData } from '../utils/registration-schema';
@@ -36,10 +36,11 @@ const register = async () => {
   if (result) {
     switch (modifyActions.value) {
       case 'add':
-        await addCustomerAddress(address, defaultShipping.value, defaultBilling.value)
+        await addCustomerAddress(customer.value, address, defaultShipping.value, defaultBilling.value)
           .then(() => {
             toaster?.show('New Address added', 'success');
             customer.value = getCustomer();
+            isOnEdit.value = false;
           })
           .catch((err: unknown) => {
             if (err instanceof Error) {
@@ -54,6 +55,21 @@ const register = async () => {
     }
   } else {
     toaster?.show('Fill in required fields!', 'error');
+  }
+};
+
+const handleRemoveAddress = async (addressId: string) => {
+  isLoading.value = true;
+  try {
+    await removeCustomerAddress(customer.value, addressId);
+    toaster?.show('Address removed', 'success');
+    customer.value = getCustomer();
+  } catch (err) {
+    if (err instanceof Error) {
+      toaster?.show(err.message, 'error');
+    }
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -156,10 +172,10 @@ const setNewAddress = () => {
     </v-row>
     <v-row>
       <v-col sm="7" md="6">
-        <AddressCardComponent :address="addresses.shipAddress" type="shipping" />
+        <AddressCardComponent :address="addresses.shipAddress" type="shipping" @remove="handleRemoveAddress" />
       </v-col>
       <v-col sm="7" md="6">
-        <AddressCardComponent :address="addresses.billAddress" type="billing" />
+        <AddressCardComponent :address="addresses.billAddress" type="billing" @remove="handleRemoveAddress" />
       </v-col>
     </v-row>
     <v-row>
@@ -168,12 +184,12 @@ const setNewAddress = () => {
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col sm="7" md="6">
         <template v-if="addresses.otherAddress.length === 0">
           <AddressCardComponent :address="undefined" type="saved" />
         </template>
         <template v-else v-for="address in addresses.otherAddress" :key="address.id">
-          <AddressCardComponent :address="address" type="saved" />
+          <AddressCardComponent :address="address" type="saved" @remove="handleRemoveAddress" />
         </template>
       </v-col>
     </v-row>

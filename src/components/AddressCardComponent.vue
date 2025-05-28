@@ -15,6 +15,10 @@ defineProps<{
   address: Address | undefined;
   type: Messages;
 }>();
+
+const emit = defineEmits<{
+  (e: 'remove', addressId: string): void;
+}>();
 </script>
 
 <template>
@@ -26,7 +30,7 @@ defineProps<{
   >
     <template v-slot:actions v-if="address">
       <v-btn text="Edit" variant="tonal" />
-      <v-btn text="Remove" variant="tonal" />
+      <v-btn text="Remove" variant="tonal" @click="emit('remove', address.id ?? '')" />
     </template>
     <template v-slot:actions v-else>
       <v-btn location="center" text="Add a new address" variant="tonal" class="text-center" />

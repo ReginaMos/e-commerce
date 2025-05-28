@@ -116,8 +116,12 @@ export async function updateCustomerPassword(data: UpdatePasswordData) {
   return response.body;
 }
 
-export async function addCustomerAddress(address: AddressData, defaultShipping = false, defaultBilling = false) {
-  const customer = getCustomer();
+export async function addCustomerAddress(
+  customer: Customer,
+  address: AddressData,
+  defaultShipping = false,
+  defaultBilling = false
+) {
   const actions: MyCustomerUpdateAction[] = [
     {
       action: 'addAddress',
@@ -154,6 +158,21 @@ export async function addCustomerAddress(address: AddressData, defaultShipping =
       })
       .execute();
   }
+  localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+  return response.body;
+}
+
+export async function removeCustomerAddress(customer: Customer, addressId: string) {
+  const actions: MyCustomerUpdateAction[] = [{ action: 'removeAddress', addressId }];
+  const response = await apiRoot
+    .me()
+    .post({
+      body: {
+        version: customer.version,
+        actions,
+      },
+    })
+    .execute();
   localStorage.setItem(USER_KEY, JSON.stringify(response.body));
   return response.body;
 }
