@@ -55,9 +55,6 @@ watch(group, () => {
     <SearchProduct />
 
     <div class="icon-wrapper">
-      <!-- <v-btn v-if="mdAndDown" class="icon-button">
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn> -->
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.WISHLIST.LINK">
         <v-icon icon="mdi mdi-heart-outline"></v-icon>
       </v-btn>
