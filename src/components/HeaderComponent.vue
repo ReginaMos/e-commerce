@@ -91,7 +91,7 @@ const getSearchQuery = (query: string): void => {
       >
     </div>
   </v-app-bar>
-  <MobileSearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" v-show="mdAndUp" />
+  <MobileSearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" />
 </template>
 
 <style scoped lang="scss">
