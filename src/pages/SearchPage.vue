@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import UserView from '../views/UserView.vue';
+import SearchView from '../views/SearchView.vue';
 </script>
 
 <template>
-  <UserView />
+  <SearchView />
 </template>
 
 <style scoped></style>

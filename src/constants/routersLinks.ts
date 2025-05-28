@@ -11,6 +11,7 @@ export const Links: Record<string, LinkItem> = {
   CART: { NAME: 'Cart', LINK: '/cart' },
   PRODUCT: { NAME: 'Product', LINK: '/product' },
   CATALOG: { NAME: 'Catalog', LINK: '/catalog' },
+  SEARCH: { NAME: 'Search', LINK: '/search' },
   NOTFOUND: { NAME: '404', LINK: '/404' },
 };
 

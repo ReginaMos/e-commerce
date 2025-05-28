@@ -61,7 +61,6 @@ function onInputChange() {
       type="text"
       readonly
       class="plus-minus-input"
-      style="width: 80px"
       :min="min"
       :max="max"
       @change="onInputChange"
@@ -123,6 +122,7 @@ button:disabled {
   background-color: transparent;
   border: 1px solid black;
   height: 44px;
+  width: 80px;
 }
 .plus-minus-input :deep(.v-input__control) {
   align-items: center;
