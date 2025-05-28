@@ -1,10 +1,10 @@
 <script setup lang="ts"></script>
 <template>
-     <v-breadcrumbs class="breadcrumbs">
-      <template v-slot:divider>
-        <v-icon icon="mdi-chevron-right"></v-icon>
-      </template>
-    </v-breadcrumbs>
+  <v-breadcrumbs class="breadcrumbs">
+    <template v-slot:divider>
+      <v-icon icon="mdi-chevron-right"></v-icon>
+    </template>
+  </v-breadcrumbs>
 </template>
 <style scoped lang="scss">
 .breadcrumbs {
@@ -14,7 +14,7 @@
   z-index: 800;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; 
+  text-overflow: ellipsis;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -31,7 +31,7 @@
     padding-right: var(--padding-horizontal-lg);
     top: 110px;
   }
- 
+
   @media screen and (min-width: 1200px) {
     padding-top: 202px;
     top: -45px;
@@ -41,5 +41,4 @@
     padding-right: var(--padding-horizontal-xl);
   }
 }
-
 </style>

@@ -32,14 +32,13 @@ watch(sizes, (newSizes) => {
 });
 
 const count = ref(1);
-const isActive = ref(localStorage.getItem("wishlist") ?? false);
+const isActive = ref(localStorage.getItem('wishlist') ?? false);
 function addToWishList() {
   isActive.value = !isActive.value;
 }
 watch(isActive, (newVal) => {
-  localStorage.setItem("wishlist", JSON.stringify(newVal));
-  
-})
+  localStorage.setItem('wishlist', JSON.stringify(newVal));
+});
 </script>
 <template>
   <h2>{{ productDetails?.name }}</h2>
@@ -59,17 +58,19 @@ watch(isActive, (newVal) => {
   <ProductSizeComponent v-model="selectedSize" :sizes="sizes" />
   <div class="row-container">
     <ProductQuantityComponent v-model="count" :min="1" :max="productDetails?.quantity" />
-  <v-btn 
-    class="icon-button"
-    variant="plain" size="48"
-    :class="isActive ? 'active-btn' : 'inactive-btn'"
-    @click="addToWishList">
-        <v-icon icon="mdi mdi-heart-outline"></v-icon>
-      </v-btn>
+    <v-btn
+      class="icon-button"
+      variant="plain"
+      size="48"
+      :class="isActive ? 'active-btn' : 'inactive-btn'"
+      @click="addToWishList"
+    >
+      <v-icon icon="mdi mdi-heart-outline"></v-icon>
+    </v-btn>
   </div>
-  
+
   <v-btn v-if="productDetails?.quantity || 0 > 0" class="btn"> Add to Cart </v-btn>
- 
+
   <p v-else>This product sold</p>
 </template>
 <style scoped lang="scss">
@@ -97,16 +98,16 @@ watch(isActive, (newVal) => {
   }
 }
 .row-container {
-    display: flex;
-    gap: 30px;
-    align-items: center;
+  display: flex;
+  gap: 30px;
+  align-items: center;
 }
 .active-btn {
   color: var(--white-text);
   background-color: var(--red-secondary);
 }
 .inactive-btn {
-  background-color: transparent!important;
+  background-color: transparent !important;
   color: var(--black-text) !important;
   transition: background-color 0.28s ease-in-out;
 }

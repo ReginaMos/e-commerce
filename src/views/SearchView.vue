@@ -51,7 +51,7 @@ const items = computed(() => [
 ]);
 </script>
 <template>
-  <BreadCrumbsComponent :items="items"/>
+  <BreadCrumbsComponent :items="items" />
   <p class="search-result">We found {{ products.length }} results by query "{{ searchQuery }}"</p>
   <v-container class="search-container">
     <v-row class="justify-center" v-if="products.length">
@@ -90,9 +90,8 @@ const items = computed(() => [
   text-overflow: ellipsis;
   overflow: hidden;
   @media screen and (min-width: 1024px) {
-  margin-top: 40px;
-  font-size: 18px;
-  }  
+    margin-top: 40px;
+    font-size: 18px;
+  }
 }
-
 </style>

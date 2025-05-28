@@ -41,7 +41,7 @@ const items = computed(() => [
 </script>
 
 <template>
-  <BreadCrumbsComponent :items="items"/>
+  <BreadCrumbsComponent :items="items" />
   <v-container class="product-page">
     <v-row class="product-page-container">
       <v-col>
@@ -62,8 +62,8 @@ const items = computed(() => [
   margin-top: 80px;
   width: 100%;
   @media screen and (min-width: 1024px) {
-  margin-top: 40px;
-  }  
+    margin-top: 40px;
+  }
 }
 .product-page-container {
   flex-direction: column;
