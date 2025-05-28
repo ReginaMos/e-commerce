@@ -4,7 +4,7 @@ import type { Customer, MyCustomerDraft, MyCustomerSignin, MyCustomerUpdateActio
 import { USER_KEY } from '../constants/local-storage';
 import { formatDateISO8601 } from '../utils/format-date';
 import { apiRoot, buildCustomerClient, resetClient } from './build-client';
-import type { PersonalData, UpdatePasswordData } from '../utils/registration-schema';
+import type { AddressData, PersonalData, UpdatePasswordData } from '../utils/registration-schema';
 
 export const isAuth = ref(!!localStorage.getItem(USER_KEY));
 
@@ -113,5 +113,47 @@ export async function updateCustomerPassword(data: UpdatePasswordData) {
     await loginCustomer({ email: customer.email, password: data.newPassword });
   }
 
+  return response.body;
+}
+
+export async function addCustomerAddress(address: AddressData, defaultShipping = false, defaultBilling = false) {
+  const customer = getCustomer();
+  const actions: MyCustomerUpdateAction[] = [
+    {
+      action: 'addAddress',
+      address,
+    },
+  ];
+
+  const response = await apiRoot
+    .me()
+    .post({
+      body: {
+        version: customer.version,
+        actions,
+      },
+    })
+    .execute();
+
+  const newAddress = response.body.addresses[response.body.addresses.length - 1];
+  const defaultActions: MyCustomerUpdateAction[] = [];
+  if (defaultShipping) {
+    defaultActions.push({ action: 'setDefaultShippingAddress', addressId: newAddress.id });
+  }
+  if (defaultBilling) {
+    defaultActions.push({ action: 'setDefaultBillingAddress', addressId: newAddress.id });
+  }
+  if (defaultActions.length) {
+    await apiRoot
+      .me()
+      .post({
+        body: {
+          version: response.body.version,
+          actions: defaultActions,
+        },
+      })
+      .execute();
+  }
+  localStorage.setItem(USER_KEY, JSON.stringify(response.body));
   return response.body;
 }

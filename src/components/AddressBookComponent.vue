@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
-import { getCustomer } from '../services/customer-service';
+import { computed, inject, reactive, ref } from 'vue';
+import { addCustomerAddress, getCustomer } from '../services/customer-service';
 import { getAddress, getFieldRules } from '../utils/user-profile';
 import AddressCardComponent from './AddressCardComponent.vue';
 import { addressSchema, type AddressData } from '../utils/registration-schema';
 import { countyList } from '../constants/country-list';
 
-const isNewAddress = ref(false);
-const customer = getCustomer();
-const { shipAddress, billAddress, otherAddress } = getAddress(customer);
+type ModifyActions = 'edit' | 'remove' | 'add' | 'none';
+
+const modifyActions = ref<ModifyActions>('none');
+const isLoading = ref(false);
+const isOnEdit = ref(false);
+const customer = ref(getCustomer());
+
+const addresses = computed(() => getAddress(customer.value));
+
 const addressForm = ref();
+const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const address = reactive<AddressData>({
   city: '',
@@ -24,20 +31,46 @@ const defaultShipping = ref(false);
 const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
 
 const register = async () => {
+  isLoading.value = true;
   const result = addressSchema.safeParse(address).success;
   if (result) {
-    console.log(address);
+    switch (modifyActions.value) {
+      case 'add':
+        await addCustomerAddress(address, defaultShipping.value, defaultBilling.value)
+          .then(() => {
+            toaster?.show('New Address added', 'success');
+            customer.value = getCustomer();
+          })
+          .catch((err: unknown) => {
+            if (err instanceof Error) {
+              toaster?.show(err.message, 'error');
+            }
+          })
+          .finally(() => (isLoading.value = false));
+        break;
+
+      default:
+        break;
+    }
+  } else {
+    toaster?.show('Fill in required fields!', 'error');
   }
 };
 
-const clear = () => {
+const cancel = () => {
   addressForm.value?.reset();
-  isNewAddress.value = !isNewAddress.value;
+  isOnEdit.value = !isOnEdit.value;
+  modifyActions.value = 'none';
+};
+
+const setNewAddress = () => {
+  modifyActions.value = 'add';
+  isOnEdit.value = !isOnEdit.value;
 };
 </script>
 
 <template>
-  <template v-if="isNewAddress">
+  <template v-if="isOnEdit">
     <v-row justify="start">
       <v-col>
         <v-card
@@ -87,9 +120,21 @@ const clear = () => {
                 required
               ></v-autocomplete>
               <v-checkbox v-model="defaultShipping" label="Set as default shipping" hide-details></v-checkbox>
-              <v-checkbox v-model="defaultBilling" label="Set as default billing" hide-details></v-checkbox>
-              <v-btn type="submit" text="Save Address" color="black" variant="elevated" class="me-4" />
-              <v-btn type="reset" text="Cancel" color="black" variant="outlined" @click="clear" />
+              <v-checkbox
+                v-model="defaultBilling"
+                label="Set as default billing"
+                hide-details
+                class="mb-4"
+              ></v-checkbox>
+              <v-btn
+                type="submit"
+                text="Save Address"
+                color="black"
+                variant="elevated"
+                class="me-4"
+                :loading="isLoading"
+              />
+              <v-btn type="reset" text="Cancel" color="black" variant="outlined" @click="cancel" />
             </v-form>
           </v-card-text>
         </v-card>
@@ -101,7 +146,7 @@ const clear = () => {
       <v-col class="text-left">
         <h2>Address Book</h2>
         <p>Edit your delivery and billing address.</p>
-        <v-btn class="mt-6" @click="isNewAddress = !isNewAddress" variant="tonal">Add New Address</v-btn>
+        <v-btn class="mt-6" @click="setNewAddress" variant="tonal">Add New Address</v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -111,10 +156,10 @@ const clear = () => {
     </v-row>
     <v-row>
       <v-col sm="7" md="6">
-        <AddressCardComponent :address="shipAddress" type="shipping" />
+        <AddressCardComponent :address="addresses.shipAddress" type="shipping" />
       </v-col>
       <v-col sm="7" md="6">
-        <AddressCardComponent :address="billAddress" type="billing" />
+        <AddressCardComponent :address="addresses.billAddress" type="billing" />
       </v-col>
     </v-row>
     <v-row>
@@ -124,10 +169,10 @@ const clear = () => {
     </v-row>
     <v-row>
       <v-col>
-        <template v-if="otherAddress.length === 0">
+        <template v-if="addresses.otherAddress.length === 0">
           <AddressCardComponent :address="undefined" type="saved" />
         </template>
-        <template v-else v-for="address in otherAddress" :key="address.id">
+        <template v-else v-for="address in addresses.otherAddress" :key="address.id">
           <AddressCardComponent :address="address" type="saved" />
         </template>
       </v-col>
