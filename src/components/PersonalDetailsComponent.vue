@@ -221,7 +221,7 @@ const updatePass = async () => {
       <v-divider />
     </v-row>
     <v-row>
-      <v-col>
+      <v-col cols="10" sm="6">
         <v-card variant="text" class="text-left" title="Personal Details">
           <v-card-text>
             <v-list>
@@ -251,7 +251,7 @@ const updatePass = async () => {
       <v-divider />
     </v-row>
     <v-row>
-      <v-col>
+      <v-col cols="10" sm="6">
         <v-card variant="text" class="text-left" title="Your Password">
           <v-card-text class="ml-5">*********</v-card-text>
         </v-card>

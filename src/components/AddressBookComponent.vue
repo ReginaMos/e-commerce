@@ -233,7 +233,7 @@ const editAddress = (addressId: string) => {
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="7" md="6">
+      <v-col cols="12" md="6">
         <AddressCardComponent
           :address="addresses.shipAddress"
           type="shipping"
@@ -242,7 +242,7 @@ const editAddress = (addressId: string) => {
           @add="setNewAddress"
         />
       </v-col>
-      <v-col sm="7" md="6">
+      <v-col cols="12" md="6">
         <AddressCardComponent
           :address="addresses.billAddress"
           type="billing"
@@ -264,7 +264,7 @@ const editAddress = (addressId: string) => {
         </v-col>
       </template>
       <template v-else v-for="address in addresses.otherAddress" :key="address.id">
-        <v-col sm="7" md="6">
+        <v-col cols="12" md="6">
           <AddressCardComponent :address="address" type="saved" @remove="handleRemoveAddress" @edit="editAddress" />
         </v-col>
       </template>
