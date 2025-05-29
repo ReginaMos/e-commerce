@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useAuth } from '../services/customer-service';
 import { MenuLinks } from '../constants/routersLinks';
 defineProps({
