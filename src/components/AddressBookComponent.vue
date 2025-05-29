@@ -10,6 +10,8 @@ import { getAddress, getFieldRules } from '../utils/user-profile';
 import AddressCardComponent from './AddressCardComponent.vue';
 import { addressSchema, type AddressData } from '../utils/registration-schema';
 import { countyList } from '../constants/country-list';
+import type { MessageType } from '../models/models';
+import type { VCheckbox } from 'vuetify/components';
 
 type ModifyActions = 'edit' | 'remove' | 'add' | 'none';
 
@@ -33,6 +35,8 @@ const address = reactive<AddressData>({
 
 const defaultBilling = ref(false);
 const defaultShipping = ref(false);
+const billingDisabled = ref(false);
+const shippingDisabled = ref(false);
 
 const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
 
@@ -107,11 +111,21 @@ const cancel = () => {
   addressForm.value?.reset();
   isOnEdit.value = !isOnEdit.value;
   modifyActions.value = 'none';
+  defaultBilling.value = false;
+  billingDisabled.value = false;
 };
 
-const setNewAddress = () => {
+const setNewAddress = (type?: MessageType) => {
   modifyActions.value = 'add';
   isOnEdit.value = !isOnEdit.value;
+  if (type === 'billing') {
+    defaultBilling.value = true;
+    billingDisabled.value = true;
+  }
+  if (type === 'shipping') {
+    defaultShipping.value = true;
+    shippingDisabled.value = true;
+  }
 };
 
 const editAddress = (addressId: string) => {
@@ -179,12 +193,16 @@ const editAddress = (addressId: string) => {
                 :rules="getFieldRulesAddress('country').value"
                 required
               ></v-autocomplete>
-              <v-checkbox v-model="defaultShipping" label="Set as default shipping" hide-details></v-checkbox>
+              <v-checkbox
+                v-model="defaultShipping"
+                label="Set as default shipping"
+                hide-details
+                :disabled="shippingDisabled"
+              ></v-checkbox>
               <v-checkbox
                 v-model="defaultBilling"
                 label="Set as default billing"
-                hide-details
-                class="mb-4"
+                :disabled="billingDisabled"
               ></v-checkbox>
               <v-btn
                 type="submit"
@@ -221,6 +239,7 @@ const editAddress = (addressId: string) => {
           type="shipping"
           @remove="handleRemoveAddress"
           @edit="editAddress"
+          @add="setNewAddress"
         />
       </v-col>
       <v-col sm="7" md="6">
@@ -229,6 +248,7 @@ const editAddress = (addressId: string) => {
           type="billing"
           @remove="handleRemoveAddress"
           @edit="editAddress"
+          @add="setNewAddress"
         />
       </v-col>
     </v-row>
@@ -240,7 +260,7 @@ const editAddress = (addressId: string) => {
     <v-row>
       <template v-if="addresses.otherAddress.length === 0">
         <v-col>
-          <AddressCardComponent :address="undefined" type="other" @click="setNewAddress" />
+          <AddressCardComponent :address="undefined" type="other" @click="setNewAddress" class="mb-8" />
         </v-col>
       </template>
       <template v-else v-for="address in addresses.otherAddress" :key="address.id">

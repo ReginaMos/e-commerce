@@ -38,3 +38,6 @@ export interface ProductInfo {
   attributes: Attributes[];
   size: string;
 }
+
+export type MessageType = 'billing' | 'shipping' | 'saved' | 'other';
+export type AddressMessages = Record<MessageType, { text: string; icon: string }>;
