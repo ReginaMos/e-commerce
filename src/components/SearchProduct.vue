@@ -1,58 +1,41 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify';
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { Links } from '../constants/routersLinks.ts';
 
+const props = defineProps<{
+  modelValue: string;
+  onClear: () => void;
+  getSearchQuery: (query: string) => void;
+}>();
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
+
+function updateValue(val: string) {
+  emit('update:modelValue', val);
+}
 const { mdAndUp } = useDisplay();
-const searchQuery = ref('');
-
-const router = useRouter();
-const getSerchQuery = (query: string) => {
-  if (query.trim()) {
-    if (router)
-      router.push({
-        path: Links.SEARCH.LINK,
-        query: {
-          search: query,
-        },
-      });
-  }
-};
-// function onChange() {
-//   console.log('searchQuery: ', searchQuery);
-// }
 </script>
 
 <template>
-  <div class="input-wrapper" v-if="mdAndUp">
+  <div class="input-wrapper" v-show="mdAndUp">
     <v-text-field
-      v-model="searchQuery"
+      :model-value="props.modelValue"
       type="text"
       variant="plain"
       clearable
       label="What are you looking for?"
       class="search-input"
       persistent-clear
-      @keydown.enter="getSerchQuery(searchQuery)"
+      clear-icon="mdi-close"
+      @update:model-value="updateValue"
+      @keydown.enter="props.getSearchQuery(props.modelValue)"
+      @click:clear="props.onClear"
     />
-    <v-btn class="search-btn" v-if="mdAndUp" @click="getSerchQuery(searchQuery)">
+    <v-btn class="search-btn" v-show="mdAndUp" @click="props.getSearchQuery(props.modelValue)">
       <v-icon> mdi-magnify </v-icon>
     </v-btn>
   </div>
 </template>
-<style>
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
-  box-shadow: 0 0 0px 1000px white inset !important;
-  -webkit-text-fill-color: black !important;
-  caret-color: black;
-  transition: background-color 5000s ease-in-out 0s;
-}
-</style>
 <style scoped lang="scss">
 .input-wrapper {
   margin-right: 24px;
@@ -90,6 +73,23 @@ input:-webkit-autofill:active {
     color: var(--white-text);
     background-color: var(--red-secondary);
     transition: background-color 0.28s ease-in-out;
+  }
+}
+.search-input :deep(.v-field__clearable) {
+  padding: 0;
+  margin: 0;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+}
+::v-deep(.v-field__clearable .v-icon) {
+  color: var(--black-text);
+  font-size: 18px;
+  opacity: 1 !important;
+  &:hover,
+  &:focus,
+  &:active {
+    color: var(--red-secondary);
   }
 }
 </style>

@@ -29,8 +29,8 @@ const routes: Array<RouteRecordRaw> = [
         component: MainPage,
       },
       {
-        path: Links.CONTACT.LINK,
-        name: Links.CONTACT.NAME,
+        path: Links.CONTACTS.LINK,
+        name: Links.CONTACTS.NAME,
         component: ContactsPage,
       },
       {

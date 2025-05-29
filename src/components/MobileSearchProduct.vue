@@ -1,26 +1,42 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify';
-import { ref } from 'vue';
+
+const props = defineProps<{
+  modelValue: string;
+  onClear: () => void;
+  getSearchQuery: (query: string) => void;
+}>();
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
+
+function updateValue(val: string) {
+  emit('update:modelValue', val);
+}
+
 const { smAndDown } = useDisplay();
-const searchQuery = ref('');
 </script>
 
 <template>
-  <div class="input-mobile-wrapper" v-if="smAndDown">
+  <div class="input-mobile-wrapper" v-show="smAndDown">
     <v-text-field
-      v-model="searchQuery"
+      :model-value="props.modelValue"
       type="text"
       variant="plain"
       clearable
       label="What are you looking for?"
       class="search-mobile-input"
+      persistent-clear
+      clear-icon="mdi-close"
+      @update:model-value="updateValue"
+      @keydown.enter="props.getSearchQuery(props.modelValue)"
+      @click:clear="props.onClear"
     ></v-text-field>
-    <v-btn class="search-mobile-btn" v-if="smAndDown" variant="plain">
+    <v-btn class="search-mobile-btn" v-show="smAndDown" variant="plain" @click="props.getSearchQuery(props.modelValue)">
       <v-icon> mdi-magnify </v-icon>
     </v-btn>
   </div>
 </template>
-
 <style scoped lang="scss">
 .input-mobile-wrapper {
   position: fixed;
@@ -92,6 +108,23 @@ const searchQuery = ref('');
     color: var(--white-text);
     background-color: var(--red-secondary);
     transition: background-color 0.28s ease-in-out;
+  }
+}
+.input-mobile-wrapper :deep(.v-field__clearable) {
+  padding: 0;
+  margin: 0;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+}
+::v-deep(.v-field__clearable .v-icon) {
+  color: var(--black-text);
+  font-size: 18px;
+  opacity: 1 !important;
+  &:hover,
+  &:focus,
+  &:active {
+    color: var(--red-secondary);
   }
 }
 </style>

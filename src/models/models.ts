@@ -4,6 +4,17 @@ export interface PromotionModel {
   img: string;
 }
 
+interface Social {
+  icon: string;
+  link: string;
+}
+export interface TeamModel {
+  heading: string;
+  text: string;
+  img: string;
+  socials: Array<Social>;
+}
+
 export type LinkItem = {
   NAME: string;
   LINK: string;
