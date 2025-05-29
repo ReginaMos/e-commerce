@@ -23,9 +23,10 @@ import { aboutAdvantages } from '../constants/aboutPage.ts';
   gap: 30px;
   align-items: center;
   justify-content: center;
-  margin-bottom: 140px;
+  margin-bottom: 50px;
   @media screen and (min-width: 1400px) {
     flex-wrap: nowrap;
+    margin-bottom: 140px;
   }
 }
 .advantage-wrapper h3 {
