@@ -29,13 +29,12 @@ import AboutTeamComponent from '../components/AboutTeamComponent.vue';
   </v-container>
 </template>
 <style scoped lang="scss">
-
 .about-page-container {
- padding-left: 0;
- padding-right: 0;
+  padding-left: 0;
+  padding-right: 0;
   padding-top: 50px;
   padding-bottom: 140px;
-  width: 100%!important;
+  width: 100% !important;
 }
 
 .about-hero {
@@ -74,19 +73,17 @@ import AboutTeamComponent from '../components/AboutTeamComponent.vue';
   width: 100%;
   @media screen and (min-width: 1200px) {
     width: 525px;
-
   }
 }
-.v-col.image-wrapper  {
+.v-col.image-wrapper {
   padding: 0;
 }
 .slide-about-image {
-  
   @media screen and (min-width: 1200px) {
     right: -15px;
     position: absolute;
     max-height: 609px;
-    max-width: 705px!important;
+    max-width: 705px !important;
     min-width: 50%;
     padding: 0;
   }
@@ -99,7 +96,7 @@ import AboutTeamComponent from '../components/AboutTeamComponent.vue';
     right: -15px;
     position: absolute;
     max-height: 609px;
-    width: 705px!important;
+    width: 705px !important;
     min-width: 50%;
   }
 }

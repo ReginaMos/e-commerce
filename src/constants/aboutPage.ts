@@ -52,7 +52,6 @@ export const aboutFeatures: PromotionModel[] = [
     text: 'We reurn money within 30 days',
     img: guard,
   },
- 
 ];
 
 export const aboutTeam: TeamModel[] = [
@@ -63,17 +62,17 @@ export const aboutTeam: TeamModel[] = [
     socials: [
       {
         icon: github,
-        link: "https://github.com/reginamos", 
+        link: 'https://github.com/reginamos',
       },
       {
         icon: linked,
-        link: "https://www.linkedin.com/in/regina-moiseeva-158821284/", 
+        link: 'https://www.linkedin.com/in/regina-moiseeva-158821284/',
       },
       {
         icon: discord,
-        link: "https://discordapp.com/users/757607699314770054"
-      }
-    ]
+        link: 'https://discordapp.com/users/757607699314770054',
+      },
+    ],
   },
   {
     heading: 'Yuriy Skrypal',
@@ -82,13 +81,13 @@ export const aboutTeam: TeamModel[] = [
     socials: [
       {
         icon: github,
-        link: "https://github.com/sepulator", 
+        link: 'https://github.com/sepulator',
       },
       {
         icon: discord,
-        link: "https://discordapp.com/users/973936014009696326", 
-      }
-    ]
+        link: 'https://discordapp.com/users/973936014009696326',
+      },
+    ],
   },
   {
     heading: 'Viktoriia Rosovska',
@@ -97,18 +96,16 @@ export const aboutTeam: TeamModel[] = [
     socials: [
       {
         icon: github,
-        link: "https://github.com/viktoriarosovska", 
+        link: 'https://github.com/viktoriarosovska',
       },
       {
         icon: linked,
-        link: "www.linkedin.com/in/viktoria-rosovska", 
+        link: 'www.linkedin.com/in/viktoria-rosovska',
       },
       {
         icon: discord,
-        link: "https://discordapp.com/users/1089664938966011915"
-      }
-
-    ]
+        link: 'https://discordapp.com/users/1089664938966011915',
+      },
+    ],
   },
- 
 ];
