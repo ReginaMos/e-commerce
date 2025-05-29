@@ -18,7 +18,7 @@ import slideAbout from '../assets/about-page/slideAbout.png';
         </p>
       </v-col>
       <v-col>
-        <v-img :src="slideAbout" class="slide-about-image"/>
+        <v-img :src="slideAbout" class="slide-about-image" />
       </v-col>
     </v-row>
     <AboutAdvantagesComponent />
@@ -28,48 +28,46 @@ import slideAbout from '../assets/about-page/slideAbout.png';
 .v-col {
   padding: 0;
 }
-.about-hero{
- gap: 30px;
- flex-direction: column;
- margin-bottom: 50px;
- @media screen and (min-width: 578px){
-  /* gap: 50px; */
- }
- @media screen and (min-width: 1200px){
-  flex-direction: row;
-  margin-bottom: 140px;
- }
-
+.about-hero {
+  gap: 30px;
+  flex-direction: column;
+  margin-bottom: 50px;
+  @media screen and (min-width: 578px) {
+    /* gap: 50px; */
+  }
+  @media screen and (min-width: 1200px) {
+    flex-direction: row;
+    margin-bottom: 140px;
+  }
 }
 .about-hero-content {
- display: flex;
- flex-direction: column;
- justify-content: flex-start;
- text-align: left;
- gap: 40px;
- 
- font-size: 16px;
- 
- @media screen and (min-width: 1200px){
-  padding-top: 137px;
- padding-right: 75px;
- padding-bottom: 137px;
- width: 525px;
- 
- }
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 40px;
+
+  font-size: 16px;
+
+  @media screen and (min-width: 1200px) {
+    padding-top: 137px;
+    padding-right: 75px;
+    padding-bottom: 137px;
+    width: 525px;
+  }
 }
 .about-hero-heading {
   font-size: 54px;
   line-height: 64px;
   letter-spacing: 0.06;
   font-weight: 500;
-}  
+}
 .slide-about-image {
-@media screen and (min-width: 1200px){
-  position: absolute;
-   right: 0;
-   max-width: 705px;
-   min-width: 50%;
- }
+  @media screen and (min-width: 1200px) {
+    position: absolute;
+    right: 0;
+    max-width: 705px;
+    min-width: 50%;
+  }
 }
 </style>
