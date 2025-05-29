@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed, inject, reactive, ref } from 'vue';
-import { addCustomerAddress, getCustomer, removeCustomerAddress } from '../services/customer-service';
+import {
+  addCustomerAddress,
+  getCustomer,
+  removeCustomerAddress,
+  updateCustomerAddress,
+} from '../services/customer-service';
 import { getAddress, getFieldRules } from '../utils/user-profile';
 import AddressCardComponent from './AddressCardComponent.vue';
 import { addressSchema, type AddressData } from '../utils/registration-schema';
@@ -8,14 +13,15 @@ import { countyList } from '../constants/country-list';
 
 type ModifyActions = 'edit' | 'remove' | 'add' | 'none';
 
-const modifyActions = ref<ModifyActions>('none');
-const isLoading = ref(false);
 const isOnEdit = ref(false);
+const isLoading = ref(false);
+const addressForm = ref();
 const customer = ref(getCustomer());
+const modifyActions = ref<ModifyActions>('none');
+const addressIdEdit = ref('');
 
 const addresses = computed(() => getAddress(customer.value));
 
-const addressForm = ref();
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const address = reactive<AddressData>({
@@ -40,14 +46,38 @@ const register = async () => {
           .then(() => {
             toaster?.show('New Address added', 'success');
             customer.value = getCustomer();
-            isOnEdit.value = false;
           })
           .catch((err: unknown) => {
             if (err instanceof Error) {
               toaster?.show(err.message, 'error');
             }
           })
-          .finally(() => (isLoading.value = false));
+          .finally(() => {
+            isLoading.value = false;
+            isOnEdit.value = false;
+          });
+        break;
+      case 'edit':
+        await updateCustomerAddress(
+          customer.value,
+          addressIdEdit.value,
+          address,
+          defaultShipping.value,
+          defaultBilling.value
+        )
+          .then(() => {
+            toaster?.show('Address changed', 'success');
+            customer.value = getCustomer();
+          })
+          .catch((err: unknown) => {
+            if (err instanceof Error) {
+              toaster?.show(err.message, 'error');
+            }
+          })
+          .finally(() => {
+            isLoading.value = false;
+            isOnEdit.value = false;
+          });
         break;
 
       default:
@@ -83,6 +113,20 @@ const setNewAddress = () => {
   modifyActions.value = 'add';
   isOnEdit.value = !isOnEdit.value;
 };
+
+const editAddress = (addressId: string) => {
+  const findAddress = customer.value.addresses.find((add) => add.id === addressId);
+  if (!findAddress) return;
+  addressIdEdit.value = addressId;
+  modifyActions.value = 'edit';
+  isOnEdit.value = !isOnEdit.value;
+  address.city = findAddress.city || '';
+  address.country = findAddress.country || '';
+  address.streetName = findAddress.streetName || '';
+  address.postalCode = findAddress.postalCode || '';
+  defaultBilling.value = customer.value.defaultBillingAddressId === findAddress.id;
+  defaultShipping.value = customer.value.defaultShippingAddressId === findAddress.id;
+};
 </script>
 
 <template>
@@ -93,7 +137,7 @@ const setNewAddress = () => {
           max-width="400"
           min-width="260"
           width="100%"
-          title="Add a New Address"
+          :title="modifyActions === 'add' ? 'Add a New Address' : 'Edit Address'"
           subtitle="All fields required"
           variant="text"
           class="text-left"
@@ -172,10 +216,20 @@ const setNewAddress = () => {
     </v-row>
     <v-row>
       <v-col sm="7" md="6">
-        <AddressCardComponent :address="addresses.shipAddress" type="shipping" @remove="handleRemoveAddress" />
+        <AddressCardComponent
+          :address="addresses.shipAddress"
+          type="shipping"
+          @remove="handleRemoveAddress"
+          @edit="editAddress"
+        />
       </v-col>
       <v-col sm="7" md="6">
-        <AddressCardComponent :address="addresses.billAddress" type="billing" @remove="handleRemoveAddress" />
+        <AddressCardComponent
+          :address="addresses.billAddress"
+          type="billing"
+          @remove="handleRemoveAddress"
+          @edit="editAddress"
+        />
       </v-col>
     </v-row>
     <v-row>
@@ -184,14 +238,16 @@ const setNewAddress = () => {
       </v-col>
     </v-row>
     <v-row>
-      <v-col sm="7" md="6">
-        <template v-if="addresses.otherAddress.length === 0">
-          <AddressCardComponent :address="undefined" type="saved" />
-        </template>
-        <template v-else v-for="address in addresses.otherAddress" :key="address.id">
-          <AddressCardComponent :address="address" type="saved" @remove="handleRemoveAddress" />
-        </template>
-      </v-col>
+      <template v-if="addresses.otherAddress.length === 0">
+        <v-col>
+          <AddressCardComponent :address="undefined" type="other" @click="setNewAddress" />
+        </v-col>
+      </template>
+      <template v-else v-for="address in addresses.otherAddress" :key="address.id">
+        <v-col sm="7" md="6">
+          <AddressCardComponent :address="address" type="saved" @remove="handleRemoveAddress" @edit="editAddress" />
+        </v-col>
+      </template>
     </v-row>
   </template>
 </template>

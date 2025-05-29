@@ -139,6 +139,8 @@ export async function addCustomerAddress(
     })
     .execute();
 
+  localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+
   const newAddress = response.body.addresses[response.body.addresses.length - 1];
   const defaultActions: MyCustomerUpdateAction[] = [];
   if (defaultShipping) {
@@ -148,7 +150,7 @@ export async function addCustomerAddress(
     defaultActions.push({ action: 'setDefaultBillingAddress', addressId: newAddress.id });
   }
   if (defaultActions.length) {
-    await apiRoot
+    const responseSet = await apiRoot
       .me()
       .post({
         body: {
@@ -157,8 +159,9 @@ export async function addCustomerAddress(
         },
       })
       .execute();
+    localStorage.setItem(USER_KEY, JSON.stringify(responseSet.body));
   }
-  localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+
   return response.body;
 }
 
@@ -173,6 +176,51 @@ export async function removeCustomerAddress(customer: Customer, addressId: strin
       },
     })
     .execute();
+  localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+  return response.body;
+}
+
+export async function updateCustomerAddress(
+  customer: Customer,
+  addressId: string,
+  address: AddressData,
+  setDefaultShipping = false,
+  setDefaultBilling = false
+) {
+  const oldAddress = customer.addresses.find((add) => add.id === addressId);
+  if (!oldAddress) return;
+  const actions: MyCustomerUpdateAction[] = [
+    {
+      action: 'changeAddress',
+      addressId,
+      address,
+    },
+  ];
+
+  if (customer.defaultBillingAddressId === addressId && !setDefaultBilling) {
+    actions.push({ action: 'removeBillingAddressId', addressId });
+  }
+  if (customer.defaultBillingAddressId !== addressId && setDefaultBilling) {
+    actions.push({ action: 'setDefaultBillingAddress', addressId });
+  }
+
+  if (customer.defaultShippingAddressId === addressId && !setDefaultShipping) {
+    actions.push({ action: 'removeShippingAddressId', addressId });
+  }
+  if (customer.defaultShippingAddressId !== addressId && setDefaultShipping) {
+    actions.push({ action: 'setDefaultShippingAddress', addressId });
+  }
+
+  const response = await apiRoot
+    .me()
+    .post({
+      body: {
+        version: customer.version,
+        actions,
+      },
+    })
+    .execute();
+
   localStorage.setItem(USER_KEY, JSON.stringify(response.body));
   return response.body;
 }

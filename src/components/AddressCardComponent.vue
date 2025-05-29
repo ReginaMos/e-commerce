@@ -2,13 +2,14 @@
 import type { Address } from '@commercetools/platform-sdk';
 import { getCountryName } from '../utils/user-profile';
 
-type Messages = 'billing' | 'shipping' | 'saved';
+type Messages = 'billing' | 'shipping' | 'saved' | 'other';
 type MessagesProps = Record<Messages, { text: string; icon: string }>;
 
 const msg: MessagesProps = {
   billing: { text: 'Default Billing Address', icon: 'mdi-credit-card-outline' },
   shipping: { text: 'Default Shipping Address', icon: 'mdi-truck-delivery-outline' },
   saved: { text: 'Saved Address', icon: 'mdi-map-marker-outline' },
+  other: { text: 'No Other Addresses', icon: 'mdi-map-marker-outline' },
 };
 
 defineProps<{
@@ -18,6 +19,7 @@ defineProps<{
 
 const emit = defineEmits<{
   (e: 'remove', addressId: string): void;
+  (e: 'edit', addressId: string): void;
 }>();
 </script>
 
@@ -29,7 +31,7 @@ const emit = defineEmits<{
     :title="address ? msg[type].text : ''"
   >
     <template v-slot:actions v-if="address">
-      <v-btn text="Edit" variant="tonal" />
+      <v-btn text="Edit" variant="tonal" @click="emit('edit', address.id ?? '')" />
       <v-btn text="Remove" variant="tonal" @click="emit('remove', address.id ?? '')" />
     </template>
     <template v-slot:actions v-else>
@@ -51,7 +53,7 @@ const emit = defineEmits<{
     </v-list>
     <v-card-text v-else class="text-center text-body-1">
       <v-icon :icon="msg[type].icon"></v-icon>
-      {{ 'No ' + msg[type].text }}
+      {{ msg[type].text }}
     </v-card-text>
   </v-card>
 </template>
