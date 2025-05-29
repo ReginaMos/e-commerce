@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, reactive, ref } from 'vue';
+import { computed, inject, nextTick, reactive, ref } from 'vue';
 import {
   addCustomerAddress,
   getCustomer,
@@ -50,15 +50,14 @@ const register = async () => {
           .then(() => {
             toaster?.show('New Address added', 'success');
             customer.value = getCustomer();
+            isLoading.value = false;
+            cancel();
           })
           .catch((err: unknown) => {
             if (err instanceof Error) {
               toaster?.show(err.message, 'error');
+              isLoading.value = false;
             }
-          })
-          .finally(() => {
-            isLoading.value = false;
-            isOnEdit.value = false;
           });
         break;
       case 'edit':
@@ -72,19 +71,15 @@ const register = async () => {
           .then(() => {
             toaster?.show('Address changed', 'success');
             customer.value = getCustomer();
+            isLoading.value = false;
+            cancel();
           })
           .catch((err: unknown) => {
             if (err instanceof Error) {
               toaster?.show(err.message, 'error');
+              isLoading.value = false;
             }
-          })
-          .finally(() => {
-            isLoading.value = false;
-            isOnEdit.value = false;
           });
-        break;
-
-      default:
         break;
     }
   } else {
@@ -98,12 +93,13 @@ const handleRemoveAddress = async (addressId: string) => {
     await removeCustomerAddress(customer.value, addressId);
     toaster?.show('Address removed', 'success');
     customer.value = getCustomer();
+    isLoading.value = false;
+    isOnEdit.value = !isOnEdit.value;
   } catch (err) {
     if (err instanceof Error) {
       toaster?.show(err.message, 'error');
+      isLoading.value = false;
     }
-  } finally {
-    isLoading.value = false;
   }
 };
 
@@ -140,6 +136,10 @@ const editAddress = (addressId: string) => {
   address.postalCode = findAddress.postalCode || '';
   defaultBilling.value = customer.value.defaultBillingAddressId === findAddress.id;
   defaultShipping.value = customer.value.defaultShippingAddressId === findAddress.id;
+
+  nextTick(() => {
+    addressForm.value?.$el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
 };
 </script>
 
@@ -257,10 +257,10 @@ const editAddress = (addressId: string) => {
         <h2>Other Addresses</h2>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mb-8">
       <template v-if="addresses.otherAddress.length === 0">
         <v-col>
-          <AddressCardComponent :address="undefined" type="other" @click="setNewAddress" class="mb-8" />
+          <AddressCardComponent :address="undefined" type="other" @click="setNewAddress" />
         </v-col>
       </template>
       <template v-else v-for="address in addresses.otherAddress" :key="address.id">
