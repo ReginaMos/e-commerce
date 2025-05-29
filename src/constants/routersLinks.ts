@@ -2,7 +2,7 @@ import type { LinkItem } from '../models/models';
 
 export const Links: Record<string, LinkItem> = {
   HOME: { NAME: 'Home', LINK: '/' },
-  CONTACT: { NAME: 'Contact', LINK: '/contact' },
+  CONTACTS: { NAME: 'Contacts', LINK: '/contacts' },
   ABOUT: { NAME: 'About', LINK: '/about' },
   WISHLIST: { NAME: 'Wishlist', LINK: '/wishlist' },
   SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
@@ -17,7 +17,7 @@ export const Links: Record<string, LinkItem> = {
 
 export const MenuLinks: Record<string, LinkItem> = {
   HOME: { NAME: 'Home', LINK: '/' },
-  CONTACT: { NAME: 'Catalog', LINK: '/catalog' },
+  CATALOG: { NAME: 'Catalog', LINK: '/catalog' },
   ABOUT: { NAME: 'About', LINK: '/about' },
   SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
   LOGIN: { NAME: 'Login', LINK: '/login' },
@@ -29,8 +29,8 @@ export const MobileMenuLinks: Record<string, LinkItem> = {
   SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
   LOGIN: { NAME: 'Login', LINK: '/login' },
   USER: { NAME: 'Account', LINK: '/account' },
-  WISHLIST: { NAME: 'Wishlist', LINK: '/wishlist' },
   CART: { NAME: 'Shop Cart', LINK: '/cart' },
-  // CONTACT: { NAME: 'Contact', LINK: '/contact' },
+  WISHLIST: { NAME: 'Wishlist', LINK: '/wishlist' },
   ABOUT: { NAME: 'About Us', LINK: '/about' },
+  CONTACTS: { NAME: 'Contacts', LINK: '/contacts' },
 };

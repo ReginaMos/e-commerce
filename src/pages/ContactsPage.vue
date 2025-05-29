@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ContactsView from '../views/ContactsView.vue';
+</script>
 
 <template>
-  <h1>ContactsPage!</h1>
+  <ContactsView />
 </template>
 
 <style scoped></style>
