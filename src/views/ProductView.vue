@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { getProductById } from '../services/catalog';
 import { onMounted, ref } from 'vue';
 import type { ProductInfo } from '../models/models';
@@ -11,6 +11,7 @@ import { Links } from '../constants/routersLinks.ts';
 import { computed } from 'vue';
 
 const route = useRoute();
+const router = useRouter();
 const id = route.params.id;
 const product = ref<ProductInfo | null>(null);
 
@@ -19,7 +20,7 @@ onMounted(async () => {
     product.value = await getProductById(id);
     console.log(product.value);
   } else {
-    console.error('invalid param Id:', id);
+    router.push({ name: Links.NOTFOUND.NAME });
   }
 });
 const items = computed(() => [

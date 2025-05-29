@@ -9,7 +9,7 @@ const { isAuth } = useAuth();
 </script>
 <template>
   <li v-if="isAuth ? link !== MenuLinks.SIGNUP.LINK && link !== MenuLinks.LOGIN.LINK : link">
-    <RouterLink :to="link" class="menu-link" exact-active-class="active">
+    <RouterLink v-if="link" :to="link" class="menu-link" exact-active-class="active">
       {{ title }}
     </RouterLink>
   </li>
