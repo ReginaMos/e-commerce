@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { isAuth } from '../services/customer-service';
 import { MobileMenuLinks } from '../constants/routersLinks';
 
@@ -14,7 +14,7 @@ defineProps({
     class="activeMenu"
     v-if="isAuth ? link !== MobileMenuLinks.SIGNUP.LINK && link !== MobileMenuLinks.LOGIN.LINK : link"
   >
-    <RouterLink :to="link" class="menu-link" style="width: 100%" exact-active-class="active">
+    <RouterLink v-if="link" :to="link" class="menu-link" style="width: 100%" exact-active-class="active">
       <v-list-item-title>{{ title }}</v-list-item-title>
     </RouterLink>
   </v-list-item>

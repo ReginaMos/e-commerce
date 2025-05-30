@@ -17,7 +17,7 @@ defineExpose({ dialog });
     </template>
     <v-card class="card-dialog">
       <v-card-actions class="modal-card-action">
-        <v-btn @click="dialog = false" :ripple="false" class="close-modal"><v-icon size="30">mdi-close</v-icon></v-btn>
+        <v-btn @click="dialog = false" class="close-modal" :ripple="false"><v-icon size="30">mdi-close</v-icon></v-btn>
       </v-card-actions>
       <v-carousel class="modal-slider" height="null">
         <v-carousel-item
@@ -45,38 +45,43 @@ defineExpose({ dialog });
 <style scoped lang="scss">
 .dialog-slider {
   width: 100%;
-  max-width: 840px;
+  max-width: 300px;
   height: auto;
+
+  @media screen and (max-height: 500px) {
+    max-width: 300px;
+  }
+  @media screen and (min-height: 500px) and (max-height: 1000px) {
+    max-width: 400px;
+  }
+  @media screen and (min-height: 1000.89px) {
+    max-width: 800px;
+  }
 }
-.modal-slider-image :deep(.v-img__img) {
-  height: auto !important;
-  max-width: 780px;
-}
+
 .card-dialog {
   position: relative;
   background-color: var(--white-background);
-  padding: 30px;
-  height: auto !important;
 }
-
 .dialog-slider :deep(.v-carousel__controls) {
   display: none;
 }
-
 .current-slide-index {
   position: absolute;
   bottom: 10px;
-  right: 30px;
+  right: 10px;
 }
 .modal-card-action {
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 10px;
+  top: 10px;
   z-index: 1000;
-  width: 40px !important;
-  height: 40px;
+  min-width: 30px;
+  min-height: 30px;
   padding: 0;
-  align-items: flex-start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .close-modal {
@@ -86,7 +91,7 @@ defineExpose({ dialog });
   &:hover,
   &:focus,
   &:active {
-    background-color: transparent;
+    background-color: transparent !important;
     color: var(--red-secondary);
   }
 }

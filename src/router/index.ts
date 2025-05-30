@@ -13,6 +13,7 @@ import UserPage from '../pages/UserPage.vue';
 import ProductPage from '../pages/ProductPage.vue';
 import CatalogPage from '../pages/CatalogPage.vue';
 import NotFoundPage from '../pages/NotFoundPage.vue';
+import SearchPage from '../pages/SearchPage.vue';
 
 import { Links } from '../constants/routersLinks';
 import { isAuth } from '../services/customer-service';
@@ -28,8 +29,8 @@ const routes: Array<RouteRecordRaw> = [
         component: MainPage,
       },
       {
-        path: Links.CONTACT.LINK,
-        name: Links.CONTACT.NAME,
+        path: Links.CONTACTS.LINK,
+        name: Links.CONTACTS.NAME,
         component: ContactsPage,
       },
       {
@@ -66,6 +67,11 @@ const routes: Array<RouteRecordRaw> = [
         path: Links.CATALOG.LINK,
         name: Links.CATALOG.NAME,
         component: CatalogPage,
+      },
+      {
+        path: Links.SEARCH.LINK,
+        name: Links.SEARCH.NAME,
+        component: SearchPage,
       },
       {
         path: `${Links.PRODUCT.LINK}/:id`,

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import AboutView from '../views/AboutView.vue';
+import SearchView from '../views/SearchView.vue';
 </script>
+
 <template>
-  <AboutView />
+  <SearchView />
 </template>
 
 <style scoped></style>

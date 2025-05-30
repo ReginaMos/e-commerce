@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import MenuItem from './MenuItem.vue';
 import MobileMenuItem from './MobileMenuItem.vue';
 import { RouterLink } from 'vue-router';
@@ -26,10 +26,31 @@ watch(drawer, (newVal) => {
 });
 
 const group = ref(null);
-
 watch(group, () => {
   drawer.value = false;
 });
+
+const searchQuery = ref(localStorage.getItem('searchQuery') ?? '');
+watch(searchQuery, (newVal) => {
+  console.log('searchQuery:', newVal);
+  localStorage.setItem('searchQuery', newVal);
+});
+function onClear() {
+  localStorage.removeItem('searchQuery');
+  searchQuery.value = '';
+}
+
+const getSearchQuery = (query: string): void => {
+  if (query.trim()) {
+    if (router)
+      router.push({
+        path: Links.SEARCH.LINK,
+        query: {
+          search: query,
+        },
+      });
+  }
+};
 
 const logout = () => {
   if (route.path === Links.USER.LINK) {
@@ -62,12 +83,9 @@ const logout = () => {
       </v-navigation-drawer>
     </div>
 
-    <SearchProduct />
+    <SearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" />
 
     <div class="icon-wrapper">
-      <!-- <v-btn v-if="mdAndDown" class="icon-button">
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn> -->
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.WISHLIST.LINK">
         <v-icon icon="mdi mdi-heart-outline"></v-icon>
       </v-btn>
@@ -82,7 +100,7 @@ const logout = () => {
       >
     </div>
   </v-app-bar>
-  <MobileSearchProduct />
+  <MobileSearchProduct :onClear="onClear" :getSearchQuery="getSearchQuery" v-model="searchQuery" />
 </template>
 
 <style scoped lang="scss">

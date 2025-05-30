@@ -49,7 +49,7 @@ const { mdAndUp } = useDisplay();
               <router-link :to="Links.CATALOG.LINK"> Catalog </router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.CONTACT.LINK">Contact</router-link>
+              <router-link :to="Links.CONTACTS.LINK">Contacts</router-link>
             </v-list-item>
           </v-list>
         </v-col>

@@ -44,19 +44,24 @@ watch(internalSelectedSize, (newVal) => {
 <style scoped lang="scss">
 .size-selector {
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  gap: 24px;
+  gap: 14px;
   height: 32px;
 }
 .size-selector :deep(.v-btn-group) {
-  gap: 10px;
+  display: flex;
+  justify-content: space-beetwen;
   border-radius: 0px;
   height: fit-content;
+  gap: 0px;
+  flex-wrap: wrap;
 }
 
 .size-selector :deep(.v-btn) {
   padding: 6px 7px;
   min-width: fit-content;
+  justify-self: flex-start;
   border-radius: 5px;
 }
 .size-selector :deep(.v-btn.v-btn--active) {

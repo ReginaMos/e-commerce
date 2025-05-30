@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { ProductInfo } from '../models/models.ts';
-// import { VNodeProps} from 'vue';
 
 defineProps<{
   product?: ProductInfo;
-  // props: VNodeProps,
 }>();
 
 const currentSlide = ref(0);
-function onCarouselClick(event) {
-  const target = event.target;
+function onCarouselClick(event: MouseEvent | TouchEvent) {
+  const target = event.target as HTMLElement;
   if (target.classList.contains('v-btn') || target.closest('.v-btn')) {
     event.stopPropagation();
   }
