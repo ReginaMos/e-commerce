@@ -11,7 +11,6 @@ import AddressCardComponent from './AddressCardComponent.vue';
 import { addressSchema, type AddressData } from '../utils/registration-schema';
 import { countyList } from '../constants/country-list';
 import type { MessageType } from '../models/models';
-import type { VCheckbox } from 'vuetify/components';
 
 type ModifyActions = 'edit' | 'remove' | 'add' | 'none';
 
