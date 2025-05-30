@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useAuth } from '../services/customer-service';
+import { isAuth } from '../services/customer-service';
 import { MobileMenuLinks } from '../constants/routersLinks';
 
 defineProps({
   title: String,
   link: String,
 });
-const { isAuth } = useAuth();
 </script>
 <template>
   <v-list-item

@@ -16,7 +16,7 @@ import NotFoundPage from '../pages/NotFoundPage.vue';
 import SearchPage from '../pages/SearchPage.vue';
 
 import { Links } from '../constants/routersLinks';
-import { USER_KEY } from '../constants/local-storage';
+import { isAuth } from '../services/customer-service';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -96,11 +96,10 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  const isAuthenticated = localStorage.getItem(USER_KEY);
-  if (!isAuthenticated && to.name === Links.USER.NAME) {
-    return { name: Links.SIGNUP.NAME };
+  if (!isAuth.value && to.name === Links.USER.NAME) {
+    return { name: Links.LOGIN.NAME };
   }
-  if (isAuthenticated && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {
+  if (isAuth.value && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {
     return { name: Links.HOME.NAME };
   }
 });
