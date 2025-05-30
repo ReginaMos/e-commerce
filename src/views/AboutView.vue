@@ -43,9 +43,10 @@ function onShowMore() {
           </p>
           <p class="mb-6">
             <strong>Viktoriia Rosovska</strong> demonstrated strong skills in layout and page styling. She developed the
-            header, footer, product page, and the About Us page. Sometime she
-            made commits and pull requests more often than necessary whitch required other team members to regularly
-            review and help improve the code. Nevertheless, Viktoriia approached her tasks responsibly and was always ready to take on additional tasks and help her teammates. 
+            header, footer, product page, and the About Us page. Sometime she made commits and pull requests more often
+            than necessary whitch required other team members to regularly review and help improve the code.
+            Nevertheless, Viktoriia approached her tasks responsibly and was always ready to take on additional tasks
+            and help her teammates.
           </p>
         </div>
         <v-btn v-if="isShowMore" @click="onShowMore" class="show-btn show-less-btn" variant="plain"
