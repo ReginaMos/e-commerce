@@ -71,8 +71,7 @@ export async function getProductsByCategoryKey(categoryKey: string): Promise<Pro
 }
 
 async function loadProducts() {
-  const products = await getProductsByCategoryKey('accessories-man-wear');
-  console.log(products);
+  await getProductsByCategoryKey('accessories-man-wear');
 }
 
 loadProducts();
