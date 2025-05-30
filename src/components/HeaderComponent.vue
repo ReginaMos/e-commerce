@@ -91,7 +91,7 @@ const logout = () => {
         <v-icon icon="mdi mdi-heart-outline"></v-icon>
       </v-btn>
       <CartHeaderComponent :mediasize="smAndUp" :link="Links.CART.LINK" />
-     
+
       <v-btn class="icon-button" v-if="smAndUp && isAuth" :to="Links.USER.LINK">
         <v-icon>mdi-account-outline</v-icon>
       </v-btn>
