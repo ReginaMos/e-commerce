@@ -17,7 +17,6 @@ onMounted(async () => {
     searchQuery.value = route.query.search;
   }
   products.value = await searchProducts(searchQuery.value);
-  console.log(products.value);
 });
 
 watch(

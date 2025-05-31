@@ -9,6 +9,7 @@ import { ref, watch } from 'vue';
 import { isAuth, logoutCustomer } from '../services/customer-service.ts';
 import MobileSearchProduct from './MobileSearchProduct.vue';
 import { useRoute, useRouter } from 'vue-router';
+import CartHeaderComponent from './CartHeaderComponent.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -89,9 +90,8 @@ const logout = () => {
       <v-btn class="icon-button" v-if="smAndUp" :to="Links.WISHLIST.LINK">
         <v-icon icon="mdi mdi-heart-outline"></v-icon>
       </v-btn>
-      <v-btn class="icon-button" v-if="smAndUp" :to="Links.CART.LINK">
-        <v-icon icon="mdi mdi-cart-outline"></v-icon>
-      </v-btn>
+      <CartHeaderComponent :mediasize="smAndUp" :link="Links.CART.LINK" />
+
       <v-btn class="icon-button" v-if="smAndUp && isAuth" :to="Links.USER.LINK">
         <v-icon>mdi-account-outline</v-icon>
       </v-btn>
