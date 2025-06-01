@@ -51,5 +51,11 @@ export interface ProductInfo {
   brand: string;
 }
 
+export interface Filter {
+  category: string;
+  size: string;
+  brand: string;
+}
+
 export type MessageType = 'billing' | 'shipping' | 'saved' | 'other';
 export type AddressMessages = Record<MessageType, { text: string; icon: string }>;
