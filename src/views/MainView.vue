@@ -7,12 +7,12 @@ import ProductsComponent from '../components/ProductsComponent.vue';
 import ButtonElement from '../elements/ButtonElement.vue';
 import type { ProductInfo } from '../models/models';
 import { ref, onMounted } from 'vue';
-import { getFilteredProducts } from '../services/catalog';
+import { getProducts } from '../services/catalog';
 
 const products = ref<ProductInfo[]>([]);
 
 onMounted(async () => {
-  products.value = await getFilteredProducts(3);
+  products.value = await getProducts(3);
 });
 </script>
 

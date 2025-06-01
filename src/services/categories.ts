@@ -4,7 +4,7 @@ import type {
   Category,
   ProductProjectionPagedSearchResponse,
   FacetTerm,
-  FacetResult
+  FacetResult,
 } from '@commercetools/platform-sdk';
 import type { ClientResponse } from '@commercetools/platform-sdk';
 
@@ -29,7 +29,7 @@ export async function getMainCategories() {
         },
       })
       .execute();
-      
+
     return response.body.results;
   } catch (error) {
     console.error('Ошибка при получении главных категорий:', error);

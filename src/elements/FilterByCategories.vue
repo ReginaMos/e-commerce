@@ -41,7 +41,7 @@ function buildCategoryTree(categories: Category[]): CategoryTree[] {
   return roots;
 }
 
-function choseCategpry(key: string | undefined, name: string) {
+function choseCategory(key: string | undefined, name: string) {
   emit('chooseCategory', key);
   category.value = name;
 }
@@ -59,11 +59,14 @@ onMounted(async () => {
 
       <v-menu activator="parent">
         <v-list>
+          <v-list-item @click="choseCategory('ALL', 'ALL')">
+            <v-list-item-title> ALL </v-list-item-title>
+          </v-list-item>
           <v-list-item
             v-for="(parent, ind) in categoriesTree"
             :key="ind"
             link
-            @click="choseCategpry(parent.key, parent.name['en-US'])"
+            @click="choseCategory(parent.key, parent.name['en-US'])"
           >
             <v-list-item-title>{{ parent.name['en-US'] }}</v-list-item-title>
             <template v-slot:append v-if="parent.children?.length">
@@ -76,7 +79,7 @@ onMounted(async () => {
                   v-for="(elem, ind_2) in parent.children"
                   :key="ind_2"
                   link
-                  @click="choseCategpry(elem.key, elem.name['en-US'])"
+                  @click="choseCategory(elem.key, elem.name['en-US'])"
                 >
                   <v-list-item-title>{{ elem.name['en-US'] }}</v-list-item-title>
                   <template v-slot:append v-if="elem.children?.length">
@@ -89,7 +92,7 @@ onMounted(async () => {
                         v-for="(item, ind_3) in elem.children"
                         :key="ind_3"
                         link
-                        @click="choseCategpry(item.key, item.name['en-US'])"
+                        @click="choseCategory(item.key, item.name['en-US'])"
                       >
                         <v-list-item-title>{{ item.name['en-US'] }}</v-list-item-title>
                       </v-list-item>

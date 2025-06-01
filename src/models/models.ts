@@ -56,5 +56,10 @@ export interface Filter {
   brand?: string;
 }
 
+export interface SortBy {
+  name?: string;
+  price?: string;
+}
+
 export type MessageType = 'billing' | 'shipping' | 'saved' | 'other';
 export type AddressMessages = Record<MessageType, { text: string; icon: string }>;

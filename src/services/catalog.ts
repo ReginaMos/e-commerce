@@ -4,8 +4,14 @@ import type {
   Product,
   ProductProjection,
   ProductProjectionPagedSearchResponse,
+  QueryParam,
 } from '@commercetools/platform-sdk';
-import type { ProductInfo, Filter } from '../models/models';
+import type { ProductInfo, Filter, SortBy } from '../models/models';
+
+interface QueryArgs {
+  [key: string]: QueryParam | undefined;
+  filter?: string[];
+}
 
 export async function getProductById(productId: string): Promise<ProductInfo | null> {
   try {
@@ -19,7 +25,7 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
   }
 }
 
-export async function getFilteredProducts(limit?: number, filter?: Filter): Promise<ProductInfo[]> {
+export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
   try {
     const categoryKey = filter?.category?.trim();
     const brandName = filter?.brand?.trim();
@@ -27,12 +33,15 @@ export async function getFilteredProducts(limit?: number, filter?: Filter): Prom
     let categoryIds: string[] = [];
 
     if (categoryKey) {
-      const parentCategoryResponse = await apiRoot.categories().get({
-        queryArgs: {
-          where: `key="${categoryKey}"`,
-          limit: 1,
-        },
-      }).execute();
+      const parentCategoryResponse = await apiRoot
+        .categories()
+        .get({
+          queryArgs: {
+            where: `key="${categoryKey}"`,
+            limit: 1,
+          },
+        })
+        .execute();
 
       const parentCategory = parentCategoryResponse.body.results[0];
       if (!parentCategory) {
@@ -42,43 +51,64 @@ export async function getFilteredProducts(limit?: number, filter?: Filter): Prom
 
       const parentCategoryId = parentCategory.id;
 
-      const childrenResponse = await apiRoot.categories().get({
-        queryArgs: {
-          where: `ancestors(id="${parentCategoryId}")`,
-          limit: 20,
-        },
-      }).execute();
+      const childrenResponse = await apiRoot
+        .categories()
+        .get({
+          queryArgs: {
+            where: `ancestors(id="${parentCategoryId}")`,
+            limit: 20,
+          },
+        })
+        .execute();
 
-      categoryIds = [parentCategoryId, ...childrenResponse.body.results.map(cat => cat.id)];
+      categoryIds = [parentCategoryId, ...childrenResponse.body.results.map((cat) => cat.id)];
+    }
+    const sortParams: string[] = [];
+
+    if (sort?.name) {
+      sortParams.push(sort.name);
     }
 
-    const whereClauses: string[] = [];
+    if (sort?.price) {
+      sortParams.push(sort.price);
+    }
+
+    const queryArgs: QueryArgs = {
+        limit,
+        staged: true,
+        sort: sortParams.length > 0 ? sortParams : undefined,
+        priceCurrency: sort?.price?.includes('scopedPrice') ? 'EUR' : undefined,
+        filter: [],
+    };
 
     if (categoryIds.length > 0) {
-      const categoryClause = categoryIds.map(id => `categories(id="${id}")`).join(" or ");
-      whereClauses.push(`(${categoryClause})`);
+      const categoryFilter = `categories.id:(${categoryIds.map(id => `"${id}"`).join(',')})`;
+      queryArgs.filter!.push(categoryFilter);
     }
 
     if (brandName) {
-      const brandClause = `masterVariant(attributes(name="brand" and value="${brandName}")) or  variants(attributes(name="brand" and value="${brandName}"))`;
-      whereClauses.push(`(${brandClause})`);
+      const brandFilter = `variants.attributes.brand:"${brandName}"`;
+      queryArgs.filter!.push(brandFilter);
     }
 
-    const where = whereClauses.length > 0 ? whereClauses.join(" and ") : undefined;
+    if (sortParams.length > 0) {
+      queryArgs.sort = sortParams;
+    }
 
-    const response = await apiRoot.productProjections().get({
-      queryArgs: {
-        limit: limit,
-        where,
-        staged: true,
-      },
-    }).execute();
+    if (sort?.price?.includes('scopedPrice')) {
+      queryArgs.priceCurrency = 'EUR';
+    }
 
-    const products: ProductInfo[] = response.body.results.map(item => getBriefInfoFromProductProjection(item));
+    const response = await apiRoot
+    .productProjections()
+    .search()
+    .get({ queryArgs })
+    .execute();
+
+    const products: ProductInfo[] = response.body.results.map((item) => getBriefInfoFromProductProjection(item));
     return products;
-
   } catch (error) {
-    console.error("Error while fetching filtered products:", error);
+    console.error('Error while fetching filtered products:', error);
     return [];
   }
 }

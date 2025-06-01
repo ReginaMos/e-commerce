@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, defineEmits } from 'vue';
 import { getBrands } from '../services/categories';
-import type {
-  FacetTerm
-} from '@commercetools/platform-sdk';
+import type { FacetTerm } from '@commercetools/platform-sdk';
 
 const brand = ref<string>('Brand');
 const brands = ref<FacetTerm[]>([]);
@@ -29,6 +27,10 @@ onMounted(async () => {
       </template>
 
       <v-list>
+        <v-list-item @click="choseBrand('ALL')">
+          <v-list-item-title> ALL </v-list-item-title>
+        </v-list-item>
+
         <v-list-item v-for="(item, index) in brands" :key="index" :value="index" @click="choseBrand(item.term)">
           <v-list-item-title>{{ item.term }}</v-list-item-title>
         </v-list-item>
