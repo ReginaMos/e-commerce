@@ -20,7 +20,7 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
   }
 }
 
-export async function getProductsByCategoryKey(categoryKey: string): Promise<ProductProjection[]> {
+export async function getProductsByCategoryKey(categoryKey: string): Promise<ProductInfo[]> {
   try {
     const parentCategoryResponse = await apiRoot
       .categories()
@@ -63,7 +63,8 @@ export async function getProductsByCategoryKey(categoryKey: string): Promise<Pro
       })
       .execute();
 
-    return productsResponse.body.results;
+    const products: ProductInfo[] = productsResponse.body.results.map((item) => getBriefInfoFromProductProjection(item));
+    return products;
   } catch (error) {
     console.error('Error while receiving goods by category:', error);
     return [];
