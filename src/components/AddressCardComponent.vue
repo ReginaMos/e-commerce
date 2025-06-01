@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import type { Address } from '@commercetools/platform-sdk';
 import { getCountryName } from '../utils/user-profile';
-
-type Messages = 'billing' | 'shipping' | 'saved';
-type MessagesProps = Record<Messages, { text: string; icon: string }>;
-
-const msg: MessagesProps = {
-  billing: { text: 'Default Billing Address', icon: 'mdi-credit-card-outline' },
-  shipping: { text: 'Default Shipping Address', icon: 'mdi-truck-delivery-outline' },
-  saved: { text: 'Saved Address', icon: 'mdi-map-marker-outline' },
-};
+import { msg } from '../constants/address-messages';
+import type { MessageType } from '../models/models';
 
 defineProps<{
   address: Address | undefined;
-  type: Messages;
+  type: MessageType;
+}>();
+
+const emit = defineEmits<{
+  (e: 'remove', addressId: string): void;
+  (e: 'edit', addressId: string): void;
+  (e: 'add', type: MessageType): void;
 }>();
 </script>
 
@@ -25,11 +24,17 @@ defineProps<{
     :title="address ? msg[type].text : ''"
   >
     <template v-slot:actions v-if="address">
-      <v-btn text="Edit" variant="tonal" />
-      <v-btn text="Remove" variant="tonal" />
+      <v-btn text="Edit" variant="tonal" @click="emit('edit', address.id ?? '')" />
+      <v-btn text="Remove" variant="tonal" @click="emit('remove', address.id ?? '')" />
     </template>
     <template v-slot:actions v-else>
-      <v-btn location="center" text="Add a new address" variant="tonal" class="text-center" />
+      <v-btn
+        location="center"
+        text="Add a new address"
+        variant="tonal"
+        class="text-center"
+        @click="emit('add', type)"
+      />
     </template>
     <v-list v-if="address" density="compact">
       <v-list-item>
