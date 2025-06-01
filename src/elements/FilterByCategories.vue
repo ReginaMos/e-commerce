@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, defineEmits  } from 'vue';
+import { ref, onMounted, defineEmits } from 'vue';
 import type { Category } from '@commercetools/platform-sdk';
 import { getCategories } from '../services/categories';
 
@@ -7,7 +7,7 @@ interface CategoryTree extends Category {
   children?: CategoryTree[];
 }
 
-const emit = defineEmits(['chooseCategory'])
+const emit = defineEmits(['chooseCategory']);
 const category = ref<string>('Category');
 const categoriesTree = ref<CategoryTree[]>([]);
 
@@ -49,7 +49,6 @@ function choseCategpry(key: string | undefined, name: string) {
 onMounted(async () => {
   const categories = await getCategories();
   categoriesTree.value = buildCategoryTree(categories);
-  console.log(categoriesTree.value);
 });
 </script>
 

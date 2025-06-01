@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { getBrands } from '../services/categories';
 
-// const brands = ref([]);
-const myBrands = ['Nike', 'Adidas', 'Elements'];
 const brand = ref<string>('Brand');
+const brands = ref([]);
 
 function choseBrand(name: string) {
   brand.value = name;
 }
 
 onMounted(async () => {
-  //await getBrands();
+  brands.value = await getBrands();
 });
 </script>
 
@@ -24,8 +24,8 @@ onMounted(async () => {
       </template>
 
       <v-list>
-        <v-list-item v-for="(item, index) in myBrands" :key="index" :value="index" @click="choseBrand(item)">
-          <v-list-item-title>{{ item }}</v-list-item-title>
+        <v-list-item v-for="(item, index) in brands" :key="index" :value="index" @click="choseBrand(item.term)">
+          <v-list-item-title>{{ item.term }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>

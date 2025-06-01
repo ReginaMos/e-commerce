@@ -10,11 +10,12 @@ const products = ref<ProductInfo[]>([]);
 // const filter = ref<Filter>({category: '', size: '', brand: ''});
 
 async function handleCategory(key: string) {
-    products.value = await getProductsByCategoryKey(key);
+  products.value = await getProductsByCategoryKey(key);
 }
 
 onMounted(async () => {
   products.value = await getProducts();
+  console.log(products.value[0])
 });
 </script>
 
@@ -22,7 +23,7 @@ onMounted(async () => {
   <v-container class="d-flex align-center justify-center">
     <v-row>
       <v-col>
-        <FilterByCategories  @chooseCategory="handleCategory" />
+        <FilterByCategories @chooseCategory="handleCategory" />
       </v-col>
       <v-col>
         <FilterByBrand />

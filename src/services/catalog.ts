@@ -63,7 +63,9 @@ export async function getProductsByCategoryKey(categoryKey: string): Promise<Pro
       })
       .execute();
 
-    const products: ProductInfo[] = productsResponse.body.results.map((item) => getBriefInfoFromProductProjection(item));
+    const products: ProductInfo[] = productsResponse.body.results.map((item) =>
+      getBriefInfoFromProductProjection(item)
+    );
     return products;
   } catch (error) {
     console.error('Error while receiving goods by category:', error);

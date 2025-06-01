@@ -1,5 +1,5 @@
 import { apiRoot } from './build-client';
-import type { CategoryPagedQueryResponse, Category } from '@commercetools/platform-sdk';
+import type { CategoryPagedQueryResponse, Category,ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
 import type { ClientResponse } from '@commercetools/platform-sdk';
 
 export async function getCategories(): Promise<Category[]> {
@@ -27,6 +27,28 @@ export async function getMainCategories() {
     return response.body.results;
   } catch (error) {
     console.error('Ошибка при получении главных категорий:', error);
+    return [];
+  }
+}
+
+export async function getBrands() {
+   try {
+    const { body }: ClientResponse<ProductProjectionPagedSearchResponse> = await apiRoot
+      .productProjections()
+      .search()
+      .get({
+        queryArgs: {
+          facet: [
+            'variants.attributes.brand'
+          ],
+          limit: 0,
+        },
+      })
+      .execute();
+    
+    return body.facets?.["variants.attributes.brand"].terms;
+  } catch (error) {
+    console.error('Error while receiving goods:', error);
     return [];
   }
 }
