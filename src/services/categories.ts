@@ -1,5 +1,11 @@
 import { apiRoot } from './build-client';
-import type { CategoryPagedQueryResponse, Category,ProductProjectionPagedSearchResponse } from '@commercetools/platform-sdk';
+import type {
+  CategoryPagedQueryResponse,
+  Category,
+  ProductProjectionPagedSearchResponse,
+  FacetTerm,
+  FacetResult
+} from '@commercetools/platform-sdk';
 import type { ClientResponse } from '@commercetools/platform-sdk';
 
 export async function getCategories(): Promise<Category[]> {
@@ -23,7 +29,7 @@ export async function getMainCategories() {
         },
       })
       .execute();
-
+      
     return response.body.results;
   } catch (error) {
     console.error('Ошибка при получении главных категорий:', error);
@@ -31,22 +37,26 @@ export async function getMainCategories() {
   }
 }
 
-export async function getBrands() {
-   try {
+export async function getBrands(): Promise<FacetTerm[]> {
+  try {
     const { body }: ClientResponse<ProductProjectionPagedSearchResponse> = await apiRoot
       .productProjections()
       .search()
       .get({
         queryArgs: {
-          facet: [
-            'variants.attributes.brand'
-          ],
+          facet: ['variants.attributes.brand'],
           limit: 0,
         },
       })
       .execute();
-    
-    return body.facets?.["variants.attributes.brand"].terms;
+
+    const facetResult: FacetResult | undefined = body.facets?.['variants.attributes.brand'];
+
+    if (facetResult?.type === 'terms') {
+      return facetResult.terms;
+    }
+
+    return [];
   } catch (error) {
     console.error('Error while receiving goods:', error);
     return [];

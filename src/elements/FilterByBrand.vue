@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineEmits } from 'vue';
 import { getBrands } from '../services/categories';
+import type {
+  FacetTerm
+} from '@commercetools/platform-sdk';
 
 const brand = ref<string>('Brand');
-const brands = ref([]);
+const brands = ref<FacetTerm[]>([]);
+const emit = defineEmits(['chooseBrand']);
 
 function choseBrand(name: string) {
+  emit('chooseBrand', name);
   brand.value = name;
 }
 

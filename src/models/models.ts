@@ -52,9 +52,8 @@ export interface ProductInfo {
 }
 
 export interface Filter {
-  category: string;
-  size: string;
-  brand: string;
+  category?: string;
+  brand?: string;
 }
 
 export type MessageType = 'billing' | 'shipping' | 'saved' | 'other';
