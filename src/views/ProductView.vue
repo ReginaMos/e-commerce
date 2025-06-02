@@ -9,6 +9,7 @@ import ModalWindowComponent from '../components/ModalWindowComponent.vue';
 import BreadCrumbsComponent from '../components/BreadCrumbsComponent.vue';
 import { Links } from '../constants/routersLinks.ts';
 import { computed } from 'vue';
+import type { BreadcrumbItem } from 'vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs';
 
 const route = useRoute();
 const router = useRouter();
@@ -22,7 +23,7 @@ onMounted(async () => {
     router.push({ name: Links.NOTFOUND.NAME });
   }
 });
-const items = computed(() => [
+const items = computed<BreadcrumbItem[]>(() => [
   {
     title: Links.HOME.NAME,
     disabled: false,
@@ -34,7 +35,7 @@ const items = computed(() => [
     to: Links.CATALOG.LINK,
   },
   {
-    title: product.value?.name,
+    title: product.value?.name ?? '',
     disabled: true,
   },
 ]);
