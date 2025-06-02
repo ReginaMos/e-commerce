@@ -16,11 +16,11 @@ vi.mock('@/api/client', () => ({
     productProjections: () => ({
       search: () => ({
         get: () => ({
-          execute: vi.fn()
-        })
-      })
-    })
-  }
+          execute: vi.fn(),
+        }),
+      }),
+    }),
+  },
 }));
 
 describe('getBrands', () => {
@@ -30,31 +30,34 @@ describe('getBrands', () => {
         facets: {
           'variants.attributes.brand': {
             type: 'terms',
-            terms: [{ term: 'Nike', count: 10 }, { term: 'Adidas', count: 5 }]
-          }
-        }
-      }
+            terms: [
+              { term: 'Nike', count: 10 },
+              { term: 'Adidas', count: 5 },
+            ],
+          },
+        },
+      },
     });
 
     apiRoot.productProjections = () =>
-    ({
-      search: () =>
-        ({
-          get: () =>
-            ({
-              execute: mockExecute
-            } as unknown as ApiRequest<ProductProjectionPagedSearchResponse>)
-        } as unknown as ByProjectKeyProductProjectionsSearchRequestBuilder),
-      suggest: vi.fn(),
-      withId: vi.fn(),
-      withKey: vi.fn(),
-      args: vi.fn()
-    } as unknown as ByProjectKeyProductProjectionsRequestBuilder);
+      ({
+        search: () =>
+          ({
+            get: () =>
+              ({
+                execute: mockExecute,
+              }) as unknown as ApiRequest<ProductProjectionPagedSearchResponse>,
+          }) as unknown as ByProjectKeyProductProjectionsSearchRequestBuilder,
+        suggest: vi.fn(),
+        withId: vi.fn(),
+        withKey: vi.fn(),
+        args: vi.fn(),
+      }) as unknown as ByProjectKeyProductProjectionsRequestBuilder;
 
     const brands = await getBrands();
     expect(brands).toEqual([
       { term: 'Nike', count: 10 },
-      { term: 'Adidas', count: 5 }
+      { term: 'Adidas', count: 5 },
     ]);
   });
 
@@ -63,26 +66,26 @@ describe('getBrands', () => {
       body: {
         facets: {
           'variants.attributes.brand': {
-            type: 'range'
-          }
-        }
-      }
+            type: 'range',
+          },
+        },
+      },
     });
 
     apiRoot.productProjections = () =>
-    ({
-      search: () =>
-        ({
-          get: () =>
-            ({
-              execute: mockExecute
-            } as unknown as ApiRequest<ProductProjectionPagedSearchResponse>)
-        } as unknown as ByProjectKeyProductProjectionsSearchRequestBuilder),
-      suggest: vi.fn(),
-      withId: vi.fn(),
-      withKey: vi.fn(),
-      args: vi.fn()
-    } as unknown as ByProjectKeyProductProjectionsRequestBuilder);
+      ({
+        search: () =>
+          ({
+            get: () =>
+              ({
+                execute: mockExecute,
+              }) as unknown as ApiRequest<ProductProjectionPagedSearchResponse>,
+          }) as unknown as ByProjectKeyProductProjectionsSearchRequestBuilder,
+        suggest: vi.fn(),
+        withId: vi.fn(),
+        withKey: vi.fn(),
+        args: vi.fn(),
+      }) as unknown as ByProjectKeyProductProjectionsRequestBuilder;
 
     const brands = await getBrands();
     expect(brands).toEqual([]);
@@ -92,19 +95,19 @@ describe('getBrands', () => {
     const mockExecute = vi.fn().mockRejectedValue(new Error('API error'));
 
     apiRoot.productProjections = () =>
-    ({
-      search: () =>
-        ({
-          get: () =>
-            ({
-              execute: mockExecute
-            } as unknown as ApiRequest<ProductProjectionPagedSearchResponse>)
-        } as unknown as ByProjectKeyProductProjectionsSearchRequestBuilder),
-      suggest: vi.fn(),
-      withId: vi.fn(),
-      withKey: vi.fn(),
-      args: vi.fn()
-    } as unknown as ByProjectKeyProductProjectionsRequestBuilder);
+      ({
+        search: () =>
+          ({
+            get: () =>
+              ({
+                execute: mockExecute,
+              }) as unknown as ApiRequest<ProductProjectionPagedSearchResponse>,
+          }) as unknown as ByProjectKeyProductProjectionsSearchRequestBuilder,
+        suggest: vi.fn(),
+        withId: vi.fn(),
+        withKey: vi.fn(),
+        args: vi.fn(),
+      }) as unknown as ByProjectKeyProductProjectionsRequestBuilder;
 
     const brands = await getBrands();
     expect(brands).toEqual([]);
@@ -114,25 +117,27 @@ describe('getBrands', () => {
 describe('getCategories', () => {
   it('returns list of categories on success', async () => {
     const mockCategories: Category[] = [
-      { id: '1', name: { en: 'Shoes' } }  as unknown as Category,
-      { id: '2', name: { en: 'Clothing' } }  as unknown as Category,
+      { id: '1', name: { en: 'Shoes' } } as unknown as Category,
+      { id: '2', name: { en: 'Clothing' } } as unknown as Category,
     ];
 
     const mockExecute = vi.fn().mockResolvedValue({
       body: {
-        results: mockCategories
-      }
+        results: mockCategories,
+      },
     } as ClientResponse<CategoryPagedQueryResponse>);
 
-    (apiRoot as unknown as {
-      categories: () => {
-        get: () => ApiRequest<ClientResponse<CategoryPagedQueryResponse>>;
-      };
-    }).categories = () => ({
+    (
+      apiRoot as unknown as {
+        categories: () => {
+          get: () => ApiRequest<ClientResponse<CategoryPagedQueryResponse>>;
+        };
+      }
+    ).categories = () => ({
       get: () =>
         ({
-          execute: mockExecute
-        } as unknown as ApiRequest<ClientResponse<CategoryPagedQueryResponse>>)
+          execute: mockExecute,
+        }) as unknown as ApiRequest<ClientResponse<CategoryPagedQueryResponse>>,
     });
 
     const categories = await getCategories();
@@ -142,15 +147,17 @@ describe('getCategories', () => {
   it('returns empty array on error', async () => {
     const mockExecute = vi.fn().mockRejectedValue(new Error('API error'));
 
-    (apiRoot as unknown as {
-      categories: () => {
-        get: () => ApiRequest<ClientResponse<CategoryPagedQueryResponse>>;
-      };
-    }).categories = () => ({
+    (
+      apiRoot as unknown as {
+        categories: () => {
+          get: () => ApiRequest<ClientResponse<CategoryPagedQueryResponse>>;
+        };
+      }
+    ).categories = () => ({
       get: () =>
         ({
-          execute: mockExecute
-        } as unknown as ApiRequest<ClientResponse<CategoryPagedQueryResponse>>)
+          execute: mockExecute,
+        }) as unknown as ApiRequest<ClientResponse<CategoryPagedQueryResponse>>,
     });
 
     const categories = await getCategories();
