@@ -54,7 +54,7 @@ const getSearchQuery = (query: string): void => {
 };
 
 const logout = () => {
-  if (route.path === Links.USER.LINK) {
+  if (route.path.includes(Links.USER.LINK)) {
     router.push(Links.HOME.LINK);
   }
   logoutCustomer();
