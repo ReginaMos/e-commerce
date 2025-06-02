@@ -57,9 +57,10 @@ export interface Filter {
 }
 
 export interface SortBy {
-  name?: string;
-  price?: string;
+  name?: SortType;
+  price?: SortType;
 }
 
+export type SortType = 'asc' | 'desc' | '';
 export type MessageType = 'billing' | 'shipping' | 'saved' | 'other';
 export type AddressMessages = Record<MessageType, { text: string; icon: string }>;

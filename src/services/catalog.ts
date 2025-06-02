@@ -25,15 +25,19 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
   }
 }
 
-export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
+export async function getProducts(
+  limit?: number,
+  filter?: Filter,
+  sort?: SortBy
+): Promise<ProductInfo[]> {
   try {
-    const categoryKey = filter?.category?.trim();
-    const brandName = filter?.brand?.trim();
+    const locale = 'en-US';
 
-    let categoryIds: string[] = [];
+    let parentCategoryId: string | undefined;
 
-    if (categoryKey) {
-      const parentCategoryResponse = await apiRoot
+    if (filter?.category) {
+      const categoryKey = filter.category.trim();
+      const catResp = await apiRoot
         .categories()
         .get({
           queryArgs: {
@@ -43,75 +47,139 @@ export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy
         })
         .execute();
 
-      const parentCategory = parentCategoryResponse.body.results[0];
-      if (!parentCategory) {
-        console.error(`Category with key ${categoryKey} not found.`);
+      const parent = catResp.body.results[0];
+      if (!parent) {
+        console.error(`Category with key "${categoryKey}" not found.`);
         return [];
       }
-
-      const parentCategoryId = parentCategory.id;
-
-      const childrenResponse = await apiRoot
-        .categories()
-        .get({
-          queryArgs: {
-            where: `ancestors(id="${parentCategoryId}")`,
-            limit: 20,
-          },
-        })
-        .execute();
-
-      categoryIds = [parentCategoryId, ...childrenResponse.body.results.map((cat) => cat.id)];
-    }
-    const sortParams: string[] = [];
-
-    if (sort?.name) {
-      sortParams.push(sort.name);
+      parentCategoryId = parent.id;
     }
 
+    const filters: string[] = [];
+
+    if (parentCategoryId) {
+      filters.push(`categories.id:subtree("${parentCategoryId}")`);
+    }
+
+    if (filter?.brand?.trim()) {
+      const brandName = filter.brand.trim();
+      filters.push(`variants.attributes.brand:"${brandName}"`);
+    }
+
+    const sortArr: string[] = [];
     if (sort?.price) {
-      sortParams.push(sort.price);
+      sortArr.push(`price ${sort.price}`);
+    }
+    if (sort?.name) {
+      sortArr.push(`name.${locale} ${sort.name}`);
     }
 
-    const queryArgs: QueryArgs = {
-        limit,
-        staged: true,
-        sort: sortParams.length > 0 ? sortParams : undefined,
-        priceCurrency: sort?.price?.includes('scopedPrice') ? 'EUR' : undefined,
-        filter: [],
-    };
+    const queryArgs: QueryArgs = { staged: true };
 
-    if (categoryIds.length > 0) {
-      const categoryFilter = `categories.id:(${categoryIds.map(id => `"${id}"`).join(',')})`;
-      queryArgs.filter!.push(categoryFilter);
+    if (typeof limit === 'number') queryArgs.limit = limit;
+    if (filters.length > 0) queryArgs.filter = filters;
+    if (sortArr.length > 0) {
+      queryArgs.sort = sortArr;
+      if (sort?.price) {
+        queryArgs.priceCurrency = 'EUR';
+      }
     }
 
-    if (brandName) {
-      const brandFilter = `variants.attributes.brand:"${brandName}"`;
-      queryArgs.filter!.push(brandFilter);
-    }
-
-    if (sortParams.length > 0) {
-      queryArgs.sort = sortParams;
-    }
-
-    if (sort?.price?.includes('scopedPrice')) {
-      queryArgs.priceCurrency = 'EUR';
-    }
-
-    const response = await apiRoot
-    .productProjections()
-    .search()
-    .get({ queryArgs })
-    .execute();
-
-    const products: ProductInfo[] = response.body.results.map((item) => getBriefInfoFromProductProjection(item));
-    return products;
-  } catch (error) {
-    console.error('Error while fetching filtered products:', error);
+    const response = await apiRoot.productProjections().search().get({ queryArgs }).execute();
+    return response.body.results.map((item) => getBriefInfoFromProductProjection(item));
+  } catch (e) {
+    console.error('Error while fetching products:', e);
     return [];
   }
 }
+
+// export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
+//   try {
+//     const categoryKey = filter?.category?.trim();
+//     const brandName = filter?.brand?.trim();
+
+//     let categoryIds: string[] = [];
+
+//     if (categoryKey) {
+//       const parentCategoryResponse = await apiRoot
+//         .categories()
+//         .get({
+//           queryArgs: {
+//             where: `key="${categoryKey}"`,
+//             limit: 1,
+//           },
+//         })
+//         .execute();
+
+//       const parentCategory = parentCategoryResponse.body.results[0];
+//       if (!parentCategory) {
+//         console.error(`Category with key ${categoryKey} not found.`);
+//         return [];
+//       }
+
+//       const parentCategoryId = parentCategory.id;
+
+//       const childrenResponse = await apiRoot
+//         .categories()
+//         .get({
+//           queryArgs: {
+//             where: `ancestors(id="${parentCategoryId}")`,
+//             limit: 20,
+//           },
+//         })
+//         .execute();
+
+//       categoryIds = [parentCategoryId, ...childrenResponse.body.results.map((cat) => cat.id)];
+//     }
+//     const sortParams: string[] = [];
+
+//     if (sort?.name) {
+//       sortParams.push(sort.name);
+//     }
+
+//     if (sort?.price) {
+//       sortParams.push(sort.price);
+//     }
+
+//     const queryArgs: QueryArgs = {
+//         limit,
+//         staged: true,
+//         sort: sortParams.length > 0 ? sortParams : undefined,
+//         priceCurrency: sort?.price?.includes('scopedPrice') ? 'EUR' : undefined,
+//         filter: [],
+//     };
+
+//     if (categoryIds.length > 0) {
+//       const categoryFilter = `categories.id:(${categoryIds.map(id => `"${id}"`).join(',')})`;
+//       queryArgs.filter!.push(categoryFilter);
+//     }
+
+//     if (brandName) {
+//       const brandFilter = `variants.attributes.brand:"${brandName}"`;
+//       queryArgs.filter!.push(brandFilter);
+//     }
+
+//     if (sortParams.length > 0) {
+//       queryArgs.sort = sortParams;
+//     }
+
+//     if (sort?.price?.includes('scopedPrice')) {
+//       queryArgs.priceCurrency = 'EUR';
+//     }
+
+//     const response = await apiRoot
+//     .productProjections()
+//     .search()
+//     .get({ queryArgs })
+//     .execute();
+
+//     const products: ProductInfo[] = response.body.results.map((item) => getBriefInfoFromProductProjection(item));
+//     return products;
+//   } catch (error) {
+//     console.error('Error while fetching filtered products:', error);
+//     return [];
+//   }
+// }
 
 export async function searchProducts(query: string): Promise<ProductInfo[]> {
   try {
