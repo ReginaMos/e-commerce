@@ -14,6 +14,8 @@ import ProductPage from '../pages/ProductPage.vue';
 import CatalogPage from '../pages/CatalogPage.vue';
 import NotFoundPage from '../pages/NotFoundPage.vue';
 import SearchPage from '../pages/SearchPage.vue';
+import AddressBookComponent from '../components/AddressBookComponent.vue';
+import PersonalDetailsComponent from '../components/PersonalDetailsComponent.vue';
 
 import { Links } from '../constants/routersLinks';
 import { isAuth } from '../services/customer-service';
@@ -62,6 +64,19 @@ const routes: Array<RouteRecordRaw> = [
         path: Links.USER.LINK,
         name: Links.USER.NAME,
         component: UserPage,
+        meta: { requiresAuth: true },
+        children: [
+          {
+            path: Links.ADDRESS.LINK,
+            name: Links.ADDRESS.NAME,
+            component: AddressBookComponent,
+          },
+          {
+            path: Links.PERSONAL.LINK,
+            name: Links.PERSONAL.NAME,
+            component: PersonalDetailsComponent,
+          },
+        ],
       },
       {
         path: Links.CATALOG.LINK,
@@ -96,7 +111,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  if (!isAuth.value && to.name === Links.USER.NAME) {
+  if (!isAuth.value && to.matched.some((record) => record.meta.requiresAuth)) {
     return { name: Links.LOGIN.NAME };
   }
   if (isAuth.value && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {

@@ -74,15 +74,15 @@ export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy
     }
 
     const queryArgs: QueryArgs = {
-        limit,
-        staged: true,
-        sort: sortParams.length > 0 ? sortParams : undefined,
-        priceCurrency: sort?.price?.includes('scopedPrice') ? 'EUR' : undefined,
-        filter: [],
+      limit,
+      staged: true,
+      sort: sortParams.length > 0 ? sortParams : undefined,
+      priceCurrency: sort?.price?.includes('scopedPrice') ? 'EUR' : undefined,
+      filter: [],
     };
 
     if (categoryIds.length > 0) {
-      const categoryFilter = `categories.id:(${categoryIds.map(id => `"${id}"`).join(',')})`;
+      const categoryFilter = `categories.id:(${categoryIds.map((id) => `"${id}"`).join(',')})`;
       queryArgs.filter!.push(categoryFilter);
     }
 
@@ -99,11 +99,7 @@ export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy
       queryArgs.priceCurrency = 'EUR';
     }
 
-    const response = await apiRoot
-    .productProjections()
-    .search()
-    .get({ queryArgs })
-    .execute();
+    const response = await apiRoot.productProjections().search().get({ queryArgs }).execute();
 
     const products: ProductInfo[] = response.body.results.map((item) => getBriefInfoFromProductProjection(item));
     return products;

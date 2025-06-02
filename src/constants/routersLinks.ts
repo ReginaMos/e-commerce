@@ -1,6 +1,22 @@
 import type { LinkItem } from '../models/models';
 
-export const Links: Record<string, LinkItem> = {
+type Link =
+  | 'HOME'
+  | 'CONTACTS'
+  | 'ABOUT'
+  | 'WISHLIST'
+  | 'SIGNUP'
+  | 'LOGIN'
+  | 'USER'
+  | 'ADDRESS'
+  | 'PERSONAL'
+  | 'CART'
+  | 'PRODUCT'
+  | 'CATALOG'
+  | 'SEARCH'
+  | 'NOTFOUND';
+
+export const Links: Record<Link, LinkItem> = {
   HOME: { NAME: 'Home', LINK: '/' },
   CONTACTS: { NAME: 'Contacts', LINK: '/contacts' },
   ABOUT: { NAME: 'About', LINK: '/about' },
@@ -8,6 +24,8 @@ export const Links: Record<string, LinkItem> = {
   SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
   LOGIN: { NAME: 'Login', LINK: 'login' },
   USER: { NAME: 'Account', LINK: '/account' },
+  ADDRESS: { NAME: 'Address Book', LINK: '/address-book' },
+  PERSONAL: { NAME: 'Personal Details', LINK: '/personal-details' },
   CART: { NAME: 'Cart', LINK: '/cart' },
   PRODUCT: { NAME: 'Product', LINK: '/product' },
   CATALOG: { NAME: 'Catalog', LINK: '/catalog' },
