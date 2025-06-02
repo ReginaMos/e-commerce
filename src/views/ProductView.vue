@@ -18,7 +18,6 @@ const product = ref<ProductInfo | null>(null);
 onMounted(async () => {
   if (typeof id === 'string') {
     product.value = await getProductById(id);
-    console.log(product.value);
   } else {
     router.push({ name: Links.NOTFOUND.NAME });
   }

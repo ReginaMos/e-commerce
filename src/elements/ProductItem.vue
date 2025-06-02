@@ -17,18 +17,31 @@ function addToCart(): void {
 
 <template>
   <v-col class="product" cols="12" sm="4" md="3">
-    <div class="img-container">
-      <img :src="item.images[0].url" alt="product-img" class="product-img" />
-      <div class="icons-part">
-        <v-icon @click="addToFavor()" size="30"> {{ favorIcon }}</v-icon>
+    <div v-if="item.discountedPrice" class="discount">SALE!</div>
+
+    <div class="main-part">
+      <div class="img-container">
+        <img :src="item.images[0].url" alt="product-img" class="product-img" />
+        <div class="add-to-cart" @click.stop="addToCart()">Add To Cart</div>
       </div>
-      <div class="add-to-cart" @click="addToCart()">Add To Cart</div>
+
+      <div class="icons-part">
+        <v-icon @click.stop="addToFavor()" size="30"> {{ favorIcon }}</v-icon>
+      </div>
+
+      <h3 class="heading">
+        {{ item.name }}
+      </h3>
     </div>
 
-    <h3 class="heading">
-      {{ item.name }}
-    </h3>
-    <div class="price"><span>Price:</span> {{ item.price }} {{ item.currency }}</div>
+    <div class="price-container">
+      <span class="price">Price:</span>
+      <p v-if="item.discountedPrice">
+        <span class="discounted-price"> {{ item.discountedPrice }}&nbsp;{{ item.currency }}&nbsp; </span>
+        <span class="prev-price"> {{ item.price }}&nbsp;{{ item.currency }} </span>
+      </p>
+      <p v-else>{{ item.price }} {{ item.currency }}</p>
+    </div>
   </v-col>
 </template>
 
@@ -39,6 +52,11 @@ function addToCart(): void {
     background-color: #f2eeee
     border: 1px solid #cdcdc2
     border-radius: 16px
+    position: relative
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: center
 
 .img-container
     position: relative
@@ -54,7 +72,7 @@ function addToCart(): void {
 
 .icons-part
     position: absolute
-    right: 3px
+    right: 10px
     top: 10px
 
     display: flex
@@ -71,8 +89,35 @@ function addToCart(): void {
     position: absolute
     bottom: 0
 
+.price-container
+  display: flex
+  align-items: center
+  justify-content: center
+  gap: 15px
+
+  p
+    font-weight: 500
+
+.discount
+  position: absolute
+  left: 0
+  top: 0
+  padding: 10px
+  background-color: #db4444
+  color: #fff
+  z-index: 100
+  border-top-left-radius: 12px
+
+.discounted-price
+  color: #db4444
+  font-weight: 500
+
+.prev-price
+  color: gray
+  text-decoration: line-through
+  font-weight: 400
+
 .price
-  span
     color: #db4444
     font-weight: 600
 
