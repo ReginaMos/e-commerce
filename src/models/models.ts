@@ -51,5 +51,16 @@ export interface ProductInfo {
   brand: string;
 }
 
+export interface Filter {
+  category?: string;
+  brand?: string;
+}
+
+export interface SortBy {
+  name?: SortType;
+  price?: SortType;
+}
+
+export type SortType = 'asc' | 'desc' | '';
 export type MessageType = 'billing' | 'shipping' | 'saved' | 'other';
 export type AddressMessages = Record<MessageType, { text: string; icon: string }>;

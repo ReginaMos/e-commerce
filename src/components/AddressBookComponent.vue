@@ -93,7 +93,6 @@ const handleRemoveAddress = async (addressId: string) => {
     toaster?.show('Address removed', 'success');
     customer.value = getCustomer();
     isLoading.value = false;
-    isOnEdit.value = !isOnEdit.value;
   } catch (err) {
     if (err instanceof Error) {
       toaster?.show(err.message, 'error');

@@ -2,11 +2,16 @@ import { apiRoot } from './build-client';
 import type {
   ClientResponse,
   Product,
-  ProductPagedQueryResponse,
   ProductProjection,
   ProductProjectionPagedSearchResponse,
+  QueryParam,
 } from '@commercetools/platform-sdk';
-import type { ProductInfo } from '../models/models';
+import type { ProductInfo, Filter, SortBy } from '../models/models';
+
+interface QueryArgs {
+  [key: string]: QueryParam | undefined;
+  filter?: string[];
+}
 
 export async function getProductById(productId: string): Promise<ProductInfo | null> {
   try {
@@ -20,78 +25,66 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
   }
 }
 
-export async function getProductsByCategoryKey(categoryKey: string): Promise<ProductProjection[]> {
+export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
   try {
-    const parentCategoryResponse = await apiRoot
-      .categories()
-      .get({
-        queryArgs: {
-          where: `key="${categoryKey}"`,
-          limit: 1,
-        },
-      })
-      .execute();
+    const locale = 'en-US';
 
-    const parentCategory = parentCategoryResponse.body.results[0];
-    if (!parentCategory) {
-      console.error(`Category with key ${categoryKey} didn't find.`);
-      return [];
+    let parentCategoryId: string | undefined;
+
+    if (filter?.category) {
+      const categoryKey = filter.category.trim();
+      const catResp = await apiRoot
+        .categories()
+        .get({
+          queryArgs: {
+            where: `key="${categoryKey}"`,
+            limit: 1,
+          },
+        })
+        .execute();
+
+      const parent = catResp.body.results[0];
+      if (!parent) {
+        console.error(`Category with key "${categoryKey}" not found.`);
+        return [];
+      }
+      parentCategoryId = parent.id;
     }
 
-    const parentCategoryId = parentCategory.id;
-    const childrenResponse = await apiRoot
-      .categories()
-      .get({
-        queryArgs: {
-          where: `ancestors(id="${parentCategoryId}")`,
-          limit: 20,
-        },
-      })
-      .execute();
+    const filters: string[] = [];
 
-    const allCategoryIds = [parentCategoryId, ...childrenResponse.body.results.map((cat) => cat.id)];
+    if (parentCategoryId) {
+      filters.push(`categories.id:subtree("${parentCategoryId}")`);
+    }
 
-    const whereClause = allCategoryIds.map((id) => `categories(id="${id}")`).join(' or ');
-    const productsResponse = await apiRoot
-      .productProjections()
-      .get({
-        queryArgs: {
-          where: whereClause,
-          limit: 50,
-          staged: true,
-        },
-      })
-      .execute();
+    if (filter?.brand?.trim()) {
+      const brandName = filter.brand.trim();
+      filters.push(`variants.attributes.brand:"${brandName}"`);
+    }
 
-    return productsResponse.body.results;
-  } catch (error) {
-    console.error('Error while receiving goods by category:', error);
-    return [];
-  }
-}
+    const sortArr: string[] = [];
+    if (sort?.price) {
+      sortArr.push(`price ${sort.price}`);
+    }
+    if (sort?.name) {
+      sortArr.push(`name.${locale} ${sort.name}`);
+    }
 
-async function loadProducts() {
-  const products = await getProductsByCategoryKey('accessories-man-wear');
-  console.log(products);
-}
+    const queryArgs: QueryArgs = { staged: true };
 
-loadProducts();
+    if (typeof limit === 'number') queryArgs.limit = limit;
+    if (filters.length > 0) queryArgs.filter = filters;
+    if (sortArr.length > 0) {
+      queryArgs.sort = sortArr;
+      if (sort?.price) {
+        queryArgs.priceCurrency = 'EUR';
+      }
+    }
 
-export async function getProducts(limit?: number): Promise<ProductInfo[]> {
-  try {
-    const { body }: ClientResponse<ProductPagedQueryResponse> = await apiRoot
-      .products()
-      .get({
-        queryArgs: {
-          limit: limit,
-        },
-      })
-      .execute();
-
-    const products: ProductInfo[] = body.results.map((item) => getBriefInfoFromProduct(item));
-    return products;
-  } catch (error) {
-    console.error('Error while receiving goods:', error);
+    const response = await apiRoot.productProjections().search().get({ queryArgs }).execute();
+    return response.body.results.map((item) => getBriefInfoFromProductProjection(item));
+  } catch (e) {
+    console.error('Error while fetching products:', e);
     return [];
   }
 }

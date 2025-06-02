@@ -7,6 +7,7 @@ export default defineConfig({
   base: '/e-commerce/release-sprint-3/',
   plugins: [vue(), vuetify({ autoImport: true })],
   test: {
+    setupFiles: ['./src/test/setupTests.ts'],
     globals: true,
     environment: 'jsdom',
     server: {
