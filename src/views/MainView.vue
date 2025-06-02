@@ -5,8 +5,15 @@ import CarouselElement from '../elements/CarouselElement.vue';
 import MainHeading from '../elements/MainHeading.vue';
 import ProductsComponent from '../components/ProductsComponent.vue';
 import ButtonElement from '../elements/ButtonElement.vue';
+import type { ProductInfo } from '../models/models';
+import { ref, onMounted } from 'vue';
+import { getProducts } from '../services/catalog';
 
-const count: number = 6;
+const products = ref<ProductInfo[]>([]);
+
+onMounted(async () => {
+  products.value = await getProducts(3);
+});
 </script>
 
 <template>
@@ -27,7 +34,7 @@ const count: number = 6;
 
     <v-row class="mb-4">
       <MainHeading title="Our products" />
-      <ProductsComponent :productsCount="count" />
+      <ProductsComponent :products="products" />
       <ButtonElement title="View all products" link="/catalog" />
     </v-row>
   </v-container>

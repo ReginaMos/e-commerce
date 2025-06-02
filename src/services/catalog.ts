@@ -2,11 +2,16 @@ import { apiRoot } from './build-client';
 import type {
   ClientResponse,
   Product,
-  ProductPagedQueryResponse,
   ProductProjection,
   ProductProjectionPagedSearchResponse,
+  QueryParam,
 } from '@commercetools/platform-sdk';
-import type { ProductInfo } from '../models/models';
+import type { ProductInfo, Filter, SortBy } from '../models/models';
+
+interface QueryArgs {
+  [key: string]: QueryParam | undefined;
+  filter?: string[];
+}
 
 export async function getProductById(productId: string): Promise<ProductInfo | null> {
   try {
@@ -20,78 +25,90 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
   }
 }
 
-export async function getProductsByCategoryKey(categoryKey: string): Promise<ProductProjection[]> {
+export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
   try {
-    const parentCategoryResponse = await apiRoot
-      .categories()
-      .get({
-        queryArgs: {
-          where: `key="${categoryKey}"`,
-          limit: 1,
-        },
-      })
-      .execute();
+    const categoryKey = filter?.category?.trim();
+    const brandName = filter?.brand?.trim();
 
-    const parentCategory = parentCategoryResponse.body.results[0];
-    if (!parentCategory) {
-      console.error(`Category with key ${categoryKey} didn't find.`);
-      return [];
+    let categoryIds: string[] = [];
+
+    if (categoryKey) {
+      const parentCategoryResponse = await apiRoot
+        .categories()
+        .get({
+          queryArgs: {
+            where: `key="${categoryKey}"`,
+            limit: 1,
+          },
+        })
+        .execute();
+
+      const parentCategory = parentCategoryResponse.body.results[0];
+      if (!parentCategory) {
+        console.error(`Category with key ${categoryKey} not found.`);
+        return [];
+      }
+
+      const parentCategoryId = parentCategory.id;
+
+      const childrenResponse = await apiRoot
+        .categories()
+        .get({
+          queryArgs: {
+            where: `ancestors(id="${parentCategoryId}")`,
+            limit: 20,
+          },
+        })
+        .execute();
+
+      categoryIds = [parentCategoryId, ...childrenResponse.body.results.map((cat) => cat.id)];
+    }
+    const sortParams: string[] = [];
+
+    if (sort?.name) {
+      sortParams.push(sort.name);
     }
 
-    const parentCategoryId = parentCategory.id;
-    const childrenResponse = await apiRoot
-      .categories()
-      .get({
-        queryArgs: {
-          where: `ancestors(id="${parentCategoryId}")`,
-          limit: 20,
-        },
-      })
-      .execute();
+    if (sort?.price) {
+      sortParams.push(sort.price);
+    }
 
-    const allCategoryIds = [parentCategoryId, ...childrenResponse.body.results.map((cat) => cat.id)];
+    const queryArgs: QueryArgs = {
+        limit,
+        staged: true,
+        sort: sortParams.length > 0 ? sortParams : undefined,
+        priceCurrency: sort?.price?.includes('scopedPrice') ? 'EUR' : undefined,
+        filter: [],
+    };
 
-    const whereClause = allCategoryIds.map((id) => `categories(id="${id}")`).join(' or ');
-    const productsResponse = await apiRoot
-      .productProjections()
-      .get({
-        queryArgs: {
-          where: whereClause,
-          limit: 50,
-          staged: true,
-        },
-      })
-      .execute();
+    if (categoryIds.length > 0) {
+      const categoryFilter = `categories.id:(${categoryIds.map(id => `"${id}"`).join(',')})`;
+      queryArgs.filter!.push(categoryFilter);
+    }
 
-    return productsResponse.body.results;
-  } catch (error) {
-    console.error('Error while receiving goods by category:', error);
-    return [];
-  }
-}
+    if (brandName) {
+      const brandFilter = `variants.attributes.brand:"${brandName}"`;
+      queryArgs.filter!.push(brandFilter);
+    }
 
-async function loadProducts() {
-  const products = await getProductsByCategoryKey('accessories-man-wear');
-  console.log(products);
-}
+    if (sortParams.length > 0) {
+      queryArgs.sort = sortParams;
+    }
 
-loadProducts();
+    if (sort?.price?.includes('scopedPrice')) {
+      queryArgs.priceCurrency = 'EUR';
+    }
 
-export async function getProducts(limit?: number): Promise<ProductInfo[]> {
-  try {
-    const { body }: ClientResponse<ProductPagedQueryResponse> = await apiRoot
-      .products()
-      .get({
-        queryArgs: {
-          limit: limit,
-        },
-      })
-      .execute();
+    const response = await apiRoot
+    .productProjections()
+    .search()
+    .get({ queryArgs })
+    .execute();
 
-    const products: ProductInfo[] = body.results.map((item) => getBriefInfoFromProduct(item));
+    const products: ProductInfo[] = response.body.results.map((item) => getBriefInfoFromProductProjection(item));
     return products;
   } catch (error) {
-    console.error('Error while receiving goods:', error);
+    console.error('Error while fetching filtered products:', error);
     return [];
   }
 }
