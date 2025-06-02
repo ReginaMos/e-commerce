@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, provide } from 'vue';
 import type ToasterComponent from './components/ToasterComponent.vue';
+import { useRoute } from 'vue-router';
 
 const toaster = ref<InstanceType<typeof ToasterComponent> | null>(null);
 
@@ -9,10 +10,12 @@ const showToasterFn = (message: string, color?: string, timeout?: number) => {
 };
 
 provide('toaster', { show: showToasterFn });
+
+const route = useRoute();
 </script>
 
 <template>
-  <router-view />
+  <router-view :key="Array.isArray(route.params.id) ? route.params.id[0] : route.params.id" />
   <universal-toaster ref="toaster" />
 </template>
 
