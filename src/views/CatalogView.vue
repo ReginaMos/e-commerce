@@ -2,7 +2,7 @@
 import ProductsComponent from '../components/ProductsComponent.vue';
 import { ref, onMounted } from 'vue';
 import { getProducts } from '../services/catalog';
-import type { ProductInfo, Filter, SortBy } from '../models/models';
+import type { ProductInfo, Filter, SortBy, SortType } from '../models/models';
 import FilterByCategories from '../elements/FilterByCategories.vue';
 import FilterByBrand from '../elements/FilterByBrand.vue';
 
@@ -10,8 +10,7 @@ const products = ref<ProductInfo[]>([]);
 const filter = ref<Filter>({});
 const sorter = ref<SortBy>({});
 const arrowIcons = ref<string[]>(['', 'mdi-arrow-down-bold', 'mdi-arrow-up-bold']);
-const nameSorts = ['', 'name.en-US asc', 'name.en-US desc'];
-const priceSorts = ['', 'price asc', 'price desc'];
+const sortRules: SortType[] = ['', 'asc', 'desc'];
 let arrowPriceInd = ref<number>(0);
 let arrowNameInd = ref<number>(0);
 
@@ -29,13 +28,13 @@ async function handleBrand(key: string) {
 
 async function sortedPrice() {
   arrowPriceInd.value = (arrowPriceInd.value + 1) % 3;
-  sorter.value.price = priceSorts[arrowPriceInd.value];
+  sorter.value.price = sortRules[arrowPriceInd.value];
   products.value = await getProducts(undefined, filter.value, sorter.value);
 }
 
 async function sortedNames() {
   arrowNameInd.value = (arrowNameInd.value + 1) % 3;
-  sorter.value.name = nameSorts[arrowNameInd.value];
+  sorter.value.name = sortRules[arrowNameInd.value];
   products.value = await getProducts(undefined, filter.value, sorter.value);
 }
 
