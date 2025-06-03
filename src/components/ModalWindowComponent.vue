@@ -47,10 +47,10 @@ defineExpose({ dialog });
   width: 100%;
   height: auto;
 
-  @media screen and (max-height: 500px){
+  @media screen and (max-height: 500px) {
     max-width: 300px;
   }
-  @media screen and (min-height: 500px) and (max-height: 1000px) and (min-width: 578px){
+  @media screen and (min-height: 500px) and (max-height: 1000px) and (min-width: 578px) {
     min-width: 400px;
     width: 80vh;
     max-width: 800px;
