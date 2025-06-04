@@ -34,11 +34,12 @@ export function logoutCustomer() {
 
 export async function createCustomer(customer: MyCustomerDraft) {
   const result = await apiRoot.me().signup().post({ body: customer }).execute();
-  console.log('Customer created:', result.body);
-  if (result.body.customer) {
-    localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
-  }
-  checkAuth();
+
+  await loginCustomer({
+    email: customer.email,
+    password: customer.password,
+  });
+
   return result.body;
 }
 
@@ -68,7 +69,7 @@ export async function updateCustomerPersonal(original: PersonalData, updates: Pe
   if (updates.email !== undefined && updates.email !== original.email) {
     actions.push({ action: 'changeEmail', email: updates.email });
   }
-  if (updates.dateOfBirth !== undefined && updates.dateOfBirth !== updates.dateOfBirth) {
+  if (updates.dateOfBirth !== undefined && updates.dateOfBirth !== original.dateOfBirth) {
     actions.push({ action: 'setDateOfBirth', dateOfBirth: formatDateISO8601(updates.dateOfBirth) });
   }
 

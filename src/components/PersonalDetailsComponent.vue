@@ -46,7 +46,7 @@ const register = async () => {
       .then(() => {
         toaster?.show('Personal info updated!', 'success');
         isLoading.value = false;
-        clear();
+        isOpenedInfo.value = !isOpenedInfo.value;
       })
       .catch((err: unknown) => {
         if (err instanceof Error) {
@@ -57,14 +57,6 @@ const register = async () => {
   } else {
     toaster?.show('Fill in required fields!', 'error');
   }
-};
-
-const clear = () => {
-  formData.firstName = firstName || '';
-  formData.lastName = lastName || '';
-  formData.email = email || '';
-  formData.dateOfBirth = new Date(dateOfBirth || '');
-  isOpenedInfo.value = !isOpenedInfo.value;
 };
 
 const clearPass = () => {
@@ -154,13 +146,19 @@ const updatePass = async () => {
               </v-menu>
               <v-btn
                 type="submit"
-                text="Save Address"
+                text="Save Details"
                 color="black"
                 variant="elevated"
                 class="me-4"
                 :loading="isLoading"
               />
-              <v-btn type="reset" text="Cancel" color="black" variant="outlined" @click="clear" />
+              <v-btn
+                type="reset"
+                text="Cancel"
+                color="black"
+                variant="outlined"
+                @click="isOpenedInfo = !isOpenedInfo"
+              />
             </v-form>
           </v-card-text>
         </v-card>
@@ -227,19 +225,19 @@ const updatePass = async () => {
             <v-list>
               <v-list-item>
                 <v-list-item-subtitle>First Name</v-list-item-subtitle>
-                <v-list-item-title>{{ firstName }}</v-list-item-title>
+                <v-list-item-title>{{ formData.firstName }}</v-list-item-title>
               </v-list-item>
               <v-list-item>
                 <v-list-item-subtitle>Last Name</v-list-item-subtitle>
-                <v-list-item-title>{{ lastName }}</v-list-item-title>
+                <v-list-item-title>{{ formData.lastName }}</v-list-item-title>
               </v-list-item>
               <v-list-item>
                 <v-list-item-subtitle>Date of Birth</v-list-item-subtitle>
-                <v-list-item-title>{{ dateOfBirth }}</v-list-item-title>
+                <v-list-item-title>{{ formattedDate }}</v-list-item-title>
               </v-list-item>
               <v-list-item>
                 <v-list-item-subtitle>Email</v-list-item-subtitle>
-                <v-list-item-title>{{ email }}</v-list-item-title>
+                <v-list-item-title>{{ formData.email }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-card-text>
