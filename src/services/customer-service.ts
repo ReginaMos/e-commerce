@@ -34,11 +34,12 @@ export function logoutCustomer() {
 
 export async function createCustomer(customer: MyCustomerDraft) {
   const result = await apiRoot.me().signup().post({ body: customer }).execute();
-  console.log('Customer created:', result.body);
-  if (result.body.customer) {
-    localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
-  }
-  checkAuth();
+
+  await loginCustomer({
+    email: customer.email,
+    password: customer.password,
+  });
+
   return result.body;
 }
 
