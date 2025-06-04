@@ -45,19 +45,17 @@ defineExpose({ dialog });
 <style scoped lang="scss">
 .dialog-slider {
   width: 100%;
-  max-width: 300px;
   height: auto;
 
   @media screen and (max-height: 500px) {
     max-width: 300px;
   }
-  @media screen and (min-height: 500px) and (max-height: 1000px) {
+  @media screen and (min-height: 500px) and (max-height: 1000px) and (min-width: 578px) {
     min-width: 400px;
-    width: 70vh;
+    width: 80vh;
     max-width: 800px;
   }
-  @media screen and (min-height: 1000.89px) {
-    min-width: 700px;
+  @media screen and (min-height: 1000.89px) and (min-width: 500px) {
     max-width: 70vh;
   }
 }
