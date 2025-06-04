@@ -59,6 +59,14 @@ const register = async () => {
   }
 };
 
+const reset = () => {
+  formData.firstName = firstName || '';
+  formData.lastName = lastName || '';
+  formData.email = email || '';
+  formData.dateOfBirth = new Date(dateOfBirth || '');
+  isOpenedInfo.value = !isOpenedInfo.value;
+};
+
 const clearPass = () => {
   passData.oldPassword = '';
   passData.newPassword = '';
@@ -152,13 +160,7 @@ const updatePass = async () => {
                 class="me-4"
                 :loading="isLoading"
               />
-              <v-btn
-                type="reset"
-                text="Cancel"
-                color="black"
-                variant="outlined"
-                @click="isOpenedInfo = !isOpenedInfo"
-              />
+              <v-btn type="reset" text="Cancel" color="black" variant="outlined" @click="reset" />
             </v-form>
           </v-card-text>
         </v-card>
