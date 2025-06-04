@@ -18,13 +18,14 @@ import { createCustomer } from '../services/customer-service';
 
 const router = useRouter();
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
+const thirteen = new Date(thirteenYearsAgo.setDate(thirteenYearsAgo.getDate() - 1));
 
 const formData = reactive<FormData>({
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  dateOfBirth: thirteenYearsAgo,
+  dateOfBirth: thirteen,
 });
 const billingAddress = reactive<AddressData>({
   city: '',

@@ -69,7 +69,7 @@ export async function updateCustomerPersonal(original: PersonalData, updates: Pe
   if (updates.email !== undefined && updates.email !== original.email) {
     actions.push({ action: 'changeEmail', email: updates.email });
   }
-  if (updates.dateOfBirth !== undefined && updates.dateOfBirth !== updates.dateOfBirth) {
+  if (updates.dateOfBirth !== undefined && updates.dateOfBirth !== original.dateOfBirth) {
     actions.push({ action: 'setDateOfBirth', dateOfBirth: formatDateISO8601(updates.dateOfBirth) });
   }
 
