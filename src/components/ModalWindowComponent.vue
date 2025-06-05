@@ -9,7 +9,7 @@ const dialog = ref(false);
 defineExpose({ dialog });
 </script>
 <template>
-  <v-dialog class="dialog-slider" v-model="dialog">
+  <v-dialog class="dialog-slider" v-model="dialog" max-width="70vh">
     <template v-slot:activator="{ props }">
       <div v-bind="props">
         <slot name="activator" />
@@ -43,23 +43,6 @@ defineExpose({ dialog });
   </v-dialog>
 </template>
 <style scoped lang="scss">
-.dialog-slider {
-  width: 100%;
-  height: auto;
-
-  @media screen and (max-height: 500px) {
-    max-width: 300px;
-  }
-  @media screen and (min-height: 500px) and (max-height: 1000px) and (min-width: 578px) {
-    min-width: 400px;
-    width: 80vh;
-    max-width: 800px;
-  }
-  @media screen and (min-height: 1000.89px) and (min-width: 500px) {
-    max-width: 70vh;
-  }
-}
-
 .card-dialog {
   position: relative;
   background-color: var(--white-background);
