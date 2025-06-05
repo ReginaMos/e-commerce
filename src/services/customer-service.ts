@@ -43,6 +43,21 @@ export async function createCustomer(customer: MyCustomerDraft) {
   return result.body;
 }
 
+export async function refreshCustomerData() {
+  try {
+    const response = await apiRoot.me().get().execute();
+
+    if (response.statusCode === 200) {
+      localStorage.setItem(USER_KEY, JSON.stringify(response.body));
+      return response.body;
+    }
+  } catch (error) {
+    console.error('Failed to refresh customer data:', error);
+    logoutCustomer();
+    throw new Error('Session expired. Please login again.');
+  }
+}
+
 export function getCustomer() {
   const data = localStorage.getItem(USER_KEY);
   if (!data) {

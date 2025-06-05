@@ -115,10 +115,12 @@ const setNewAddress = (type?: MessageType) => {
   if (type === 'billing') {
     defaultBilling.value = true;
     billingDisabled.value = true;
+    shippingDisabled.value = false;
   }
   if (type === 'shipping') {
     defaultShipping.value = true;
     shippingDisabled.value = true;
+    billingDisabled.value = false;
   }
 };
 

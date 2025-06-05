@@ -17,15 +17,15 @@ const visibleOld = ref(false);
 const visibleNew = ref(false);
 const menu = ref(false);
 
-const { firstName, lastName, dateOfBirth, email } = getCustomer();
+const customer = ref(getCustomer());
 
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 const formData = reactive<PersonalData>({
-  firstName: firstName || '',
-  lastName: lastName || '',
-  email: email || '',
-  dateOfBirth: new Date(dateOfBirth || ''),
+  firstName: customer.value.firstName || '',
+  lastName: customer.value.lastName || '',
+  email: customer.value.email || '',
+  dateOfBirth: new Date(customer.value.dateOfBirth || ''),
 });
 
 const passData = reactive<UpdatePasswordData>({ oldPassword: '', newPassword: '' });
@@ -42,11 +42,15 @@ const register = async () => {
   if (isValid) {
     isLoading.value = true;
 
-    await updateCustomerPersonal({ firstName, lastName, dateOfBirth: new Date(dateOfBirth || ''), email }, formData)
+    await updateCustomerPersonal(
+      { ...customer.value, dateOfBirth: new Date(customer.value.dateOfBirth || '') },
+      formData
+    )
       .then(() => {
         toaster?.show('Personal info updated!', 'success');
+        customer.value = getCustomer();
         isLoading.value = false;
-        isOpenedInfo.value = !isOpenedInfo.value;
+        reset();
       })
       .catch((err: unknown) => {
         if (err instanceof Error) {
@@ -60,10 +64,10 @@ const register = async () => {
 };
 
 const reset = () => {
-  formData.firstName = firstName || '';
-  formData.lastName = lastName || '';
-  formData.email = email || '';
-  formData.dateOfBirth = new Date(dateOfBirth || '');
+  formData.firstName = customer.value.firstName || '';
+  formData.lastName = customer.value.lastName || '';
+  formData.email = customer.value.email || '';
+  formData.dateOfBirth = new Date(customer.value.dateOfBirth || '');
   isOpenedInfo.value = !isOpenedInfo.value;
 };
 
