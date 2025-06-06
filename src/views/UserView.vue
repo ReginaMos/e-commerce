@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { Links } from '../constants/routersLinks';
 import type { BreadcrumbItem } from 'vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs';
 import BreadCrumbsComponent from '../components/BreadCrumbsComponent.vue';
+import { refreshCustomerData } from '../services/customer-service';
 
 const { mobile } = useDisplay();
 const router = useRouter();
@@ -29,6 +30,19 @@ const items = computed<BreadcrumbItem[]>(() => [
     to: Links.USER.LINK,
   },
 ]);
+
+const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
+
+onMounted(async () => {
+  try {
+    await refreshCustomerData();
+  } catch (err) {
+    if (err instanceof Error) {
+      toaster?.show(err.message, 'error');
+    }
+    router.push(Links.LOGIN.LINK);
+  }
+});
 
 function onTabChange(newTab: unknown) {
   if (typeof newTab === 'string' && newTab !== route.path) {
