@@ -1,7 +1,8 @@
-<script setup lang="ts"></script>
-
+<script setup lang="ts">
+import AboutView from '../views/AboutView.vue';
+</script>
 <template>
-  <h1>AboutPage!</h1>
+  <AboutView />
 </template>
 
 <style scoped></style>

@@ -4,6 +4,17 @@ export interface PromotionModel {
   img: string;
 }
 
+interface Social {
+  icon: string;
+  link: string;
+}
+export interface TeamModel {
+  heading: string;
+  text: string;
+  img: string;
+  socials: Array<Social>;
+}
+
 export type LinkItem = {
   NAME: string;
   LINK: string;
@@ -22,4 +33,23 @@ export interface ProductInfo {
   price: number;
   discountedPrice?: number;
   currency: string;
+  description: string;
+  quantity: number;
+  attributes: Attributes[];
+  size: string;
+  brand: string;
 }
+
+export interface Filter {
+  category?: string;
+  brand?: string;
+}
+
+export interface SortBy {
+  name?: SortType;
+  price?: SortType;
+}
+
+export type SortType = 'asc' | 'desc' | '';
+export type MessageType = 'billing' | 'shipping' | 'saved' | 'other';
+export type AddressMessages = Record<MessageType, { text: string; icon: string }>;

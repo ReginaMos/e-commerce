@@ -35,7 +35,7 @@ const { mdAndUp } = useDisplay();
               <router-link :to="Links.CART.LINK">Shop Cart</router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.LIKES.LINK">Wishlist</router-link>
+              <router-link :to="Links.WISHLIST.LINK">Wishlist</router-link>
             </v-list-item>
           </v-list>
         </v-col>
@@ -46,7 +46,7 @@ const { mdAndUp } = useDisplay();
               <router-link :to="Links.ABOUT.LINK"> About Us </router-link>
             </v-list-item>
             <v-list-item>
-              <router-link :to="Links.CONTACT.LINK">Contact</router-link>
+              <router-link :to="Links.CONTACTS.LINK">Contacts</router-link>
             </v-list-item>
           </v-list>
         </v-col>
@@ -146,18 +146,7 @@ const { mdAndUp } = useDisplay();
 .address {
   flex-direction: column;
 }
-.school-logo {
-  min-width: 30px;
-  min-height: 30px;
-  border-radius: 50%;
-  background-color: #f3d510;
-  color: var(--black-text);
-  font-size: 16px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
+
 .footer :deep(.school-link) {
   overflow-wrap: break-all;
   &:hover,

@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import UserView from '../views/UserView.vue';
+</script>
 
 <template>
-  <h1>UserPage!</h1>
+  <UserView />
 </template>
 
 <style scoped></style>

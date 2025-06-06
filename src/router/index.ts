@@ -13,9 +13,12 @@ import UserPage from '../pages/UserPage.vue';
 import ProductPage from '../pages/ProductPage.vue';
 import CatalogPage from '../pages/CatalogPage.vue';
 import NotFoundPage from '../pages/NotFoundPage.vue';
+import SearchPage from '../pages/SearchPage.vue';
+import AddressBookComponent from '../components/AddressBookComponent.vue';
+import PersonalDetailsComponent from '../components/PersonalDetailsComponent.vue';
 
 import { Links } from '../constants/routersLinks';
-import { USER_KEY } from '../constants/local-storage';
+import { isAuth } from '../services/customer-service';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -28,8 +31,8 @@ const routes: Array<RouteRecordRaw> = [
         component: MainPage,
       },
       {
-        path: Links.CONTACT.LINK,
-        name: Links.CONTACT.NAME,
+        path: Links.CONTACTS.LINK,
+        name: Links.CONTACTS.NAME,
         component: ContactsPage,
       },
       {
@@ -48,8 +51,8 @@ const routes: Array<RouteRecordRaw> = [
         component: RegistrationPage,
       },
       {
-        path: Links.LIKES.LINK,
-        name: Links.LIKES.NAME,
+        path: Links.WISHLIST.LINK,
+        name: Links.WISHLIST.NAME,
         component: LikesPage,
       },
       {
@@ -61,6 +64,19 @@ const routes: Array<RouteRecordRaw> = [
         path: Links.USER.LINK,
         name: Links.USER.NAME,
         component: UserPage,
+        meta: { requiresAuth: true },
+        children: [
+          {
+            path: Links.ADDRESS.LINK,
+            name: Links.ADDRESS.NAME,
+            component: AddressBookComponent,
+          },
+          {
+            path: Links.PERSONAL.LINK,
+            name: Links.PERSONAL.NAME,
+            component: PersonalDetailsComponent,
+          },
+        ],
       },
       {
         path: Links.CATALOG.LINK,
@@ -68,7 +84,12 @@ const routes: Array<RouteRecordRaw> = [
         component: CatalogPage,
       },
       {
-        path: `Links.PRODUCT.LINK/${1}`,
+        path: Links.SEARCH.LINK,
+        name: Links.SEARCH.NAME,
+        component: SearchPage,
+      },
+      {
+        path: `${Links.PRODUCT.LINK}/:id`,
         name: Links.PRODUCT.NAME,
         component: ProductPage,
       },
@@ -91,11 +112,10 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  const isAuthenticated = localStorage.getItem(USER_KEY);
-  if (!isAuthenticated && to.name === Links.USER.NAME) {
-    return { name: Links.SIGNUP.NAME };
+  if (!isAuth.value && to.matched.some((record) => record.meta.requiresAuth)) {
+    return { name: Links.LOGIN.NAME };
   }
-  if (isAuthenticated && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {
+  if (isAuth.value && (to.name === Links.SIGNUP.NAME || to.name === Links.LOGIN.NAME)) {
     return { name: Links.HOME.NAME };
   }
 });

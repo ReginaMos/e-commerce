@@ -7,29 +7,31 @@ import { type ComponentPublicInstance } from 'vue';
 import { mountWithVuetify } from './test-utils';
 import router from '../router';
 import { Links } from '../constants/routersLinks';
+import { createCustomer } from '../services/customer-service';
+import type { CustomerSignInResult } from '@commercetools/platform-sdk';
 
-vi.mock('../services/customer-service', () => ({
-  useAuth: () => ({
+vi.mock(import('../services/customer-service'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
     createCustomer: vi.fn(),
-  }),
-}));
+  };
+});
 
-import { useAuth } from '../services/customer-service';
-const { createCustomer } = useAuth();
+const validFormData = {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john@example.com',
 
-// const validFormData = {
-//   firstName: 'John',
-//   lastName: 'Doe',
-//   email: 'john@example.com',
-//   password: 'Password123!',
-// };
+  password: 'Password123!',
+};
 
-// const validAddress = {
-//   streetName: 'Street',
-//   city: 'City',
-//   postalCode: '123456',
-//   country: 'Germany',
-// };
+const validAddress = {
+  streetName: 'Street',
+  city: 'City',
+  postalCode: '12345',
+  country: 'France',
+};
 
 const mockToaster = {
   show: vi.fn(),
@@ -95,40 +97,42 @@ describe('RegistrationView', () => {
     expect(push).toHaveBeenCalledWith(Links.LOGIN.LINK);
   });
 
-  // it('handles API errors', async () => {
-  //   await wrapper.find('input[name="firstName"]').setValue(validFormData.firstName);
-  //   await wrapper.find('input[name="lastName"]').setValue(validFormData.lastName);
-  //   await wrapper.find('input[name="email"]').setValue(validFormData.email);
-  //   await wrapper.find('input[name="password"]').setValue(validFormData.password);
+  it('handles API errors', async () => {
+    await wrapper.find('input[name="firstName"]').setValue(validFormData.firstName);
+    await wrapper.find('input[name="lastName"]').setValue(validFormData.lastName);
+    await wrapper.find('input[name="email"]').setValue(validFormData.email);
+    await wrapper.find('input[name="password"]').setValue(validFormData.password);
 
-  //   await wrapper.find('input[name="billingStreetName"]').setValue(validAddress.streetName);
-  //   await wrapper.find('input[name="billingCity"]').setValue(validAddress.city);
-  //   await wrapper.find('input[name="billingPostalCode"]').setValue(validAddress.postalCode);
-  //   await wrapper.find('input[name="billingCountry"]').setValue(validAddress.country);
+    await wrapper.find('input[name="billingStreetName"]').setValue(validAddress.streetName);
+    await wrapper.find('input[name="billingCity"]').setValue(validAddress.city);
+    await wrapper.find('input[name="billingPostalCode"]').setValue(validAddress.postalCode);
+    await wrapper.find('input[name="billingCountry"]').setValue(validAddress.country);
+    await wrapper.findComponent({ name: 'VAutocomplete' }).setValue(validAddress.country);
 
-  //   const error = new Error('API Error');
-  //   vi.mocked(createCustomer).mockRejectedValueOnce(error);
+    const error = new Error('API Error');
+    vi.mocked(createCustomer).mockRejectedValueOnce(error);
 
-  //   await wrapper.find('form').trigger('submit.prevent');
+    await wrapper.find('form').trigger('submit.prevent');
 
-  //   expect(createCustomer).toHaveBeenCalled();
-  //   expect(mockToaster.show).toHaveBeenCalledWith('API Error', 'error');
-  // });
+    expect(createCustomer).toHaveBeenCalled();
+    expect(mockToaster.show).toHaveBeenCalledWith('API Error', 'error');
+  });
 
-  // it('successfully submits form with valid data', async () => {
-  //   await wrapper.find('input[name="firstName"]').setValue(validFormData.firstName);
-  //   await wrapper.find('input[name="lastName"]').setValue(validFormData.lastName);
-  //   await wrapper.find('input[name="email"]').setValue(validFormData.email);
-  //   await wrapper.find('input[name="password"]').setValue(validFormData.password);
-  //   await wrapper.find('input[name="billingStreetName"]').setValue(validAddress.streetName);
-  //   await wrapper.find('input[name="billingCity"]').setValue(validAddress.city);
-  //   await wrapper.find('input[name="billingPostalCode"]').setValue(validAddress.postalCode);
-  //   await wrapper.find('input[name="billingCountry"]').setValue(validAddress.country);
+  it('successfully submits form with valid data', async () => {
+    await wrapper.find('input[name="firstName"]').setValue(validFormData.firstName);
+    await wrapper.find('input[name="lastName"]').setValue(validFormData.lastName);
+    await wrapper.find('input[name="email"]').setValue(validFormData.email);
+    await wrapper.find('input[name="password"]').setValue(validFormData.password);
+    await wrapper.find('input[name="billingStreetName"]').setValue(validAddress.streetName);
+    await wrapper.find('input[name="billingCity"]').setValue(validAddress.city);
+    await wrapper.find('input[name="billingPostalCode"]').setValue(validAddress.postalCode);
+    await wrapper.findComponent({ name: 'VAutocomplete' }).setValue(validAddress.country);
 
-  //   await wrapper.find('form').trigger('submit.prevent');
+    vi.mocked(createCustomer).mockResolvedValueOnce({} as CustomerSignInResult);
 
-  //   vi.mocked(createCustomer).mockResolvedValueOnce({} as CustomerSignInResult);
-  //   expect(mockToaster.show).toHaveBeenCalledWith('Customer created!', 'success');
-  //   expect(createCustomer).toHaveBeenCalled();
-  // });
+    await wrapper.find('form').trigger('submit.prevent');
+
+    expect(mockToaster.show).toHaveBeenCalledWith('Customer created!', 'success');
+    expect(createCustomer).toHaveBeenCalled();
+  });
 });

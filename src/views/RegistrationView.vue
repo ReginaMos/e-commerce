@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, reactive, computed, type ComputedRef, inject } from 'vue';
-import { type AnyZodObject } from 'zod';
+import { ref, reactive, computed, inject } from 'vue';
+
 import { countyList } from '../constants/country-list';
 import {
   addressSchema,
@@ -12,19 +12,20 @@ import {
 import type { MyCustomerDraft } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/me';
 import { formatDateISO8601 } from '../utils/format-date';
 import { useRouter } from 'vue-router';
-import { useAuth } from '../services/customer-service';
 import { Links } from '../constants/routersLinks';
+import { getFieldRules } from '../utils/user-profile';
+import { createCustomer } from '../services/customer-service';
 
-const { createCustomer } = useAuth();
 const router = useRouter();
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
+const thirteen = new Date(thirteenYearsAgo.setDate(thirteenYearsAgo.getDate() - 1));
 
 const formData = reactive<FormData>({
   firstName: '',
   lastName: '',
   email: '',
   password: '',
-  dateOfBirth: thirteenYearsAgo,
+  dateOfBirth: thirteen,
 });
 const billingAddress = reactive<AddressData>({
   city: '',
@@ -43,18 +44,6 @@ const menu = ref(false);
 const sameAddress = ref(true);
 const defaultBilling = ref(false);
 const defaultShipping = ref(false);
-
-const getFieldRules = <T extends object>(
-  fieldName: keyof T,
-  schema: AnyZodObject
-): ComputedRef<((v: string) => true | string)[]> => {
-  return computed(() => [
-    (v: string) => {
-      const result = schema.shape[fieldName].safeParse(v);
-      return result.success ? true : result.error.issues[0].message;
-    },
-  ]);
-};
 
 const getFieldRulesForm = (fieldName: keyof FormData) => getFieldRules(fieldName, registrationSchema);
 const getFieldRulesAddress = (fieldName: keyof AddressData) => getFieldRules(fieldName, addressSchema);
@@ -99,7 +88,7 @@ const register = async () => {
 </script>
 
 <template>
-  <v-container>
+  <v-container fluid>
     <v-row justify="center">
       <v-card max-width="500" min-width="260" width="100%">
         <v-card-title class="mt-7 mx-sm-7 mt-sm-7 form-title">Create an account</v-card-title>

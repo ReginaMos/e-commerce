@@ -5,7 +5,7 @@ import FooterComponent from './FooterComponent.vue';
 
 <template>
   <v-app>
-    <div class="advert">Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! ShopNow</div>
+    <div class="advert">Summer Sale For T-shirts - discount up to 50%! ShopNow</div>
     <HeaderComponent />
     <main>
       <router-view />
