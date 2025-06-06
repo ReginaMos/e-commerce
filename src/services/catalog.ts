@@ -144,7 +144,7 @@ function getBriefInfoFromProduct(product: Product): ProductInfo {
   const masterVariant = current.masterVariant;
   const name = Object.values(current.name)[0];
 
-  const imageUrl = masterVariant.images?.[0]?.url || '';
+  const images = masterVariant.images || [];
 
   const priceData = masterVariant.prices?.[0];
   const price = priceData ? priceData.value.centAmount / 100 : 0;
@@ -158,7 +158,7 @@ function getBriefInfoFromProduct(product: Product): ProductInfo {
   return {
     id: product.id,
     name,
-    imageUrl,
+    images,
     price,
     discountedPrice,
     currency,

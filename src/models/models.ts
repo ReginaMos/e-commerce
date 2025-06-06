@@ -25,11 +25,22 @@ export interface Advantage {
   text: string;
   icon: string;
 }
+export interface Images {
+  dimensions: {
+    w: number;
+    h: number;
+  };
+  url: string;
+}
 
+export interface Attributes {
+  name: string;
+  value: string;
+}
 export interface ProductInfo {
   id: string;
   name: string;
-  imageUrl: string;
+  images: Images[];
   price: number;
   discountedPrice?: number;
   currency: string;
