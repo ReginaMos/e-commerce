@@ -176,7 +176,7 @@ const logout = () => {
   white-space: nowrap;
   text-align: start;
   margin-inline-start: 0;
-  width: 200px!important;
+  width: 200px !important;
 }
 
 .header :deep(.menu-wrapper-desktop .v-navigation-drawer) {
