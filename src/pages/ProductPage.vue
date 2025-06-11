@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import ProductView from '../views/ProductView.vue';
+</script>
 
 <template>
-  <h1>ProductPage!</h1>
+  <ProductView />
 </template>
 
 <style scoped></style>
