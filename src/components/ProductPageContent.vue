@@ -5,11 +5,12 @@ import ProductQuantityComponent from './ProductQuantityComponent.vue';
 import type { ProductInfo, Attributes } from '../models/models.ts';
 import type { Ref, ComputedRef } from 'vue';
 import { ref, computed, watch } from 'vue';
+import { addProductToCart } from '../services/cart.ts';
 
 const props = defineProps<{
   product?: ProductInfo;
 }>();
-
+console.log(props.product);
 const sizes: ComputedRef<Array<string>> = computed(
   () =>
     props.product?.attributes
@@ -39,6 +40,36 @@ function addToWishList() {
 watch(isActive, (newVal) => {
   localStorage.setItem('wishlist', JSON.stringify(newVal));
 });
+
+async function addToCart(): Promise<void> {
+  if (!props.product?.id || !selectedSize.value || !count.value) {
+    console.error('Missing product ID or selected size.');
+    return;
+  }
+  console.log('Add to Cart', props.product?.id, 'selectedSize:', selectedSize.value, 'count:', count.value);
+  let getStoredCard: Array<{
+    id: string;
+    size: string;
+    count: number;
+  }>;
+  const storedCard = localStorage.getItem('cart');
+  if (storedCard) {
+    getStoredCard = JSON.parse(storedCard);
+  } else {
+    getStoredCard = [];
+  }
+  const index = getStoredCard.findIndex((product) => product.id === props.product?.id);
+  if (index === -1) {
+    getStoredCard.push({ id: props.product?.id, count: count.value, size: selectedSize.value });
+  } else {
+    getStoredCard[index].count = count.value;
+    getStoredCard[index].size = selectedSize.value;
+  }
+  localStorage.setItem('cart', JSON.stringify(getStoredCard));
+  let cart = await addProductToCart(props.product.id, 1, count.value);
+  console.log(cart);
+  // await sendCart(cart);
+}
 </script>
 <template>
   <h2>{{ productDetails?.name }}</h2>
@@ -69,7 +100,7 @@ watch(isActive, (newVal) => {
     </v-btn>
   </div>
 
-  <v-btn v-if="productDetails?.quantity || 0 > 0" class="btn"> Add to Cart </v-btn>
+  <v-btn v-if="productDetails?.quantity || 0 > 0" class="btn" @click="addToCart"> Add to Cart </v-btn>
 
   <p v-else>This product sold</p>
 </template>
