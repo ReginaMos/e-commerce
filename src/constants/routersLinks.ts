@@ -20,7 +20,7 @@ export const Links: Record<Link, LinkItem> = {
   HOME: { NAME: 'Home', LINK: '/' },
   CONTACTS: { NAME: 'Contacts', LINK: '/contacts' },
   ABOUT: { NAME: 'About', LINK: '/about' },
-  WISHLIST: { NAME: 'Wishlist', LINK: '/wishlist' },
+  WISHLIST: { NAME: 'Likes', LINK: '/likes' },
   SIGNUP: { NAME: 'Sign Up', LINK: '/signup' },
   LOGIN: { NAME: 'Login', LINK: 'login' },
   USER: { NAME: 'Account', LINK: '/account' },
