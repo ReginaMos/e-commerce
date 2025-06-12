@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, inject } from 'vue';
+import { ref, onMounted, inject, computed } from 'vue';
 import type { Cart } from '@commercetools/platform-sdk';
 
 import CartElement from '../elements/CartElement.vue';
+import { Links } from '../constants/routersLinks';
 import { getCartById, removeCartItem, updateCartItemQuantity } from '../services/carts-service';
 
 const cart = ref<Cart | null>(null);
@@ -11,6 +12,15 @@ const isLoading = ref(true);
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 type CartAction<T extends unknown[]> = (cart: Cart, ...args: T) => Promise<Cart>;
+
+const cartTotal = computed(() => {
+  if (!cart.value?.totalPrice) return null;
+
+  const { currencyCode, fractionDigits, centAmount } = cart.value.totalPrice;
+  const amount = centAmount / Math.pow(10, fractionDigits);
+
+  return `${currencyCode} ${amount.toFixed(2)}`;
+});
 
 async function updateCart<T extends unknown[]>(action: CartAction<T>, successMessage: string, ...args: T) {
   if (!cart.value) return;
@@ -65,12 +75,19 @@ onMounted(async () => {
           @remove="handleRemove"
           @update:quantity="handleQuantityUpdate"
         />
+        <v-divider class="my-4" />
+        <div class="d-flex justify-end">
+          <v-card variant="flat">
+            <v-card-text class="text-h6"> Total cost: {{ cartTotal }} </v-card-text>
+          </v-card>
+        </div>
       </v-col>
     </v-row>
 
     <v-row v-else>
       <v-col>
         <v-alert type="info">Your cart is empty</v-alert>
+        <v-button :to="Links.CATALOG.LINK">Continue Shopping</v-button>
       </v-col>
     </v-row>
   </v-container>
