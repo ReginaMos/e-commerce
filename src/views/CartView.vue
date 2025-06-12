@@ -3,20 +3,36 @@ import { ref, onMounted, inject } from 'vue';
 import type { Cart } from '@commercetools/platform-sdk';
 
 import CartElement from '../elements/CartElement.vue';
-import { getCartById } from '../services/carts-service';
+import { getCartById, removeCartItem, updateCartItemQuantity } from '../services/carts-service';
 
 const cart = ref<Cart | null>(null);
 const isLoading = ref(true);
 
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
-function handleQuantityUpdate(newQuantity: number) {
-  console.log('New quantity: ', newQuantity);
+type CartAction<T extends unknown[]> = (cart: Cart, ...args: T) => Promise<Cart>;
+
+async function updateCart<T extends unknown[]>(action: CartAction<T>, successMessage: string, ...args: T) {
+  if (!cart.value) return;
+
+  isLoading.value = true;
+  try {
+    cart.value = await action(cart.value, ...args);
+    toaster?.show(successMessage, 'success');
+  } catch (err) {
+    if (err instanceof Error) {
+      toaster?.show(err.message, 'error');
+    }
+  } finally {
+    isLoading.value = false;
+  }
 }
 
-function handleRemove() {
-  console.log('Item removed');
-}
+const handleQuantityUpdate = (lineItemId: string, quantity: number) =>
+  updateCart<[string, number]>(updateCartItemQuantity, 'Quantity updated successfully', lineItemId, quantity);
+
+const handleRemove = (lineItemId: string) =>
+  updateCart<[string]>(removeCartItem, 'Item removed successfully', lineItemId);
 
 onMounted(async () => {
   const cartId = 'dbca236b-c5da-4658-a647-192811f15fd4';
@@ -24,7 +40,7 @@ onMounted(async () => {
     cart.value = await getCartById(cartId);
   } catch (err) {
     if (err instanceof Error) {
-      toaster?.show(err.message, 'error');
+      toaster?.show(err?.message, 'error');
     }
   } finally {
     isLoading.value = false;

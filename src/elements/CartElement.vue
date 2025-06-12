@@ -8,28 +8,34 @@ interface Props {
 
 const props = defineProps<Props>();
 const emit = defineEmits<{
-  (e: 'remove'): void;
-  (e: 'update:quantity', quantity: number): void;
+  (e: 'remove', lineItemId: string): void;
+  (e: 'update:quantity', lineItemId: string, quantity: number): void;
 }>();
 
+const id = props.item.id;
 const image = props.item.variant.images?.[0]?.url;
 const name = props.item.name.en;
 const currencyCode = props.item.price.value.currencyCode;
 const fractionDigits = Math.pow(10, props.item.price.value.fractionDigits);
-const price = props.item.price.value.centAmount / fractionDigits;
-const quantity = computed(() => props.item.quantity);
-const subtotal = computed(() => props.item.totalPrice.centAmount / fractionDigits);
+const price = computed(() => {
+  const originalPrice = props.item.price.value.centAmount / fractionDigits;
+  const discountedPrice = props.item.price.discounted?.value.centAmount;
+
+  return discountedPrice ? discountedPrice / fractionDigits : originalPrice;
+});
+const quantity = props.item.quantity;
+const subtotal = props.item.totalPrice.centAmount / fractionDigits;
 const min = props.item.variant.availability?.isOnStock ? 1 : 0;
 const max = props.item.variant.availability?.availableQuantity || 99;
 
 function handleQuantityChange(newQuantity: number) {
-  emit('update:quantity', newQuantity);
+  emit('update:quantity', id, newQuantity);
 }
 </script>
 
 <template>
-  <v-card class="d-flex align-center pa-4 mb-4" variant="elevated">
-    <v-img :src="image" width="100" height="100" cover class="rounded"></v-img>
+  <v-card class="d-flex align-center pa-2 mb-4" variant="elevated">
+    <v-img :src="image" max-width="100" cover class="rounded"></v-img>
     <v-card-title class="pa-0">{{ name }}</v-card-title>
     <v-card-text class="pa-0 text-body-1"> {{ currencyCode }} {{ price.toFixed(2) }}</v-card-text>
 
@@ -46,7 +52,7 @@ function handleQuantityChange(newQuantity: number) {
     ></v-number-input>
 
     <v-card-text class="pa-0 text-body-1"> {{ currencyCode }} {{ subtotal.toFixed(2) }}</v-card-text>
-    <v-btn class="pa-0" color="error" variant="text" @click="emit('remove')" icon="mdi-delete"></v-btn>
+    <v-btn class="pa-0" color="error" variant="text" @click="emit('remove', id)" icon="mdi-delete"></v-btn>
   </v-card>
 </template>
 
