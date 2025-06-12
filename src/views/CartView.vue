@@ -4,7 +4,7 @@ import type { Cart } from '@commercetools/platform-sdk';
 
 import CartElement from '../elements/CartElement.vue';
 import { Links } from '../constants/routersLinks';
-import { getCartById, removeCartItem, updateCartItemQuantity } from '../services/carts-service';
+import { getCartById, removeCartItem, updateCartItemQuantity, clearCart } from '../services/carts-service';
 
 const cart = ref<Cart | null>(null);
 const isLoading = ref(true);
@@ -38,11 +38,21 @@ async function updateCart<T extends unknown[]>(action: CartAction<T>, successMes
   }
 }
 
-const handleQuantityUpdate = (lineItemId: string, quantity: number) =>
-  updateCart<[string, number]>(updateCartItemQuantity, 'Quantity updated successfully', lineItemId, quantity);
+const handleQuantityUpdate = (lineItemId: string, quantity: number, maxQuantity: number) => {
+  const validQuantity = Math.min(Math.max(1, quantity), maxQuantity);
+
+  if (validQuantity !== quantity) {
+    toaster?.show('Invalid quantity value', 'warning');
+    return;
+  }
+
+  updateCart<[string, number]>(updateCartItemQuantity, 'Quantity updated successfully', lineItemId, validQuantity);
+};
 
 const handleRemove = (lineItemId: string) =>
   updateCart<[string]>(removeCartItem, 'Item removed successfully', lineItemId);
+
+const handleClearCart = () => updateCart<[]>(clearCart, 'Cart cleared successfully');
 
 onMounted(async () => {
   const cartId = 'dbca236b-c5da-4658-a647-192811f15fd4';
@@ -76,7 +86,8 @@ onMounted(async () => {
           @update:quantity="handleQuantityUpdate"
         />
         <v-divider class="my-4" />
-        <div class="d-flex justify-end">
+        <div class="d-flex justify-space-between align-center">
+          <v-btn color="error" variant="outlined" @click="handleClearCart">Clear Cart</v-btn>
           <v-card variant="flat">
             <v-card-text class="text-h6"> Total cost: {{ cartTotal }} </v-card-text>
           </v-card>
@@ -87,7 +98,7 @@ onMounted(async () => {
     <v-row v-else>
       <v-col>
         <v-alert type="info">Your cart is empty</v-alert>
-        <v-button :to="Links.CATALOG.LINK">Continue Shopping</v-button>
+        <v-btn :to="Links.CATALOG.LINK">Continue Shopping</v-btn>
       </v-col>
     </v-row>
   </v-container>
