@@ -35,16 +35,17 @@ function handleQuantityChange(newQuantity: number) {
 </script>
 
 <template>
-  <v-card class="d-flex align-center pa-2 mb-4" variant="elevated">
-    <v-img :src="image" max-width="100" cover class="rounded"></v-img>
-    <v-card-text class="pa-0 text-body-1">{{ name }}</v-card-text>
-    <v-card-text class="pa-0 text-body-1"> {{ currencyCode }} {{ price.toFixed(2) }}</v-card-text>
+  <v-card class="grid pa-2 mb-4" variant="elevated">
+    <v-img :src="image" min-width="100" max-width="100" cover class="rounded img"></v-img>
+    <v-card-text class="pa-0 text-body-1 title">{{ name }}</v-card-text>
+    <v-card-text class="pa-0 text-body-1 price"> {{ currencyCode }} {{ price.toFixed(2) }}</v-card-text>
 
     <v-number-input
       max-width="80"
       :model-value="quantity"
       :min="min"
       :max="max"
+      class="quantity"
       controlVariant="stacked"
       inset
       variant="outlined"
@@ -52,9 +53,52 @@ function handleQuantityChange(newQuantity: number) {
       @update:model-value="handleQuantityChange"
     ></v-number-input>
 
-    <v-card-text class="pa-0 text-body-1"> {{ currencyCode }} {{ subtotal.toFixed(2) }}</v-card-text>
-    <v-btn class="pa-0" color="error" variant="text" @click="emit('remove', id)" icon="mdi-delete"></v-btn>
+    <v-card-text class="pa-0 text-body-1 total"> {{ currencyCode }} {{ subtotal.toFixed(2) }}</v-card-text>
+    <v-btn class="pa-0 clear" color="error" variant="text" @click="emit('remove', id)" icon="mdi-delete"></v-btn>
   </v-card>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: 'img title price quantity total clear';
+  align-items: center;
+  justify-items: center;
+
+  @media (max-width: 999px) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas:
+      'img title title title'
+      'price quantity total clear';
+    row-gap: 40px;
+  }
+
+  @media (max-width: 499px) {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+      'img title title'
+      'price empty quantity'
+      'total empty clear';
+    row-gap: 20px;
+  }
+  .img {
+    grid-area: img;
+  }
+  .title {
+    grid-area: title;
+  }
+  .price {
+    grid-area: price;
+  }
+  .quantity {
+    grid-area: quantity;
+  }
+  .total {
+    grid-area: total;
+  }
+  .clear {
+    grid-area: clear;
+  }
+}
+</style>

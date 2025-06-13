@@ -42,7 +42,20 @@ const cartTotal = computed(() => {
   const { currencyCode, fractionDigits, centAmount } = cart.value.totalPrice;
   const amount = centAmount / Math.pow(10, fractionDigits);
 
-  return `${currencyCode} ${amount.toFixed(2)}`;
+  const originalAmount =
+    cart.value.lineItems.reduce((sum, item) => sum + item.price.value.centAmount * item.quantity, 0) /
+    Math.pow(10, fractionDigits);
+
+  if (originalAmount > amount) {
+    return {
+      original: `${currencyCode} ${originalAmount.toFixed(2)}`,
+      discounted: `${currencyCode} ${amount.toFixed(2)}`,
+    };
+  }
+
+  return {
+    discounted: `${currencyCode} ${amount.toFixed(2)}`,
+  };
 });
 
 async function updateCart<T extends unknown[]>(action: CartAction<T>, successMessage: string, ...args: T) {
@@ -126,9 +139,17 @@ onMounted(async () => {
 
         <div class="d-flex justify-space-between align-center">
           <v-btn color="error" variant="outlined" @click="handleClearCart">Clear Cart</v-btn>
-          <v-card variant="flat">
-            <v-card-text class="text-h6"> Total cost: {{ cartTotal }} </v-card-text>
-          </v-card>
+
+          <div class="text-h6">
+            Total:
+            <template v-if="cartTotal?.original">
+              <span class="text-decoration-line-through mr-2">{{ cartTotal.original }}</span>
+              <span class="text-error">{{ cartTotal.discounted }}</span>
+            </template>
+            <template v-else>
+              {{ cartTotal?.discounted }}
+            </template>
+          </div>
         </div>
         <v-divider class="my-4" />
 
