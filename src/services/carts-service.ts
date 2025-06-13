@@ -14,11 +14,11 @@ export async function removeCartItem({ id, version }: Cart, lineItemId: string):
     .withId({ ID: id })
     .post({
       body: {
-        version: version,
+        version,
         actions: [
           {
             action: 'removeLineItem',
-            lineItemId: lineItemId,
+            lineItemId,
           },
         ],
       },
@@ -39,12 +39,12 @@ export async function updateCartItemQuantity(
     .withId({ ID: id })
     .post({
       body: {
-        version: version,
+        version,
         actions: [
           {
             action: 'changeLineItemQuantity',
-            lineItemId: lineItemId,
-            quantity: quantity,
+            lineItemId,
+            quantity,
           },
         ],
       },
@@ -66,6 +66,27 @@ export async function clearCart({ id, version, lineItems }: Cart): Promise<Cart>
           action: 'removeLineItem',
           lineItemId: item.id,
         })),
+      },
+    })
+    .execute();
+
+  return response.body;
+}
+
+export async function applyDiscountCode({ id, version }: Cart, code: string): Promise<Cart> {
+  const response = await apiRoot
+    .me()
+    .carts()
+    .withId({ ID: id })
+    .post({
+      body: {
+        version,
+        actions: [
+          {
+            action: 'addDiscountCode',
+            code,
+          },
+        ],
       },
     })
     .execute();

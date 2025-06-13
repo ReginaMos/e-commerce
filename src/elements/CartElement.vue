@@ -14,7 +14,8 @@ const emit = defineEmits<{
 
 const id = props.item.id;
 const image = props.item.variant.images?.[0]?.url;
-const name = props.item.name.en;
+const name = props.item.name['en-US'];
+
 const currencyCode = props.item.price.value.currencyCode;
 const fractionDigits = Math.pow(10, props.item.price.value.fractionDigits);
 const price = computed(() => {
@@ -36,7 +37,7 @@ function handleQuantityChange(newQuantity: number) {
 <template>
   <v-card class="d-flex align-center pa-2 mb-4" variant="elevated">
     <v-img :src="image" max-width="100" cover class="rounded"></v-img>
-    <v-card-title class="pa-0">{{ name }}</v-card-title>
+    <v-card-text class="pa-0 text-body-1">{{ name }}</v-card-text>
     <v-card-text class="pa-0 text-body-1"> {{ currencyCode }} {{ price.toFixed(2) }}</v-card-text>
 
     <v-number-input

@@ -1,17 +1,40 @@
 <script setup lang="ts">
 import { ref, onMounted, inject, computed } from 'vue';
 import type { Cart } from '@commercetools/platform-sdk';
+import type { BreadcrumbItem } from 'vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs';
 
 import CartElement from '../elements/CartElement.vue';
+import BreadCrumbsComponent from '../components/BreadCrumbsComponent.vue';
 import { Links } from '../constants/routersLinks';
-import { getCartById, removeCartItem, updateCartItemQuantity, clearCart } from '../services/carts-service';
+import {
+  getCartById,
+  removeCartItem,
+  updateCartItemQuantity,
+  clearCart,
+  applyDiscountCode,
+} from '../services/carts-service';
 
 const cart = ref<Cart | null>(null);
 const isLoading = ref(true);
+const promoCode = ref('');
+const isPromoLoading = ref(false);
 
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
 type CartAction<T extends unknown[]> = (cart: Cart, ...args: T) => Promise<Cart>;
+
+const items = computed<BreadcrumbItem[]>(() => [
+  {
+    title: Links.HOME.NAME,
+    disabled: false,
+    to: Links.HOME.LINK,
+  },
+  {
+    title: Links.CART.NAME,
+    disabled: true,
+    to: Links.CART.LINK,
+  },
+]);
 
 const cartTotal = computed(() => {
   if (!cart.value?.totalPrice) return null;
@@ -32,11 +55,22 @@ async function updateCart<T extends unknown[]>(action: CartAction<T>, successMes
   } catch (err) {
     if (err instanceof Error) {
       toaster?.show(err.message, 'error');
+      console.log(err);
     }
   } finally {
     isLoading.value = false;
   }
 }
+
+const handleApplyPromoCode = () => {
+  if (!promoCode.value) return;
+
+  isPromoLoading.value = true;
+  updateCart<[string]>(applyDiscountCode, 'Promo code applied successfully', promoCode.value).finally(() => {
+    isPromoLoading.value = false;
+    promoCode.value = '';
+  });
+};
 
 const handleQuantityUpdate = (lineItemId: string, quantity: number, maxQuantity: number) => {
   const validQuantity = Math.min(Math.max(1, quantity), maxQuantity);
@@ -55,7 +89,9 @@ const handleRemove = (lineItemId: string) =>
 const handleClearCart = () => updateCart<[]>(clearCart, 'Cart cleared successfully');
 
 onMounted(async () => {
-  const cartId = 'dbca236b-c5da-4658-a647-192811f15fd4';
+  const cartId = '1b1e1945-98c8-483b-8b56-c332a4e3eff4'; // cart with items
+  //  const cartId = 'd8575c9f-40f7-4f75-88f5-276dcd7e33b2'; // empty cart
+
   try {
     cart.value = await getCartById(cartId);
   } catch (err) {
@@ -69,7 +105,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-container>
+  <BreadCrumbsComponent :items="items" />
+  <v-container class="mt-16">
     <v-row v-if="isLoading">
       <v-col>
         <v-progress-circular indeterminate />
@@ -86,18 +123,41 @@ onMounted(async () => {
           @update:quantity="handleQuantityUpdate"
         />
         <v-divider class="my-4" />
+
         <div class="d-flex justify-space-between align-center">
           <v-btn color="error" variant="outlined" @click="handleClearCart">Clear Cart</v-btn>
           <v-card variant="flat">
             <v-card-text class="text-h6"> Total cost: {{ cartTotal }} </v-card-text>
           </v-card>
         </div>
+        <v-divider class="my-4" />
+
+        <v-form @submit.prevent="handleApplyPromoCode" class="mb-4">
+          <v-row align="center">
+            <v-col cols="12" sm="6" md="4">
+              <v-text-field
+                v-model="promoCode"
+                label="Promo Code"
+                placeholder="Enter your promo code"
+                :disabled="isPromoLoading"
+                hide-details
+                variant="underlined"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="auto">
+              <v-btn type="submit" color="black" variant="outlined" :loading="isPromoLoading" :disabled="!promoCode">
+                Apply Code
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-form>
       </v-col>
     </v-row>
 
     <v-row v-else>
       <v-col>
         <v-alert type="info">Your cart is empty</v-alert>
+        <v-divider class="my-4" />
         <v-btn :to="Links.CATALOG.LINK">Continue Shopping</v-btn>
       </v-col>
     </v-row>
