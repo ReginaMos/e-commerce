@@ -40,13 +40,11 @@ const cartTotal = computed(() => {
   if (!cart.value?.totalPrice) return null;
 
   const { currencyCode, fractionDigits, centAmount } = cart.value.totalPrice;
+  const discountedAmount = cart.value.discountOnTotalPrice?.discountedAmount ?? null;
   const amount = centAmount / Math.pow(10, fractionDigits);
 
-  const originalAmount =
-    cart.value.lineItems.reduce((sum, item) => sum + item.price.value.centAmount * item.quantity, 0) /
-    Math.pow(10, fractionDigits);
-
-  if (originalAmount > amount) {
+  if (discountedAmount) {
+    const originalAmount = discountedAmount.centAmount / Math.pow(10, fractionDigits) + amount;
     return {
       original: `${currencyCode} ${originalAmount.toFixed(2)}`,
       discounted: `${currencyCode} ${amount.toFixed(2)}`,
@@ -85,15 +83,8 @@ const handleApplyPromoCode = () => {
   });
 };
 
-const handleQuantityUpdate = (lineItemId: string, quantity: number, maxQuantity: number) => {
-  const validQuantity = Math.min(Math.max(1, quantity), maxQuantity);
-
-  if (validQuantity !== quantity) {
-    toaster?.show('Invalid quantity value', 'warning');
-    return;
-  }
-
-  updateCart<[string, number]>(updateCartItemQuantity, 'Quantity updated successfully', lineItemId, validQuantity);
+const handleQuantityUpdate = (lineItemId: string, quantity: number) => {
+  updateCart<[string, number]>(updateCartItemQuantity, 'Quantity updated successfully', lineItemId, quantity);
 };
 
 const handleRemove = (lineItemId: string) =>

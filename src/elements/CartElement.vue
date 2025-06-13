@@ -9,7 +9,7 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: 'remove', lineItemId: string): void;
-  (e: 'update:quantity', lineItemId: string, quantity: number, maxQuantity: number): void;
+  (e: 'update:quantity', lineItemId: string, quantity: number): void;
 }>();
 
 const id = props.item.id;
@@ -26,11 +26,14 @@ const price = computed(() => {
 });
 const quantity = props.item.quantity;
 const subtotal = props.item.totalPrice.centAmount / fractionDigits;
-const min = props.item.variant.availability?.isOnStock ? 1 : 0;
+const min = 1;
 const max = props.item.variant.availability?.availableQuantity || 99;
 
 function handleQuantityChange(newQuantity: number) {
-  emit('update:quantity', id, newQuantity, max);
+  if (newQuantity < 1 || newQuantity > max) {
+    return;
+  }
+  emit('update:quantity', id, newQuantity);
 }
 </script>
 
