@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import type { ProductInfo } from '../models/models';
 import { ref } from 'vue';
+import { addProductToCart } from '../services/cart';
+// import { debounce } from '../utils/debounce';
+// import { updateCartItemQuantity } from '../services/carts-service';
 
-defineProps<{ item: ProductInfo }>();
+const props = defineProps<{ item: ProductInfo }>();
+const emit = defineEmits<{
+  (e: 'update-quantity', quantity: number): void;
+}>();
+// const debouncedUpdateCart = debounce(updateCartItemQuantity, 2000);
 
 let favorIcon = ref('mdi-heart-outline');
 
@@ -10,8 +17,21 @@ function addToFavor(): void {
   favorIcon.value = favorIcon.value === 'mdi-heart' ? 'mdi-heart-outline' : 'mdi-heart';
 }
 
-function addToCart(): void {
-  console.log('Add to Cart');
+function increaseItemCount(): void {
+  const count = props.item.inCartQuantity + 1;
+  emit('update-quantity', count);
+  // debouncedUpdateCart()
+}
+
+function decreaseItemCount(): void {
+  const count = props.item.inCartQuantity - 1;
+  emit('update-quantity', count);
+}
+
+async function addToCart(): Promise<void> {
+  const count = props.item.inCartQuantity + 1;
+  emit('update-quantity', count);
+  await addProductToCart(props.item.id, 1, 1);
 }
 </script>
 
@@ -22,7 +42,19 @@ function addToCart(): void {
     <div class="main-part">
       <div class="img-container">
         <img :src="item.images[0].url" alt="product-img" class="product-img" />
-        <div class="add-to-cart" @click.stop="addToCart()">Add To Cart</div>
+        <div v-if="item.inCartQuantity" class="added-to-cart">
+          <v-btn @click.stop="decreaseItemCount">
+            <v-icon> mdi-minus-circle-outline </v-icon>
+          </v-btn>
+          <p>{{ item.inCartQuantity }}</p>
+          <v-btn @click.stop="increaseItemCount" :disabled="item.inCartQuantity === item.quantity">
+            <v-icon> mdi-plus-circle-outline </v-icon>
+          </v-btn>
+        </div>
+
+        <div v-if="item.quantity > 0 && item.inCartQuantity === 0" class="add-to-cart" @click.stop="addToCart()">
+          Add To Cart
+        </div>
       </div>
 
       <div class="icons-part">
@@ -89,6 +121,22 @@ function addToCart(): void {
     position: absolute
     bottom: 0
 
+.added-to-cart
+    display: none
+    padding: 10px
+    background-color: #000
+    width: 100%
+
+    position: absolute
+    bottom: 0
+
+    justify-content: space-around
+    align-items: center
+
+    p
+      color: #fff
+      padding: 0 15px
+
 .price-container
   display: flex
   align-items: center
@@ -127,4 +175,7 @@ function addToCart(): void {
 
 .product:hover .add-to-cart
     display: block
+
+.product:hover .added-to-cart
+  display: flex
 </style>

@@ -38,6 +38,10 @@ async function sortedNames() {
   products.value = await getProducts(undefined, filter.value, sorter.value);
 }
 
+function updateQuantity(ind: number, quantity: number): void {
+  products.value[ind].inCartQuantity = quantity;
+}
+
 onMounted(async () => {
   products.value = await getProducts();
 });
@@ -83,7 +87,7 @@ onMounted(async () => {
     </v-row>
   </v-container>
 
-  <ProductsComponent :products="products" v-if="products.length" />
+  <ProductsComponent :products="products" v-if="products.length" @update-quantity="updateQuantity" />
 
   <v-card v-else class="mx-auto my-8" elevation="16" max-width="344">
     <v-card-item>
@@ -94,6 +98,8 @@ onMounted(async () => {
       We don't have any products with these characteristics <v-icon>mdi-emoticon-sad-outline</v-icon>
     </v-card-text>
   </v-card>
+
+  <v-pagination> </v-pagination>
 </template>
 
 <style scoped></style>

@@ -7,6 +7,9 @@ import { Links } from '../constants/routersLinks';
 const props = defineProps<{
   products: ProductInfo[];
 }>();
+const emit = defineEmits<{
+  (e: 'update-quantity', ind: number, quantity: number): void;
+}>();
 
 function goToProduct(id: string): void {
   router.push({ name: Links.PRODUCT.NAME, params: { id } });
@@ -22,6 +25,7 @@ function goToProduct(id: string): void {
         class="mx-4 my-4"
         :item="product"
         @click="goToProduct(product.id)"
+        @update-quantity="(quantity) => emit('update-quantity', ind, quantity)"
       />
     </v-row>
   </v-container>
