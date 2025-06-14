@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import CartView from '../views/CartView.vue';
+</script>
 
 <template>
-  <h1>CartPage!</h1>
+  <CartView />
 </template>
 
 <style scoped></style>
