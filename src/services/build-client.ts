@@ -13,6 +13,7 @@ import { clearToken, tokenCache } from './token-cache';
 const projectKey = import.meta.env.VITE_PROJECT_KEY;
 
 const refreshToken = tokenCache.get()?.refreshToken;
+const expirationTime = tokenCache.get()?.expirationTime;
 
 let client: Client;
 
@@ -41,7 +42,8 @@ const buildAnonymousClient = () =>
   new ClientBuilder().withAnonymousSessionFlow(authMiddlewareOptions).withHttpMiddleware(httpMiddlewareOptions).build();
 
 function buildClientWithRefreshToken() {
-  if (refreshToken) {
+  const currentTime = Date.now();
+  if (refreshToken && currentTime <= expirationTime) {
     return new ClientBuilder()
       .withRefreshTokenFlow({
         ...authMiddlewareOptions,
@@ -50,6 +52,7 @@ function buildClientWithRefreshToken() {
       .withHttpMiddleware(httpMiddlewareOptions)
       .build();
   } else {
+    clearToken();
     return buildAnonymousClient();
   }
 }

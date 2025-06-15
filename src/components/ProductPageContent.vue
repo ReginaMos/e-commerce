@@ -5,7 +5,7 @@ import ProductQuantityComponent from './ProductQuantityComponent.vue';
 import type { ProductInfo, Attributes } from '../models/models.ts';
 import type { Ref, ComputedRef } from 'vue';
 import { ref, computed, watch } from 'vue';
-import { addProductToCart } from '../services/cart.ts';
+import { addProductToCart } from '../services/carts-service.ts';
 
 const props = defineProps<{
   product?: ProductInfo;

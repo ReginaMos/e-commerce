@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, inject, computed } from 'vue';
+import { ref, inject, computed } from 'vue';
 import type { Cart } from '@commercetools/platform-sdk';
 import type { BreadcrumbItem } from 'vuetify/lib/components/VBreadcrumbs/VBreadcrumbs.mjs';
 
@@ -7,15 +7,14 @@ import CartElement from '../elements/CartElement.vue';
 import BreadCrumbsComponent from '../components/BreadCrumbsComponent.vue';
 import { Links } from '../constants/routersLinks';
 import {
-  getCartById,
   removeCartItem,
   updateCartItemQuantity,
   clearCart,
   applyDiscountCode,
+  activeCart,
 } from '../services/carts-service';
 
-const cart = ref<Cart | null>(null);
-const isLoading = ref(true);
+const isLoading = ref(false);
 const promoCode = ref('');
 const isPromoLoading = ref(false);
 
@@ -37,10 +36,10 @@ const items = computed<BreadcrumbItem[]>(() => [
 ]);
 
 const cartTotal = computed(() => {
-  if (!cart.value?.totalPrice) return null;
+  if (!activeCart.value?.totalPrice) return null;
 
-  const { currencyCode, fractionDigits, centAmount } = cart.value.totalPrice;
-  const discountedAmount = cart.value.discountOnTotalPrice?.discountedAmount ?? null;
+  const { currencyCode, fractionDigits, centAmount } = activeCart.value.totalPrice;
+  const discountedAmount = activeCart.value.discountOnTotalPrice?.discountedAmount ?? null;
   const amount = centAmount / Math.pow(10, fractionDigits);
 
   if (discountedAmount) {
@@ -57,11 +56,11 @@ const cartTotal = computed(() => {
 });
 
 async function updateCart<T extends unknown[]>(action: CartAction<T>, successMessage: string, ...args: T) {
-  if (!cart.value) return;
+  if (!activeCart.value) return;
 
   isLoading.value = true;
   try {
-    cart.value = await action(cart.value, ...args);
+    await action(activeCart.value, ...args);
     toaster?.show(successMessage, 'success');
   } catch (err) {
     if (err instanceof Error) {
@@ -92,20 +91,20 @@ const handleRemove = (lineItemId: string) =>
 
 const handleClearCart = () => updateCart<[]>(clearCart, 'Cart cleared successfully');
 
-onMounted(async () => {
-  const cartId = '1b1e1945-98c8-483b-8b56-c332a4e3eff4'; // cart with items
-  //  const cartId = 'd8575c9f-40f7-4f75-88f5-276dcd7e33b2'; // empty cart
+// onMounted(async () => {
+//   const cartId = '1b1e1945-98c8-483b-8b56-c332a4e3eff4'; // cart with items
+//   //  const cartId = 'd8575c9f-40f7-4f75-88f5-276dcd7e33b2'; // empty cart
 
-  try {
-    cart.value = await getCartById(cartId);
-  } catch (err) {
-    if (err instanceof Error) {
-      toaster?.show(err?.message, 'error');
-    }
-  } finally {
-    isLoading.value = false;
-  }
-});
+//   try {
+//     cart.value = await getCartById(cartId);
+//   } catch (err) {
+//     if (err instanceof Error) {
+//       toaster?.show(err?.message, 'error');
+//     }
+//   } finally {
+//     isLoading.value = false;
+//   }
+// });
 </script>
 
 <template>
@@ -117,10 +116,10 @@ onMounted(async () => {
       </v-col>
     </v-row>
 
-    <v-row v-else-if="cart?.lineItems?.length">
+    <v-row v-else-if="activeCart?.lineItems?.length">
       <v-col>
         <CartElement
-          v-for="item in cart.lineItems"
+          v-for="item in activeCart.lineItems"
           :key="item.id"
           :item="item"
           @remove="handleRemove"

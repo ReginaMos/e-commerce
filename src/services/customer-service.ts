@@ -5,6 +5,7 @@ import { USER_KEY } from '../constants/local-storage';
 import { formatDateISO8601 } from '../utils/format-date';
 import { apiRoot, buildCustomerClient, resetClient } from './build-client';
 import type { AddressData, PersonalData, UpdatePasswordData } from '../utils/registration-schema';
+import { getActiveCart } from './carts-service';
 
 export const isAuth = ref(!!localStorage.getItem(USER_KEY));
 
@@ -21,14 +22,17 @@ export async function loginCustomer(credentials: MyCustomerSignin) {
 
   if (result.body.customer) {
     localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
+
+    await getActiveCart();
   }
   checkAuth();
   return result.body;
 }
 
-export function logoutCustomer() {
+export async function logoutCustomer() {
   localStorage.removeItem(USER_KEY);
   resetClient();
+  await getActiveCart();
   checkAuth();
 }
 
@@ -39,6 +43,8 @@ export async function createCustomer(customer: MyCustomerDraft) {
     email: customer.email,
     password: customer.password,
   });
+
+  await getActiveCart();
 
   return result.body;
 }
