@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { addProductToCart, activeCart } from '../services/carts-service';
 import { debounce } from '../utils/debounce';
 import { updateCartItemQuantity } from '../services/carts-service';
+import { saveAnonymosCartItem } from '../utils/anonymosCart';
 
 const props = defineProps<{ item: ProductInfo }>();
 const emit = defineEmits<{
@@ -23,6 +24,9 @@ function increaseItemCount(): void {
   const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.item?.id);
   if (!activeCart.value || !lineItem) return;
   debouncedUpdateCart(activeCart.value, lineItem?.id, count);
+  if (!activeCart.value?.customerId && activeCart.value?.anonymousId) {
+    saveAnonymosCartItem(props.item?.id, count);
+  }
 }
 
 function decreaseItemCount(): void {
@@ -31,12 +35,18 @@ function decreaseItemCount(): void {
   const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.item?.id);
   if (!activeCart.value || !lineItem) return;
   debouncedUpdateCart(activeCart.value, lineItem?.id, count);
+  if (!activeCart.value?.customerId && activeCart.value?.anonymousId) {
+    saveAnonymosCartItem(props.item?.id, count);
+  }
 }
 
 async function addToCart(): Promise<void> {
   const count = props.item.inCartQuantity + 1;
   emit('update-quantity', count);
   await addProductToCart(props.item.id, 1, 1);
+  if (!activeCart.value?.customerId && activeCart.value?.anonymousId) {
+    saveAnonymosCartItem(props.item?.id, count);
+  }
 }
 </script>
 

@@ -178,3 +178,31 @@ export async function initializeCart() {
   }
   await getActiveCart();
 }
+
+export async function mergeAnonymousCartIntoUserCart() {
+  const anonymousCartItems = JSON.parse(localStorage.getItem('anonymousCart') || '[]');
+  if (anonymousCartItems.length === 0) return;
+
+  const cart = await getActiveCart();
+
+  const actions = anonymousCartItems.map((item: {id: string, quantity: number}) => ({
+    action: 'addLineItem',
+    productId: item.id,
+    quantity: item.quantity,
+  }));
+
+  const response = await apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cart.id })
+    .post({
+      body: {
+        version: cart.version,
+        actions,
+      },
+    })
+    .execute();
+
+  activeCart.value = response.body;
+  localStorage.removeItem('anonymousCart');
+}

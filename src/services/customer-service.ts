@@ -1,11 +1,10 @@
 import { ref } from 'vue';
 import type { Customer, MyCustomerDraft, MyCustomerSignin, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
-
 import { USER_KEY } from '../constants/local-storage';
 import { formatDateISO8601 } from '../utils/format-date';
 import { apiRoot, buildCustomerClient, resetClient } from './build-client';
 import type { AddressData, PersonalData, UpdatePasswordData } from '../utils/registration-schema';
-import { getActiveCart } from './carts-service';
+import { getActiveCart, mergeAnonymousCartIntoUserCart } from './carts-service';
 
 export const isAuth = ref(!!localStorage.getItem(USER_KEY));
 
@@ -22,7 +21,7 @@ export async function loginCustomer(credentials: MyCustomerSignin) {
 
   if (result.body.customer) {
     localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
-
+    await mergeAnonymousCartIntoUserCart();
     await getActiveCart();
   }
   checkAuth();
@@ -45,7 +44,6 @@ export async function createCustomer(customer: MyCustomerDraft) {
   });
 
   await getActiveCart();
-
   return result.body;
 }
 

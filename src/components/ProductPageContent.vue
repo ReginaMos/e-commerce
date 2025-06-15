@@ -7,6 +7,7 @@ import type { Ref, ComputedRef } from 'vue';
 import { ref, computed, watch, inject } from 'vue';
 import { addProductToCart, removeCartItem, activeCart } from '../services/carts-service.ts';
 import type { Cart } from '@commercetools/platform-sdk';
+import { saveAnonymosCartItem, removeAnonymousCartItem } from '../utils/anonymosCart';
 
 const props = defineProps<{
   product?: ProductInfo;
@@ -78,7 +79,9 @@ async function addToCart(): Promise<void> {
 
   if (!isInCart.value) {
     await addProductToCart(props.product.id, 1, count.value);
-    console.log(activeCart.value);
+    if (!activeCart.value?.customerId && activeCart.value?.anonymousId) {
+        saveAnonymosCartItem(props.product.id, count.value);
+    }
     toaster?.show('Added to cart', 'success');
   } else {
     const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.product?.id);
@@ -87,6 +90,8 @@ async function addToCart(): Promise<void> {
       return;
     } else {
       handleRemove(lineItem.id);
+      if (!activeCart.value?.customerId && activeCart.value?.anonymousId) 
+      removeAnonymousCartItem(props.product.id);
     }
 
     toaster?.show('Removed from cart', 'info');
