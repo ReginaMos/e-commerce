@@ -185,7 +185,7 @@ export async function mergeAnonymousCartIntoUserCart() {
 
   const cart = await getActiveCart();
 
-  const actions = anonymousCartItems.map((item: {id: string, quantity: number}) => ({
+  const actions = anonymousCartItems.map((item: { id: string; quantity: number }) => ({
     action: 'addLineItem',
     productId: item.id,
     quantity: item.quantity,

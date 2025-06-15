@@ -80,7 +80,7 @@ async function addToCart(): Promise<void> {
   if (!isInCart.value) {
     await addProductToCart(props.product.id, 1, count.value);
     if (!activeCart.value?.customerId && activeCart.value?.anonymousId) {
-        saveAnonymosCartItem(props.product.id, count.value);
+      saveAnonymosCartItem(props.product.id, count.value);
     }
     toaster?.show('Added to cart', 'success');
   } else {
@@ -90,8 +90,7 @@ async function addToCart(): Promise<void> {
       return;
     } else {
       handleRemove(lineItem.id);
-      if (!activeCart.value?.customerId && activeCart.value?.anonymousId) 
-      removeAnonymousCartItem(props.product.id);
+      if (!activeCart.value?.customerId && activeCart.value?.anonymousId) removeAnonymousCartItem(props.product.id);
     }
 
     toaster?.show('Removed from cart', 'info');
