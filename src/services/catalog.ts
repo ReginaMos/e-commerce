@@ -9,13 +9,14 @@ import type {
 } from '@commercetools/platform-sdk';
 import type { ProductInfo, Filter, SortBy } from '../models/models';
 import { getOrCreateCart } from './cart';
+import { ref } from 'vue';
 
 interface QueryArgs {
   [key: string]: QueryParam | undefined;
   filter?: string[];
 }
 
-export let totalProducts = 0;
+export const totalProducts = ref(0);
 
 export async function getProductById(productId: string): Promise<ProductInfo | null> {
   try {
@@ -99,7 +100,7 @@ export async function getProducts(
     const cart = await getOrCreateCart();
     const lineItems = cart?.lineItems || [];
 
-    totalProducts = response.body.total ? response.body.total : 0;
+    totalProducts.value = response.body.total ? response.body.total : 0;
     const products = await Promise.all(
       response.body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems))
     );
@@ -110,7 +111,7 @@ export async function getProducts(
   }
 }
 
-export async function searchProducts(query: string): Promise<ProductInfo[]> {
+export async function searchProducts(query: string, page: number): Promise<ProductInfo[]> {
   try {
     const { body }: ClientResponse<ProductProjectionPagedSearchResponse> = await apiRoot
       .productProjections()
@@ -118,13 +119,17 @@ export async function searchProducts(query: string): Promise<ProductInfo[]> {
       .get({
         queryArgs: {
           'text.en-US': query,
-          limit: 20,
+          limit: 6,
+          offset: (page - 1) * 6,
         },
       })
       .execute();
 
     const cart = await getOrCreateCart();
     const lineItems = cart?.lineItems || [];
+    totalProducts.value = body.total ? body.total : 0;
+    console.log('search', totalProducts);
+
     const products = await Promise.all(body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems)));
     return products;
   } catch (error) {

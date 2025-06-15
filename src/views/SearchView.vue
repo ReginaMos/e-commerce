@@ -2,7 +2,7 @@
 import { onMounted, ref, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import type { ProductInfo } from '../models/models.ts';
-import { searchProducts } from '../services/catalog.ts';
+import { searchProducts, totalProducts } from '../services/catalog.ts';
 import router from '../router/index.ts';
 import { Links } from '../constants/routersLinks.ts';
 import ProductItem from '../elements/ProductItem.vue';
@@ -10,13 +10,21 @@ import BreadCrumbsComponent from '../components/BreadCrumbsComponent.vue';
 
 const route = useRoute();
 const searchQuery = ref('');
+const currentPage = ref(1);
+const loading = ref(true);
 const products = ref<ProductInfo[]>([]);
+
+async function getData() {
+  loading.value = true;
+  products.value = await searchProducts(searchQuery.value, currentPage.value);
+  loading.value = false;
+}
 
 onMounted(async () => {
   if (route.query.search && typeof route.query.search === 'string') {
     searchQuery.value = route.query.search;
   }
-  products.value = await searchProducts(searchQuery.value);
+  await getData();
 });
 
 watch(
@@ -24,10 +32,15 @@ watch(
   async (newSearch) => {
     if (typeof newSearch === 'string') {
       searchQuery.value = newSearch;
-      products.value = await searchProducts(newSearch);
+      await getData();
     }
   }
 );
+
+watch(currentPage, async () => {
+  await getData();
+});
+
 function goToProduct(id: string): void {
   router.push({ name: Links.PRODUCT.NAME, params: { id } });
 }
@@ -51,7 +64,7 @@ const items = computed(() => [
 </script>
 <template>
   <BreadCrumbsComponent :items="items" />
-  <p class="search-result">We found {{ products.length }} results by query "{{ searchQuery }}"</p>
+  <p class="search-result">We found {{ totalProducts }} results by query "{{ searchQuery }}"</p>
   <v-container class="search-container">
     <v-row class="justify-center" v-if="products.length">
       <ProductItem
@@ -69,6 +82,11 @@ const items = computed(() => [
       </RouterLink>
     </v-row>
   </v-container>
+  <v-pagination :length="Math.ceil(totalProducts / 6)" v-model="currentPage"> </v-pagination>
+
+  <div v-if="loading" class="loader-overlay d-flex align-center justify-center">
+    <v-progress-circular indeterminate color="primary" size="64" />
+  </div>
 </template>
 <style scoped lang="scss">
 .catalog-navigate {
@@ -92,5 +110,14 @@ const items = computed(() => [
     margin-top: 40px;
     font-size: 18px;
   }
+}
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
 }
 </style>

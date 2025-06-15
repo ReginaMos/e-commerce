@@ -12,13 +12,16 @@ const sorter = ref<SortBy>({});
 const arrowIcons = ref<string[]>(['', 'mdi-arrow-down-bold', 'mdi-arrow-up-bold']);
 const sortRules: SortType[] = ['', 'asc', 'desc'];
 const currentPage = ref(1);
+const loading = ref(true);
 let pagesCount = 0;
 let arrowPriceInd = ref<number>(0);
 let arrowNameInd = ref<number>(0);
 
 async function getData() {
+  loading.value = true;
   products.value = await getProducts(6, currentPage.value, filter.value, sorter.value);
-  pagesCount = Math.ceil(totalProducts / 6);
+  pagesCount = Math.ceil(totalProducts.value / 6);
+  loading.value = false;
 }
 
 async function handleCategory(key: string) {
@@ -59,7 +62,8 @@ watch(currentPage, async () => {
 
 onMounted(async () => {
   products.value = await getProducts(6);
-  pagesCount = Math.ceil(totalProducts / 6);
+  pagesCount = Math.ceil(totalProducts.value / 6);
+  loading.value = false;
 });
 </script>
 
@@ -116,6 +120,20 @@ onMounted(async () => {
   </v-card>
 
   <v-pagination :length="pagesCount" v-model="currentPage"> </v-pagination>
+
+  <div v-if="loading" class="loader-overlay d-flex align-center justify-center">
+    <v-progress-circular indeterminate color="primary" size="64" />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+}
+</style>
