@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { activeCart } from '../services/carts-service';
+import { computed } from 'vue';
 
 const props = defineProps({
   mediasize: Boolean,
   link: String,
 });
 const router = useRouter();
+const totalItems = computed(() => activeCart.value?.totalLineItemQuantity ?? 0);
 
-const count = ref(0);
+console.log(totalItems);
 function cartNavigateHandle() {
   if (props.link && typeof props.link === 'string') {
     router.push(props.link);
   }
-  console.log('click');
 }
 </script>
 <template>
@@ -21,8 +22,8 @@ function cartNavigateHandle() {
     <v-btn class="icon-button">
       <v-icon icon="mdi mdi-cart-outline"></v-icon>
     </v-btn>
-    <div class="cartCount" v-if="count > 0">
-      {{ count }}
+    <div class="cartCount" v-if="totalItems > 0">
+      {{ totalItems }}
     </div>
   </div>
 </template>

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type { ProductInfo } from '../models/models';
 import { ref } from 'vue';
-import { addProductToCart } from '../services/carts-service';
-// import { debounce } from '../utils/debounce';
-// import { updateCartItemQuantity } from '../services/carts-service';
+import { addProductToCart, activeCart } from '../services/carts-service';
+import { debounce } from '../utils/debounce';
+import { updateCartItemQuantity } from '../services/carts-service';
 
 const props = defineProps<{ item: ProductInfo }>();
 const emit = defineEmits<{
   (e: 'update-quantity', quantity: number): void;
 }>();
-// const debouncedUpdateCart = debounce(updateCartItemQuantity, 2000);
+const debouncedUpdateCart = debounce(updateCartItemQuantity, 300);
 
 let favorIcon = ref('mdi-heart-outline');
 
@@ -20,12 +20,17 @@ function addToFavor(): void {
 function increaseItemCount(): void {
   const count = props.item.inCartQuantity + 1;
   emit('update-quantity', count);
-  // debouncedUpdateCart()
+  const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.item?.id);
+  if (!activeCart.value || !lineItem) return;
+  debouncedUpdateCart(activeCart.value, lineItem?.id, count);
 }
 
 function decreaseItemCount(): void {
   const count = props.item.inCartQuantity - 1;
   emit('update-quantity', count);
+  const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.item?.id);
+  if (!activeCart.value || !lineItem) return;
+  debouncedUpdateCart(activeCart.value, lineItem?.id, count);
 }
 
 async function addToCart(): Promise<void> {
