@@ -5,6 +5,7 @@ import type {
   ProductProjection,
   ProductProjectionPagedSearchResponse,
   QueryParam,
+  LineItem,
 } from '@commercetools/platform-sdk';
 import type { ProductInfo, Filter, SortBy } from '../models/models';
 import { getOrCreateCart } from './cart';
@@ -28,7 +29,12 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
   }
 }
 
-export async function getProducts(limit?: number, page?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
+export async function getProducts(
+  limit?: number,
+  page?: number,
+  filter?: Filter,
+  sort?: SortBy
+): Promise<ProductInfo[]> {
   try {
     const locale = 'en-US';
 
@@ -79,7 +85,7 @@ export async function getProducts(limit?: number, page?: number, filter?: Filter
     if (typeof page === 'number' && typeof limit === 'number') {
       queryArgs.offset = (page - 1) * limit;
     }
-    
+
     if (filters.length > 0) queryArgs.filter = filters;
     if (sortArr.length > 0) {
       queryArgs.sort = sortArr;
@@ -90,8 +96,13 @@ export async function getProducts(limit?: number, page?: number, filter?: Filter
 
     const response = await apiRoot.productProjections().search().get({ queryArgs }).execute();
 
+    const cart = await getOrCreateCart();
+    const lineItems = cart?.lineItems || [];
+
     totalProducts = response.body.total ? response.body.total : 0;
-    const products = await Promise.all(response.body.results.map((item) => getBriefInfoFromProductProjection(item)));
+    const products = await Promise.all(
+      response.body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems))
+    );
     return products;
   } catch (e) {
     console.error('Error while fetching products:', e);
@@ -111,7 +122,10 @@ export async function searchProducts(query: string): Promise<ProductInfo[]> {
         },
       })
       .execute();
-    const products = await Promise.all(body.results.map((item) => getBriefInfoFromProductProjection(item)));
+
+    const cart = await getOrCreateCart();
+    const lineItems = cart?.lineItems || [];
+    const products = await Promise.all(body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems)));
     return products;
   } catch (error) {
     console.error('Error while receiving goods:', error);
@@ -119,7 +133,10 @@ export async function searchProducts(query: string): Promise<ProductInfo[]> {
   }
 }
 
-async function getBriefInfoFromProductProjection(product: ProductProjection): Promise<ProductInfo> {
+async function getBriefInfoFromProductProjection(
+  product: ProductProjection,
+  lineItems: LineItem[]
+): Promise<ProductInfo> {
   const masterVariant = product.masterVariant;
   const name = product.name?.['en-US'];
 
@@ -134,9 +151,6 @@ async function getBriefInfoFromProductProjection(product: ProductProjection): Pr
   const attributes = masterVariant.attributes || [];
   const size = attributes.find((attr) => attr.name === 'size')?.value;
   const brand = attributes.find((attr) => attr.name === 'brand')?.value;
-
-  const cart = await getOrCreateCart();
-  const lineItems = cart?.lineItems || [];
 
   const cartQuantity = lineItems.find((item) => item.productId === product.id)?.quantity;
 
