@@ -7,7 +7,7 @@ import type { Ref, ComputedRef } from 'vue';
 import { ref, computed, watch, inject } from 'vue';
 import { addProductToCart, removeCartItem, activeCart } from '../services/carts-service.ts';
 import type { Cart } from '@commercetools/platform-sdk';
-import { saveAnonymosCartItem, removeAnonymousCartItem } from '../utils/anonymosCart';
+import { saveAnonymosCartItem, removeAnonymousCartItem } from '../utils/anonymousCart.ts';
 
 const props = defineProps<{
   product?: ProductInfo;

@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { addProductToCart, activeCart } from '../services/carts-service';
 import { debounce } from '../utils/debounce';
 import { updateCartItemQuantity } from '../services/carts-service';
-import { saveAnonymosCartItem } from '../utils/anonymosCart';
+import { saveAnonymosCartItem } from '../utils/anonymousCart';
 
 const props = defineProps<{ item: ProductInfo }>();
 const emit = defineEmits<{
