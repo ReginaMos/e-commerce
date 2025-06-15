@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getBrands, getCategories } from '../services/categories';
-import { apiRoot } from '../services/build-client';
+
 import type {
   ProductProjectionPagedSearchResponse,
   ByProjectKeyProductProjectionsRequestBuilder,
@@ -10,6 +10,9 @@ import type {
   CategoryPagedQueryResponse,
   ClientResponse,
 } from '@commercetools/platform-sdk';
+import { initializeApiRoot } from '../services/build-client';
+
+const apiRoot = initializeApiRoot();
 
 vi.mock('@/api/client', () => ({
   apiRoot: {
