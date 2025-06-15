@@ -20,7 +20,7 @@ function addToFavor(): void {
 function increaseItemCount(): void {
   const count = props.item.inCartQuantity + 1;
   emit('update-quantity', count);
-  const lineItem = activeCart.value?.lineItems.find(item => item.productId === props.item?.id);
+  const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.item?.id);
   if (!activeCart.value || !lineItem) return;
   debouncedUpdateCart(activeCart.value, lineItem?.id, count);
 }
@@ -28,7 +28,7 @@ function increaseItemCount(): void {
 function decreaseItemCount(): void {
   const count = props.item.inCartQuantity - 1;
   emit('update-quantity', count);
-  const lineItem = activeCart.value?.lineItems.find(item => item.productId === props.item?.id);
+  const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.item?.id);
   if (!activeCart.value || !lineItem) return;
   debouncedUpdateCart(activeCart.value, lineItem?.id, count);
 }

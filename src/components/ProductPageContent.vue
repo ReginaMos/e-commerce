@@ -77,19 +77,18 @@ async function addToCart(): Promise<void> {
   if (!activeCart.value || !props.product?.id) return;
 
   if (!isInCart.value) {
-    
     await addProductToCart(props.product.id, 1, count.value);
     console.log(activeCart.value);
     toaster?.show('Added to cart', 'success');
   } else {
-    const lineItem = activeCart.value?.lineItems.find(item => item.productId === props.product?.id);
+    const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.product?.id);
     if (!lineItem) {
       toaster?.show('Product not found in cart', 'error');
       return;
     } else {
       handleRemove(lineItem.id);
     }
-    
+
     toaster?.show('Removed from cart', 'info');
   }
 }
