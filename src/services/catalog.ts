@@ -8,8 +8,8 @@ import type {
   LineItem,
 } from '@commercetools/platform-sdk';
 import type { ProductInfo, Filter, SortBy } from '../models/models';
-import { getOrCreateCart } from './cart';
 import { ref } from 'vue';
+import { activeCart } from './carts-service';
 
 interface QueryArgs {
   [key: string]: QueryParam | undefined;
@@ -97,8 +97,7 @@ export async function getProducts(
 
     const response = await apiRoot.productProjections().search().get({ queryArgs }).execute();
 
-    const cart = await getOrCreateCart();
-    const lineItems = cart?.lineItems || [];
+    const lineItems = activeCart.value?.lineItems || [];
 
     totalProducts.value = response.body.total ? response.body.total : 0;
     const products = await Promise.all(
@@ -125,8 +124,7 @@ export async function searchProducts(query: string, page: number): Promise<Produ
       })
       .execute();
 
-    const cart = await getOrCreateCart();
-    const lineItems = cart?.lineItems || [];
+    const lineItems = activeCart.value?.lineItems || [];
     totalProducts.value = body.total ? body.total : 0;
     console.log('search', totalProducts);
 
@@ -194,8 +192,7 @@ async function getBriefInfoFromProduct(product: Product): Promise<ProductInfo> {
   const size = attributes.find((attr) => attr.name === 'size')?.value;
   const brand = attributes.find((attr) => attr.name === 'brand')?.value;
 
-  const cart = await getOrCreateCart();
-  const lineItems = cart?.lineItems || [];
+  const lineItems = activeCart.value?.lineItems || [];
   const cartQuantity = lineItems.find((item) => item.productId === product.id)?.quantity;
 
   const inCartQuantity = cartQuantity ? cartQuantity : 0;
