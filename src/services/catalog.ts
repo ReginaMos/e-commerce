@@ -28,7 +28,7 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
   }
 }
 
-export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
+export async function getProducts(limit?: number, page?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
   try {
     const locale = 'en-US';
 
@@ -76,6 +76,10 @@ export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy
     const queryArgs: QueryArgs = { staged: true };
 
     if (typeof limit === 'number') queryArgs.limit = limit;
+    if (typeof page === 'number' && typeof limit === 'number') {
+      queryArgs.offset = (page - 1) * limit;
+    }
+    
     if (filters.length > 0) queryArgs.filter = filters;
     if (sortArr.length > 0) {
       queryArgs.sort = sortArr;

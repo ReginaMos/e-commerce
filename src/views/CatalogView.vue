@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ProductsComponent from '../components/ProductsComponent.vue';
-import { ref, onMounted } from 'vue';
-import { getProducts } from '../services/catalog';
+import { ref, onMounted, watch } from 'vue';
+import { getProducts, totalProducts } from '../services/catalog';
 import type { ProductInfo, Filter, SortBy, SortType } from '../models/models';
 import FilterByCategories from '../elements/FilterByCategories.vue';
 import FilterByBrand from '../elements/FilterByBrand.vue';
@@ -11,39 +11,55 @@ const filter = ref<Filter>({});
 const sorter = ref<SortBy>({});
 const arrowIcons = ref<string[]>(['', 'mdi-arrow-down-bold', 'mdi-arrow-up-bold']);
 const sortRules: SortType[] = ['', 'asc', 'desc'];
+const currentPage = ref(1);
+let pagesCount = 0;
 let arrowPriceInd = ref<number>(0);
 let arrowNameInd = ref<number>(0);
+
+async function getData() {
+  products.value = await getProducts(6, currentPage.value, filter.value, sorter.value);
+  pagesCount = Math.ceil(totalProducts / 6);
+}
 
 async function handleCategory(key: string) {
   if (key === 'ALL') delete filter.value.category;
   else filter.value.category = key;
-  products.value = await getProducts(undefined, filter.value, sorter.value);
+  currentPage.value = 1;
+  await getData();
 }
 
 async function handleBrand(key: string) {
   if (key === 'ALL') delete filter.value.brand;
   else filter.value.brand = key;
-  products.value = await getProducts(undefined, filter.value, sorter.value);
+  currentPage.value = 1;
+  await getData();
 }
 
 async function sortedPrice() {
   arrowPriceInd.value = (arrowPriceInd.value + 1) % 3;
   sorter.value.price = sortRules[arrowPriceInd.value];
-  products.value = await getProducts(undefined, filter.value, sorter.value);
+  currentPage.value = 1;
+  await getData();
 }
 
 async function sortedNames() {
   arrowNameInd.value = (arrowNameInd.value + 1) % 3;
   sorter.value.name = sortRules[arrowNameInd.value];
-  products.value = await getProducts(undefined, filter.value, sorter.value);
+  currentPage.value = 1;
+  await getData();
 }
 
 function updateQuantity(ind: number, quantity: number): void {
   products.value[ind].inCartQuantity = quantity;
 }
 
+watch(currentPage, async () => {
+  await getData();
+});
+
 onMounted(async () => {
-  products.value = await getProducts();
+  products.value = await getProducts(6);
+  pagesCount = Math.ceil(totalProducts / 6);
 });
 </script>
 
@@ -99,7 +115,7 @@ onMounted(async () => {
     </v-card-text>
   </v-card>
 
-  <v-pagination> </v-pagination>
+  <v-pagination :length="pagesCount" v-model="currentPage"> </v-pagination>
 </template>
 
 <style scoped></style>
