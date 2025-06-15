@@ -37,6 +37,7 @@ export interface Attributes {
   name: string;
   value: string;
 }
+
 export interface ProductInfo {
   id: string;
   name: string;
@@ -49,6 +50,7 @@ export interface ProductInfo {
   attributes: Attributes[];
   size: string;
   brand: string;
+  inCartQuantity: number;
 }
 
 export interface Filter {
