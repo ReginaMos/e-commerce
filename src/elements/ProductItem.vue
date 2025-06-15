@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ProductInfo } from '../models/models';
 import { ref } from 'vue';
-import { addProductToCart } from '../services/cart';
+import { addProductToCart } from '../services/carts-service';
 // import { debounce } from '../utils/debounce';
 // import { updateCartItemQuantity } from '../services/carts-service';
 

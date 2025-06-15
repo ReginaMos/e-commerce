@@ -1,5 +1,10 @@
 import type { Cart } from '@commercetools/platform-sdk';
 import { apiRoot } from './build-client';
+import { ref } from 'vue';
+import { refreshCustomerData } from './customer-service';
+import { USER_KEY } from '../constants/local-storage';
+
+export const activeCart = ref<Cart | null>(null);
 
 export async function getCartById(cartId: string): Promise<Cart> {
   const response = await apiRoot.me().carts().withId({ ID: cartId }).get().execute();
@@ -25,6 +30,7 @@ export async function removeCartItem({ id, version }: Cart, lineItemId: string):
     })
     .execute();
 
+  activeCart.value = response.body;
   return response.body;
 }
 
@@ -51,6 +57,7 @@ export async function updateCartItemQuantity(
     })
     .execute();
 
+  activeCart.value = response.body;
   return response.body;
 }
 
@@ -70,6 +77,7 @@ export async function clearCart({ id, version, lineItems }: Cart): Promise<Cart>
     })
     .execute();
 
+  activeCart.value = response.body;
   return response.body;
 }
 
@@ -91,5 +99,82 @@ export async function applyDiscountCode({ id, version }: Cart, code: string): Pr
     })
     .execute();
 
+  activeCart.value = response.body;
   return response.body;
+}
+
+export async function getActiveCart(): Promise<Cart> {
+  try {
+    const {
+      body: { results },
+    } = await apiRoot.me().carts().get().execute();
+
+    if (results.length > 0) {
+      activeCart.value = results[0];
+      return results[0];
+    }
+
+    const response = await apiRoot
+      .me()
+      .carts()
+      .post({
+        body: {
+          currency: 'EUR',
+        },
+      })
+      .execute();
+
+    activeCart.value = response.body;
+    return response.body;
+  } catch (error) {
+    console.error('Failed to get or create cart:', error);
+    throw new Error('Failed to get or create cart.');
+  }
+}
+
+export async function addProductToCart(productId: string, variantId: number, quantity = 1) {
+  try {
+    if (activeCart.value) {
+      const response = await apiRoot
+        .me()
+        .carts()
+        .withId({ ID: activeCart.value.id })
+        .post({
+          body: {
+            version: activeCart.value.version,
+            actions: [
+              {
+                action: 'addLineItem',
+                productId,
+                variantId,
+                quantity,
+                // custom: {
+                //   type: {
+                //     typeId: 'type',
+                //     key: 'line-item-size',
+                //   },
+                //   fields: {
+                //     size,
+                //   },
+                // },
+              },
+            ],
+          },
+        })
+        .execute();
+
+      activeCart.value = response.body;
+      return response.body;
+    }
+  } catch (error) {
+    console.error('Error while adding to cart:', error);
+    return null;
+  }
+}
+
+export async function initializeCart() {
+  if (localStorage.getItem(USER_KEY)) {
+    await refreshCustomerData();
+  }
+  await getActiveCart();
 }
