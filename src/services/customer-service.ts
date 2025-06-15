@@ -29,9 +29,10 @@ export async function loginCustomer(credentials: MyCustomerSignin) {
   return result.body;
 }
 
-export function logoutCustomer() {
+export async function logoutCustomer() {
   localStorage.removeItem(USER_KEY);
   resetClient();
+  await getActiveCart();
   checkAuth();
 }
 
