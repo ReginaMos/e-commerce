@@ -1,8 +1,6 @@
 import type { Cart } from '@commercetools/platform-sdk';
 import { apiRoot } from './build-client';
 import { ref } from 'vue';
-import { refreshCustomerData } from './customer-service';
-import { USER_KEY } from '../constants/local-storage';
 
 export const activeCart = ref<Cart | null>(null);
 
@@ -170,11 +168,4 @@ export async function addProductToCart(productId: string, variantId: number, qua
     console.error('Error while adding to cart:', error);
     return null;
   }
-}
-
-export async function initializeCart() {
-  if (localStorage.getItem(USER_KEY)) {
-    await refreshCustomerData();
-  }
-  await getActiveCart();
 }

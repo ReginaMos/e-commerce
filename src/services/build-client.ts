@@ -59,8 +59,6 @@ function buildClientWithRefreshToken() {
 client = buildClientWithRefreshToken();
 
 export function buildCustomerClient(user: UserAuthOptions) {
-  clearToken();
-
   const customerAuthOptions: PasswordAuthMiddlewareOptions = {
     ...authMiddlewareOptions,
     credentials: {
@@ -76,6 +74,7 @@ export function buildCustomerClient(user: UserAuthOptions) {
 export function resetClient() {
   clearToken();
   client = buildAnonymousClient();
+  return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
 }
 
 export const apiRoot = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });

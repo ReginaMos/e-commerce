@@ -14,11 +14,8 @@ const checkAuth = () => {
 };
 
 export async function loginCustomer(credentials: MyCustomerSignin) {
-  const result = await buildCustomerClient({ password: credentials.password, username: credentials.email })
-    .me()
-    .login()
-    .post({ body: credentials })
-    .execute();
+  const newApi = buildCustomerClient({ password: credentials.password, username: credentials.email });
+  const result = await newApi.me().login().post({ body: credentials }).execute();
 
   if (result.body.customer) {
     localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
@@ -31,9 +28,9 @@ export async function loginCustomer(credentials: MyCustomerSignin) {
 
 export async function logoutCustomer() {
   localStorage.removeItem(USER_KEY);
+  checkAuth();
   resetClient();
   await getActiveCart();
-  checkAuth();
 }
 
 export async function createCustomer(customer: MyCustomerDraft) {
@@ -43,8 +40,6 @@ export async function createCustomer(customer: MyCustomerDraft) {
     email: customer.email,
     password: customer.password,
   });
-
-  await getActiveCart();
 
   return result.body;
 }
