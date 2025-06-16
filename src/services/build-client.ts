@@ -1,81 +1,100 @@
-import {
-  ClientBuilder,
-  type AuthMiddlewareOptions,
-  type Client,
-  type Credentials,
-  type HttpMiddlewareOptions,
-  type PasswordAuthMiddlewareOptions,
-  type UserAuthOptions,
-} from '@commercetools/ts-client';
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import { clearToken, tokenCache } from './token-cache';
+import { createApiBuilderFromCtpClient, ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk';
+import { ClientBuilder, type Client } from '@commercetools/ts-client';
+import { tokenCache } from './token-cache';
 
-const projectKey = import.meta.env.VITE_PROJECT_KEY;
+let apiRoot: ByProjectKeyRequestBuilder;
+let currentClient: Client;
 
-const refreshToken = tokenCache.get()?.refreshToken;
-const expirationTime = tokenCache.get()?.expirationTime;
+const createConfig = () => ({
+  projectKey: import.meta.env.VITE_PROJECT_KEY,
+  credentials: {
+    clientId: import.meta.env.VITE_CLIENT_ID,
+    clientSecret: import.meta.env.VITE_CLIENT_SECRET,
+  },
+  authOptions: {
+    host: import.meta.env.VITE_AUTH_URL,
+    scopes: [import.meta.env.VITE_SCOPES],
+    httpClient: fetch,
+    tokenCache,
+  },
+  httpOptions: {
+    host: import.meta.env.VITE_API_URL,
+    includeRequestInErrorResponse: true,
+    includeOriginalRequest: true,
+    httpClient: fetch,
+  },
+});
 
-let client: Client;
+export function createAnonymousClient() {
+  const config = createConfig();
 
-const credentials: Credentials = {
-  clientId: import.meta.env.VITE_CLIENT_ID,
-  clientSecret: import.meta.env.VITE_CLIENT_SECRET,
-};
-
-const authMiddlewareOptions: AuthMiddlewareOptions = {
-  host: import.meta.env.VITE_AUTH_URL,
-  projectKey,
-  credentials,
-  scopes: [import.meta.env.VITE_SCOPES],
-  httpClient: fetch,
-  tokenCache,
-};
-
-const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  host: import.meta.env.VITE_API_URL,
-  includeRequestInErrorResponse: true,
-  includeOriginalRequest: true,
-  httpClient: fetch,
-};
-
-const buildAnonymousClient = () =>
-  new ClientBuilder().withAnonymousSessionFlow(authMiddlewareOptions).withHttpMiddleware(httpMiddlewareOptions).build();
-
-function buildClientWithRefreshToken() {
-  const currentTime = Date.now();
-  if (refreshToken && currentTime <= expirationTime) {
-    return new ClientBuilder()
-      .withRefreshTokenFlow({
-        ...authMiddlewareOptions,
-        refreshToken,
-      })
-      .withHttpMiddleware(httpMiddlewareOptions)
-      .build();
-  } else {
-    clearToken();
-    return buildAnonymousClient();
-  }
+  return new ClientBuilder()
+    .withAnonymousSessionFlow({
+      ...config.authOptions,
+      projectKey: config.projectKey,
+      credentials: config.credentials,
+    })
+    .withHttpMiddleware(config.httpOptions)
+    .build();
 }
-client = buildClientWithRefreshToken();
 
-export function buildCustomerClient(user: UserAuthOptions) {
-  clearToken();
+export function createRefreshTokenClient(refreshToken: string, expirationTime: number) {
+  const config = createConfig();
 
-  const customerAuthOptions: PasswordAuthMiddlewareOptions = {
-    ...authMiddlewareOptions,
-    credentials: {
-      ...credentials,
-      user,
-    },
-  };
+  if (Date.now() > expirationTime) {
+    return createAnonymousClient();
+  }
 
-  client = new ClientBuilder().withPasswordFlow(customerAuthOptions).withHttpMiddleware(httpMiddlewareOptions).build();
-  return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
+  return new ClientBuilder()
+    .withRefreshTokenFlow({
+      ...config.authOptions,
+      projectKey: config.projectKey,
+      credentials: config.credentials,
+      refreshToken,
+    })
+    .withHttpMiddleware(config.httpOptions)
+    .build();
+}
+
+export function createCustomerClient(username: string, password: string) {
+  const config = createConfig();
+
+  currentClient = new ClientBuilder()
+    .withPasswordFlow({
+      ...config.authOptions,
+      projectKey: config.projectKey,
+      credentials: {
+        ...config.credentials,
+        user: { username, password },
+      },
+    })
+    .withHttpMiddleware(config.httpOptions)
+    .build();
+
+  apiRoot = createApiRoot(currentClient);
+}
+
+export function createApiRoot(client: Client) {
+  const config = createConfig();
+  return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: config.projectKey });
+}
+
+export function initializeApiRoot() {
+  const token = tokenCache.get();
+
+  if (token?.refreshToken && token?.expirationTime) {
+    currentClient = createRefreshTokenClient(token.refreshToken, token.expirationTime);
+  } else {
+    currentClient = createAnonymousClient();
+  }
+
+  apiRoot = createApiRoot(currentClient);
+  return apiRoot;
 }
 
 export function resetClient() {
-  clearToken();
-  client = buildAnonymousClient();
+  currentClient = createAnonymousClient();
+  apiRoot = createApiRoot(currentClient);
 }
 
-export const apiRoot = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
+export { apiRoot };

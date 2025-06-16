@@ -3,7 +3,7 @@ import type { Customer, MyCustomerDraft, MyCustomerSignin, MyCustomerUpdateActio
 
 import { USER_KEY } from '../constants/local-storage';
 import { formatDateISO8601 } from '../utils/format-date';
-import { apiRoot, buildCustomerClient, resetClient } from './build-client';
+import { apiRoot, createCustomerClient, resetClient } from './build-client';
 import type { AddressData, PersonalData, UpdatePasswordData } from '../utils/registration-schema';
 import { getActiveCart } from './carts-service';
 
@@ -14,26 +14,24 @@ const checkAuth = () => {
 };
 
 export async function loginCustomer(credentials: MyCustomerSignin) {
-  const result = await buildCustomerClient({ password: credentials.password, username: credentials.email })
-    .me()
-    .login()
-    .post({ body: credentials })
-    .execute();
+  createCustomerClient(credentials.email, credentials.password);
+  const result = await apiRoot.me().login().post({ body: credentials }).execute();
 
-  if (result.body.customer) {
+  if (result.body) {
     localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
 
     await getActiveCart();
   }
+
   checkAuth();
   return result.body;
 }
 
 export async function logoutCustomer() {
   localStorage.removeItem(USER_KEY);
+  checkAuth();
   resetClient();
   await getActiveCart();
-  checkAuth();
 }
 
 export async function createCustomer(customer: MyCustomerDraft) {
@@ -43,8 +41,6 @@ export async function createCustomer(customer: MyCustomerDraft) {
     email: customer.email,
     password: customer.password,
   });
-
-  await getActiveCart();
 
   return result.body;
 }

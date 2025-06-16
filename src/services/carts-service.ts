@@ -1,8 +1,6 @@
 import type { Cart } from '@commercetools/platform-sdk';
 import { apiRoot } from './build-client';
 import { ref } from 'vue';
-import { refreshCustomerData } from './customer-service';
-import { USER_KEY } from '../constants/local-storage';
 
 export const activeCart = ref<Cart | null>(null);
 
@@ -105,16 +103,11 @@ export async function applyDiscountCode({ id, version }: Cart, code: string): Pr
 
 export async function getActiveCart(): Promise<Cart> {
   try {
-    const {
-      body: { results },
-    } = await apiRoot.me().carts().get().execute();
-
-    if (results.length > 0) {
-      activeCart.value = results[0];
-      return results[0];
-    }
-
-    const response = await apiRoot
+    const response = await apiRoot.me().activeCart().get().execute();
+    activeCart.value = response.body;
+    return response.body;
+  } catch {
+    const responseNewCart = await apiRoot
       .me()
       .carts()
       .post({
@@ -123,12 +116,8 @@ export async function getActiveCart(): Promise<Cart> {
         },
       })
       .execute();
-
-    activeCart.value = response.body;
-    return response.body;
-  } catch (error) {
-    console.error('Failed to get or create cart:', error);
-    throw new Error('Failed to get or create cart.');
+    activeCart.value = responseNewCart.body;
+    return responseNewCart.body;
   }
 }
 
@@ -170,11 +159,4 @@ export async function addProductToCart(productId: string, variantId: number, qua
     console.error('Error while adding to cart:', error);
     return null;
   }
-}
-
-export async function initializeCart() {
-  if (localStorage.getItem(USER_KEY)) {
-    await refreshCustomerData();
-  }
-  await getActiveCart();
 }
