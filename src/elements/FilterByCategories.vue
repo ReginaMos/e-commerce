@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { Category } from '@commercetools/platform-sdk';
 import { getCategories } from '../services/categories';
 

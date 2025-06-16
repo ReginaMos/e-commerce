@@ -81,7 +81,6 @@ const { smAndDown } = useDisplay();
   padding-left: 20px;
 }
 .input-mobile-wrapper :deep(.v-input) {
-  /* height: 40px; */
   padding: 0;
 }
 .input-mobile-wrapper :deep(.v-input__control) {

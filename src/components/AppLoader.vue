@@ -8,8 +8,6 @@ async function initialize() {
   try {
     loading.value = true;
     await getActiveCart();
-  } catch (e) {
-    console.error(e);
   } finally {
     loading.value = false;
   }

@@ -65,7 +65,6 @@ async function updateCart<T extends unknown[]>(action: CartAction<T>, successMes
   } catch (err) {
     if (err instanceof Error) {
       toaster?.show(err.message, 'error');
-      console.log(err);
     }
   } finally {
     isLoading.value = false;
@@ -90,21 +89,6 @@ const handleRemove = (lineItemId: string) =>
   updateCart<[string]>(removeCartItem, 'Item removed successfully', lineItemId);
 
 const handleClearCart = () => updateCart<[]>(clearCart, 'Cart cleared successfully');
-
-// onMounted(async () => {
-//   const cartId = '1b1e1945-98c8-483b-8b56-c332a4e3eff4'; // cart with items
-//   //  const cartId = 'd8575c9f-40f7-4f75-88f5-276dcd7e33b2'; // empty cart
-
-//   try {
-//     cart.value = await getCartById(cartId);
-//   } catch (err) {
-//     if (err instanceof Error) {
-//       toaster?.show(err?.message, 'error');
-//     }
-//   } finally {
-//     isLoading.value = false;
-//   }
-// });
 </script>
 
 <template>

@@ -80,6 +80,8 @@ export async function clearCart({ id, version, lineItems }: Cart): Promise<Cart>
 }
 
 export async function applyDiscountCode({ id, version }: Cart, code: string): Promise<Cart> {
+  const formattedCode = code.trim().toUpperCase();
+
   const response = await apiRoot
     .me()
     .carts()
@@ -90,7 +92,7 @@ export async function applyDiscountCode({ id, version }: Cart, code: string): Pr
         actions: [
           {
             action: 'addDiscountCode',
-            code,
+            code: formattedCode,
           },
         ],
       },
@@ -155,8 +157,7 @@ export async function addProductToCart(productId: string, variantId: number, qua
       activeCart.value = response.body;
       return response.body;
     }
-  } catch (error) {
-    console.error('Error while adding to cart:', error);
+  } catch {
     return null;
   }
 }

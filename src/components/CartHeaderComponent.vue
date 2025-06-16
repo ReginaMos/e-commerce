@@ -10,7 +10,6 @@ const props = defineProps({
 const router = useRouter();
 const totalItems = computed(() => activeCart.value?.totalLineItemQuantity ?? 0);
 
-console.log(totalItems);
 function cartNavigateHandle() {
   if (props.link && typeof props.link === 'string') {
     router.push(props.link);

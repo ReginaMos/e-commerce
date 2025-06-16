@@ -30,17 +30,6 @@ const items = computed<BreadcrumbItem[]>(() => [
   },
 ]);
 
-// onMounted(async () => {
-//   try {
-//     await refreshCustomerData();
-//   } catch (err) {
-//     if (err instanceof Error) {
-//       toaster?.show(err.message, 'error');
-//     }
-//     router.push(Links.LOGIN.LINK);
-//   }
-// });
-
 function onTabChange(newTab: unknown) {
   if (typeof newTab === 'string' && newTab !== route.path) {
     router.push(newTab);

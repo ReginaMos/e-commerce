@@ -5,7 +5,7 @@ import FooterComponent from './FooterComponent.vue';
 
 <template>
   <v-app>
-    <div class="advert">Summer Sale, use promo code VUEMAGIC10! Shop Now.</div>
+    <div class="advert">Summer Sale, use promo code - VUEMAGIC10 Shop Now.</div>
     <HeaderComponent />
     <main>
       <router-view />

@@ -10,7 +10,7 @@ Key pages in the application include:
 - Detailed Product page 🔎
 - User Profile page 👤
 - Basket page 🛒
-- About Us page 🙋‍♂️🙋‍♀️
+- About Us page 🧝‍♂️🧝🧑‍💼
 
 The application is powered by CommerceTools 🌐, a leading provider of commerce solutions for B2C and B2B enterprises. CommerceTools offers a cloud-native, microservices-based commerce platform that enables brands to create unique and engaging digital commerce experiences.
 
@@ -23,7 +23,7 @@ The application is developed in teams of three 👨‍💻👩‍💻👨‍💻
 - 💪 [Strongly typed](https://www.typescriptlang.org/): Uses TypeScript.
 - 🔥 [Latest syntax](https://github.com/vuejs/rfcs/pull/227): Uses the new `<script setup>` syntax.
 - 💡 [Official router](https://router.vuejs.org/): Uses Vue Router v4.
-- 🍍 [State management](https://pinia.esm.dev/): Uses Pinia for state management.
+- 🍍 [Schema validation](https://zod.dev/): TypeScript-first schema validation with static type inference.
 - 🎊 [Component framework](https://vuetifyjs.com/): Uses Vuetify with beautifully handcrafted Vue Components.
 - ⌨️ [Testing framework](https://vitest.dev/): Vitest to test the code base. It's fast!
 - 🛍️ [REST API](https://commercetools.com/mach-architecture/api-commerce): The API-first nature of commercetools eCommerce.
@@ -44,7 +44,20 @@ The application is developed in teams of three 👨‍💻👩‍💻👨‍💻
   npm install
 ```
 
-#### 3. Start the development server
+#### 3. Create an API Client for your Project
+
+Sign up for [Composable Commerce](https://commercetools.com/free-trial) to create a new Account. In the Merchant Center create an API Client [getting-started/create-api-client](https://docs.commercetools.com/getting-started/create-api-client).
+
+#### 4. Rename a file named "env.example" to ".env"
+
+Save the API environment variables file [getting-started/create-api-client](https://docs.commercetools.com/getting-started/create-api-client#save-the-api-environment-variables-file).
+Copy variables from saved file to env.example in root directory of project. Rename "env.example" to ".env".
+
+```bash copy
+  mv env.example .env
+```
+
+#### 4. Start the development server
 
 ```bash copy
   npm run dev
