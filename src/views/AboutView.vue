@@ -85,8 +85,6 @@ function onShowMore() {
   margin-bottom: 50px;
   @media screen and (min-width: 1200px) {
     flex-direction: row;
-    /* height: 609px; */
-    /* margin-bottom: 140px; */
     gap: 0;
   }
 }

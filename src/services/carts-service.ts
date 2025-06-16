@@ -155,8 +155,7 @@ export async function addProductToCart(productId: string, variantId: number, qua
       activeCart.value = response.body;
       return response.body;
     }
-  } catch (error) {
-    console.error('Error while adding to cart:', error);
+  } catch {
     return null;
   }
 }

@@ -53,8 +53,7 @@ export async function refreshCustomerData() {
       localStorage.setItem(USER_KEY, JSON.stringify(response.body));
       return response.body;
     }
-  } catch (error) {
-    console.error('Failed to refresh customer data:', error);
+  } catch {
     logoutCustomer();
     throw new Error('Session expired. Please login again.');
   }

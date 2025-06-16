@@ -33,7 +33,6 @@ watch(group, () => {
 
 const searchQuery = ref(localStorage.getItem('searchQuery') ?? '');
 watch(searchQuery, (newVal) => {
-  console.log('searchQuery:', newVal);
   localStorage.setItem('searchQuery', newVal);
 });
 function onClear() {

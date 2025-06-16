@@ -24,8 +24,7 @@ export async function getProductById(productId: string): Promise<ProductInfo | n
 
     const product: ProductInfo = await getBriefInfoFromProduct(body);
     return product;
-  } catch (error) {
-    console.error('Error while receiving goods:', error);
+  } catch {
     return null;
   }
 }
@@ -55,7 +54,6 @@ export async function getProducts(
 
       const parent = catResp.body.results[0];
       if (!parent) {
-        console.error(`Category with key "${categoryKey}" not found.`);
         return [];
       }
       parentCategoryId = parent.id;
@@ -104,8 +102,7 @@ export async function getProducts(
       response.body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems))
     );
     return products;
-  } catch (e) {
-    console.error('Error while fetching products:', e);
+  } catch {
     return [];
   }
 }
@@ -126,12 +123,10 @@ export async function searchProducts(query: string, page: number): Promise<Produ
 
     const lineItems = activeCart.value?.lineItems || [];
     totalProducts.value = body.total ? body.total : 0;
-    console.log('search', totalProducts);
 
     const products = await Promise.all(body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems)));
     return products;
-  } catch (error) {
-    console.error('Error while receiving goods:', error);
+  } catch {
     return [];
   }
 }

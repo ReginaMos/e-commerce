@@ -64,7 +64,6 @@ async function updateCart<T extends unknown[]>(action: CartAction<T>, successMes
   } catch (err) {
     if (err instanceof Error) {
       toaster?.show(err.message, 'error');
-      console.log(err);
     }
   } finally {
     isLoading.value = false;
@@ -78,7 +77,7 @@ async function addToCart(): Promise<void> {
 
   if (!isInCart.value) {
     await addProductToCart(props.product.id, 1, count.value);
-    console.log(activeCart.value);
+
     toaster?.show('Added to cart', 'success');
   } else {
     const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.product?.id);

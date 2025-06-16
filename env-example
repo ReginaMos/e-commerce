@@ -1,0 +1,6 @@
+VITE_PROJECT_KEY=projectKey
+VITE_CLIENT_SECRET=secretKey
+VITE_CLIENT_ID=clientID
+VITE_AUTH_URL=https://auth.europe-west1.gcp.commercetools.com
+VITE_API_URL=https://api.europe-west1.gcp.commercetools.com
+VITE_SCOPES=scopes
