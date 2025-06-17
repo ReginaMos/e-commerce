@@ -13,10 +13,13 @@ import {
   applyDiscountCode,
   activeCart,
 } from '../services/carts-service';
+import { useConfirmationModal } from '../utils/confirmation-modal';
+import ConfirmModalComponent from '../components/ConfirmModalComponent.vue';
 
 const isLoading = ref(false);
 const promoCode = ref('');
 const isPromoLoading = ref(false);
+const { isModalOpen, showModal } = useConfirmationModal();
 
 const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
 
@@ -89,6 +92,10 @@ const handleRemove = (lineItemId: string) =>
   updateCart<[string]>(removeCartItem, 'Item removed successfully', lineItemId);
 
 const handleClearCart = () => updateCart<[]>(clearCart, 'Cart cleared successfully');
+
+const handleConfirm = () => {
+  showModal('Clear Cart', 'Are you sure you want to remove all items from your cart?');
+};
 </script>
 
 <template>
@@ -112,7 +119,13 @@ const handleClearCart = () => updateCart<[]>(clearCart, 'Cart cleared successful
         <v-divider class="my-4" />
 
         <div class="d-flex justify-space-between align-center">
-          <v-btn color="error" variant="outlined" @click="handleClearCart">Clear Cart</v-btn>
+          <v-btn color="error" variant="outlined" @click="handleConfirm">Clear Cart</v-btn>
+          <ConfirmModalComponent
+            v-model="isModalOpen"
+            title="Clear Cart"
+            message="Are you sure you want to remove all items from your cart?"
+            @confirm="handleClearCart"
+          />
 
           <div class="text-h6">
             Total:
