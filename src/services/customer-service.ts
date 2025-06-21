@@ -3,8 +3,9 @@ import type { Customer, MyCustomerDraft, MyCustomerSignin, MyCustomerUpdateActio
 
 import { USER_KEY } from '../constants/local-storage';
 import { formatDateISO8601 } from '../utils/format-date';
-import { apiRoot, buildCustomerClient, resetClient } from './build-client';
+import { apiRoot, createCustomerClient, resetClient } from './build-client';
 import type { AddressData, PersonalData, UpdatePasswordData } from '../utils/registration-schema';
+import { getActiveCart } from './carts-service';
 
 export const isAuth = ref(!!localStorage.getItem(USER_KEY));
 
@@ -13,23 +14,24 @@ const checkAuth = () => {
 };
 
 export async function loginCustomer(credentials: MyCustomerSignin) {
-  const result = await buildCustomerClient({ password: credentials.password, username: credentials.email })
-    .me()
-    .login()
-    .post({ body: credentials })
-    .execute();
+  createCustomerClient(credentials.email, credentials.password);
+  const result = await apiRoot.me().login().post({ body: credentials }).execute();
 
-  if (result.body.customer) {
+  if (result.body) {
     localStorage.setItem(USER_KEY, JSON.stringify(result.body.customer));
+
+    await getActiveCart();
   }
+
   checkAuth();
   return result.body;
 }
 
-export function logoutCustomer() {
+export async function logoutCustomer() {
   localStorage.removeItem(USER_KEY);
-  resetClient();
   checkAuth();
+  resetClient();
+  await getActiveCart();
 }
 
 export async function createCustomer(customer: MyCustomerDraft) {
@@ -51,8 +53,7 @@ export async function refreshCustomerData() {
       localStorage.setItem(USER_KEY, JSON.stringify(response.body));
       return response.body;
     }
-  } catch (error) {
-    console.error('Failed to refresh customer data:', error);
+  } catch {
     logoutCustomer();
     throw new Error('Session expired. Please login again.');
   }

@@ -4,7 +4,9 @@ import ProductSizeComponent from './ProductSizeComponent.vue';
 import ProductQuantityComponent from './ProductQuantityComponent.vue';
 import type { ProductInfo, Attributes } from '../models/models.ts';
 import type { Ref, ComputedRef } from 'vue';
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, inject } from 'vue';
+import { addProductToCart, removeCartItem, activeCart } from '../services/carts-service.ts';
+import type { Cart } from '@commercetools/platform-sdk';
 
 const props = defineProps<{
   product?: ProductInfo;
@@ -31,7 +33,6 @@ watch(sizes, (newSizes) => {
   }
 });
 
-const count = ref(1);
 const isActive = ref(localStorage.getItem('wishlist') ?? false);
 function addToWishList() {
   isActive.value = !isActive.value;
@@ -39,6 +40,57 @@ function addToWishList() {
 watch(isActive, (newVal) => {
   localStorage.setItem('wishlist', JSON.stringify(newVal));
 });
+const count = ref(1);
+
+const isInCart = computed(() => {
+  return !!activeCart.value?.lineItems.some((item) => item.productId === props.product?.id);
+});
+
+const title = computed(() => (isInCart.value ? 'Remove item' : 'Add to cart'));
+
+const isLoading = ref(false);
+
+const toaster = inject<{ show: (message: string, color?: string) => void }>('toaster');
+
+type CartAction<T extends unknown[]> = (cart: Cart, ...args: T) => Promise<Cart>;
+
+async function updateCart<T extends unknown[]>(action: CartAction<T>, successMessage: string, ...args: T) {
+  if (!activeCart.value) return;
+
+  isLoading.value = true;
+  try {
+    await action(activeCart.value, ...args);
+    toaster?.show(successMessage, 'success');
+  } catch (err) {
+    if (err instanceof Error) {
+      toaster?.show(err.message, 'error');
+    }
+  } finally {
+    isLoading.value = false;
+  }
+}
+const handleRemove = (lineItemId: string) =>
+  updateCart<[string]>(removeCartItem, 'Item removed successfully', lineItemId);
+
+async function addToCart(): Promise<void> {
+  if (!activeCart.value || !props.product?.id) return;
+
+  if (!isInCart.value) {
+    await addProductToCart(props.product.id, 1, count.value);
+
+    toaster?.show('Added to cart', 'success');
+  } else {
+    const lineItem = activeCart.value?.lineItems.find((item) => item.productId === props.product?.id);
+    if (!lineItem) {
+      toaster?.show('Product not found in cart', 'error');
+      return;
+    } else {
+      handleRemove(lineItem.id);
+    }
+
+    toaster?.show('Removed from cart', 'info');
+  }
+}
 </script>
 <template>
   <h2>{{ productDetails?.name }}</h2>
@@ -69,7 +121,7 @@ watch(isActive, (newVal) => {
     </v-btn>
   </div>
 
-  <v-btn v-if="productDetails?.quantity || 0 > 0" class="btn"> Add to Cart </v-btn>
+  <v-btn v-if="productDetails?.quantity || 0 > 0" class="btn" @click="addToCart"> {{ title }} </v-btn>
 
   <p v-else>This product sold</p>
 </template>

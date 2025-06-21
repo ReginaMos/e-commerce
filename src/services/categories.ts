@@ -12,8 +12,7 @@ export async function getCategories(): Promise<Category[]> {
   try {
     const response: ClientResponse<CategoryPagedQueryResponse> = await apiRoot.categories().get().execute();
     return response.body.results;
-  } catch (error) {
-    console.error('Error while getting categories', error);
+  } catch {
     return [];
   }
 }
@@ -31,8 +30,7 @@ export async function getMainCategories() {
       .execute();
 
     return response.body.results;
-  } catch (error) {
-    console.error('Ошибка при получении главных категорий:', error);
+  } catch {
     return [];
   }
 }
@@ -57,23 +55,7 @@ export async function getBrands(): Promise<FacetTerm[]> {
     }
 
     return [];
-  } catch (error) {
-    console.error('Error while receiving goods:', error);
+  } catch {
     return [];
   }
 }
-
-// export async function getCategoryIdByKey(categoryKey: string): Promise<string | null> {
-//   try {
-//     const response = await apiRoot
-//       .categories()
-//       .withKey({ key: categoryKey })
-//       .get()
-//       .execute();
-
-//     return response.body.id;
-//   } catch (error) {
-//     console.error('Ошибка при получении категории по ключу:', error);
-//     return null;
-//   }
-// }

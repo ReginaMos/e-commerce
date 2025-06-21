@@ -33,7 +33,6 @@ watch(group, () => {
 
 const searchQuery = ref(localStorage.getItem('searchQuery') ?? '');
 watch(searchQuery, (newVal) => {
-  console.log('searchQuery:', newVal);
   localStorage.setItem('searchQuery', newVal);
 });
 function onClear() {
@@ -157,6 +156,7 @@ const logout = () => {
   margin-right: auto;
   font-weight: bold;
   font-size: 16px;
+  min-width: 200px !important;
   &:hover {
     color: var(--red-secondary);
     text-decoration: none !important;
@@ -175,17 +175,15 @@ const logout = () => {
   white-space: nowrap;
   text-align: start;
   margin-inline-start: 0;
+  width: 200px !important;
 }
-.menu-wrapper-desktop {
-  /* width: 367px !important; */
-  width: 500px !important;
-  margin-right: 40px;
-}
+
 .header :deep(.menu-wrapper-desktop .v-navigation-drawer) {
   position: static !important;
   border-right-width: 0 !important;
-  /* width: 367px !important; */
-  width: 500px !important;
+  width: fit-content !important;
+  background-color: transparent;
+  margin-right: 40px;
 }
 .header :deep(.v-navigation-drawer__content::-webkit-scrollbar-track) {
   -webkit-box-shadow: inset 0 0 6px #5d5d5d;

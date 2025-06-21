@@ -10,6 +10,7 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
 import ToasterComponent from './components/ToasterComponent.vue';
+import { initializeApiRoot } from './services/build-client';
 
 const vuetify = createVuetify({
   components,
@@ -33,8 +34,8 @@ const vuetify = createVuetify({
   },
 });
 
+initializeApiRoot();
 const app = createApp(App);
-
 app.use(vuetify);
 app.use(router);
 app.component('UniversalToaster', ToasterComponent);

@@ -11,6 +11,10 @@ import { getProducts } from '../services/catalog';
 
 const products = ref<ProductInfo[]>([]);
 
+function updateQuantity(ind: number, quantity: number): void {
+  products.value[ind].inCartQuantity = quantity;
+}
+
 onMounted(async () => {
   products.value = await getProducts(3);
 });
@@ -34,7 +38,7 @@ onMounted(async () => {
 
     <v-row class="mb-4">
       <MainHeading title="Our products" />
-      <ProductsComponent :products="products" />
+      <ProductsComponent :products="products" @update-quantity="updateQuantity" />
       <ButtonElement title="View all products" link="/catalog" />
     </v-row>
   </v-container>

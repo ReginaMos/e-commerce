@@ -5,27 +5,36 @@ import type {
   ProductProjection,
   ProductProjectionPagedSearchResponse,
   QueryParam,
+  LineItem,
 } from '@commercetools/platform-sdk';
 import type { ProductInfo, Filter, SortBy } from '../models/models';
+import { ref } from 'vue';
+import { activeCart } from './carts-service';
 
 interface QueryArgs {
   [key: string]: QueryParam | undefined;
   filter?: string[];
 }
 
+export const totalProducts = ref(0);
+
 export async function getProductById(productId: string): Promise<ProductInfo | null> {
   try {
     const { body }: ClientResponse<Product> = await apiRoot.products().withId({ ID: productId }).get().execute();
 
-    const product: ProductInfo = getBriefInfoFromProduct(body);
+    const product: ProductInfo = await getBriefInfoFromProduct(body);
     return product;
-  } catch (error) {
-    console.error('Error while receiving goods:', error);
+  } catch {
     return null;
   }
 }
 
-export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy): Promise<ProductInfo[]> {
+export async function getProducts(
+  limit?: number,
+  page?: number,
+  filter?: Filter,
+  sort?: SortBy
+): Promise<ProductInfo[]> {
   try {
     const locale = 'en-US';
 
@@ -45,7 +54,6 @@ export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy
 
       const parent = catResp.body.results[0];
       if (!parent) {
-        console.error(`Category with key "${categoryKey}" not found.`);
         return [];
       }
       parentCategoryId = parent.id;
@@ -73,6 +81,10 @@ export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy
     const queryArgs: QueryArgs = { staged: true };
 
     if (typeof limit === 'number') queryArgs.limit = limit;
+    if (typeof page === 'number' && typeof limit === 'number') {
+      queryArgs.offset = (page - 1) * limit;
+    }
+
     if (filters.length > 0) queryArgs.filter = filters;
     if (sortArr.length > 0) {
       queryArgs.sort = sortArr;
@@ -82,14 +94,20 @@ export async function getProducts(limit?: number, filter?: Filter, sort?: SortBy
     }
 
     const response = await apiRoot.productProjections().search().get({ queryArgs }).execute();
-    return response.body.results.map((item) => getBriefInfoFromProductProjection(item));
-  } catch (e) {
-    console.error('Error while fetching products:', e);
+
+    const lineItems = activeCart.value?.lineItems || [];
+
+    totalProducts.value = response.body.total ? response.body.total : 0;
+    const products = await Promise.all(
+      response.body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems))
+    );
+    return products;
+  } catch {
     return [];
   }
 }
 
-export async function searchProducts(query: string): Promise<ProductInfo[]> {
+export async function searchProducts(query: string, page: number): Promise<ProductInfo[]> {
   try {
     const { body }: ClientResponse<ProductProjectionPagedSearchResponse> = await apiRoot
       .productProjections()
@@ -97,19 +115,26 @@ export async function searchProducts(query: string): Promise<ProductInfo[]> {
       .get({
         queryArgs: {
           'text.en-US': query,
-          limit: 20,
+          limit: 6,
+          offset: (page - 1) * 6,
         },
       })
       .execute();
-    const products: ProductInfo[] = body.results.map((item) => getBriefInfoFromProductProjection(item));
+
+    const lineItems = activeCart.value?.lineItems || [];
+    totalProducts.value = body.total ? body.total : 0;
+
+    const products = await Promise.all(body.results.map((item) => getBriefInfoFromProductProjection(item, lineItems)));
     return products;
-  } catch (error) {
-    console.error('Error while receiving goods:', error);
+  } catch {
     return [];
   }
 }
 
-function getBriefInfoFromProductProjection(product: ProductProjection): ProductInfo {
+async function getBriefInfoFromProductProjection(
+  product: ProductProjection,
+  lineItems: LineItem[]
+): Promise<ProductInfo> {
   const masterVariant = product.masterVariant;
   const name = product.name?.['en-US'];
 
@@ -124,6 +149,11 @@ function getBriefInfoFromProductProjection(product: ProductProjection): ProductI
   const attributes = masterVariant.attributes || [];
   const size = attributes.find((attr) => attr.name === 'size')?.value;
   const brand = attributes.find((attr) => attr.name === 'brand')?.value;
+
+  const cartQuantity = lineItems.find((item) => item.productId === product.id)?.quantity;
+
+  const inCartQuantity = cartQuantity ? cartQuantity : 0;
+
   return {
     id: product.id,
     name,
@@ -136,10 +166,11 @@ function getBriefInfoFromProductProjection(product: ProductProjection): ProductI
     attributes,
     size,
     brand,
+    inCartQuantity,
   };
 }
 
-function getBriefInfoFromProduct(product: Product): ProductInfo {
+async function getBriefInfoFromProduct(product: Product): Promise<ProductInfo> {
   const current = product.masterData.staged;
   const masterVariant = current.masterVariant;
   const name = Object.values(current.name)[0];
@@ -155,6 +186,12 @@ function getBriefInfoFromProduct(product: Product): ProductInfo {
   const attributes = product.masterData.staged.masterVariant.attributes || [];
   const size = attributes.find((attr) => attr.name === 'size')?.value;
   const brand = attributes.find((attr) => attr.name === 'brand')?.value;
+
+  const lineItems = activeCart.value?.lineItems || [];
+  const cartQuantity = lineItems.find((item) => item.productId === product.id)?.quantity;
+
+  const inCartQuantity = cartQuantity ? cartQuantity : 0;
+
   return {
     id: product.id,
     name,
@@ -167,5 +204,6 @@ function getBriefInfoFromProduct(product: Product): ProductInfo {
     attributes,
     size,
     brand,
+    inCartQuantity,
   };
 }
